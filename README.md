@@ -1,5 +1,10 @@
 ﻿# 2025-FMCWRadar
 
+## Launching the docs website
+
+1. install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+2. Follow the step by step instructions in [`/docs/README.md`](/docs/README.md)
+
 ## Internal Links
 
 - [Kanban Board](https://github.com/orgs/spe-uob/projects/343)
