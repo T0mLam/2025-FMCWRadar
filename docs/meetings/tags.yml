@@ -1,0 +1,15 @@
+client:
+  label: Client
+  permalink: /client
+  description: Client Meetings
+
+mentor:
+  label: Mentor
+  permalink: /mentor
+  description: Mentor Meetings
+
+internal:
+  label: Internal
+  permalink: /internal
+  description: Internal Team Meetings
+
