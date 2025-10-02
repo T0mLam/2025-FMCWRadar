@@ -1,5 +1,16 @@
 ﻿# 2025-FMCWRadar
 
+## (Potential) Stakeholders
+- End users such as:
+    - Car owners using it to open their car
+    - Security personnel using it as part of a security system
+
+## User stories
+- Car owner: As a car owner, I want to be able to open my car door hands free, so that I dont have to put down my shopping/child or anything else in my hands. It also prevents my hands getting wet from a wet handle.
+- Security personnel: I want there to be an early warning system for people being detected, so that if I am not actively monitoring surveillance there is an extra layer of security. 
+
+
+
 ## Launching the docs website
 
 1. install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
