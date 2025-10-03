@@ -20,10 +20,10 @@ const config = {
   },
 
   // Set the production url of your site here
-  url: 'https://spe-uob.github.io',
+  url: 'https://expert-adventure-1elpz3v.pages.github.io/', // https://spe-uob.github.io 
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/2025-FMCWRadar/',
+  baseUrl: '/', // /2025-FMCWRadar/
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
