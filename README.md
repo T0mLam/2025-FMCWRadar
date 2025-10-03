@@ -30,3 +30,10 @@
 | Henry Edwards   | ym24345@bristol.ac.uk             |
 | Talal Aljallal  | talal.aljallal.2023@bristol.ac.uk |
 | Tom Lam         | tom.lam.2024@bristol.ac.uk        |  
+
+## Client Contacts
+
+| Name            | Email                             |
+|-----------------|-----------------------------------|
+| Greg Peake      | g-peake@ti.com                    |
+| Pedrhom Nafisi  | p-nafisi@ti.com                   |
