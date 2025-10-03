@@ -1,7 +1,9 @@
 ﻿# 2025-FMCWRadar
 
+[![Docs](https://img.shields.io/badge/docs-website-blue)](https://spe-uob.github.io/2025-FMCWRadar)
+
 ## Project Overview
-This project examines Texas Instruments (TI) FMCW radar sensors as compact, single-chip devices for human-motion analysis. These sensors integrate radio, processing, and antenna resources to estimate target distance, motion, and bearing, with the advantage of functioning in varied environments, lighting conditions and mitigating privacy concerns. These sensors are commonly applied to people-sensing tasks in indoor environments.
+This project examines Texas Instruments (TI) FMCW radar sensors as compa`ct, single-chip devices for human-motion analysis. These sensors integrate radio, processing, and antenna resources to estimate target distance, motion, and bearing, with the advantage of functioning in varied environments, lighting conditions and mitigating privacy concerns. These sensors are commonly applied to people-sensing tasks in indoor environments.
 
 Our work during this project will begin with a research-first baseline. We will study the official TI materials and documentation to understand the sensor outputs and processing pipeline, define a clear data-collection and labelling protocol, assemble an internal dataset using the FMCW radar, and develop a machine learning model trained on the internal dataset to identify different people based on movement characteristics such as their unique walking gait. A visualisation tool will be created in order to view the captured radar data so results can be reviewed immediately.
 
