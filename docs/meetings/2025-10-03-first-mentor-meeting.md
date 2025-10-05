@@ -1,11 +1,16 @@
 ---
-slug: kickoff
-title: Project Kickoff
+slug: 2025-10-03-first-mentor-meeting
+title: First Mentor Meeting
 authors: [talal, alina]
-tags: [internal]
+tags: [mentor]
 ---
 
-First Mentor meeting notes for the 2025 FMCW Radar project.
+*First Mentor meeting notes for the 2025 FMCW Radar project.*
+
+**Date:** 03-10-2025 <br />
+**Time:** 11:00-12:00  <br />
+**Mentor:** Jack Cains <br />
+**Team:** Alina Zubova, Dan Robb, Henry Edwards, Talal Aljallal, Tom Lam <br />
 
 <!-- truncate -->
 
@@ -29,7 +34,7 @@ _“We’ve never done this before” → Embrace the challenge positively. High
 ---
 
 ## Ways of Working (Agile)
-- **Kanban Board:** GitHub Projects → Backlog → To Do → In Progress → Done  
+- **[Kanban Board](https://github.com/orgs/spe-uob/projects/343):** `GitHub Projects → Backlog → To Do → In Progress → Done`
 - **Stand-ups:** Brief, regular meetings  
 - **Documentation:** Shared notes from each client/mentor touchpoint  
 

@@ -23,37 +23,3 @@ slorber:
     linkedin: sebastienlorber
     github: slorber
     newsletter: https://thisweekinreact.com
-
-# ------------------------------------------
-# University of Bristol FMCW Radar Project Team
-# ------------------------------------------
-
-alina:
-  name: Alina Zubova
-  title: Team Member
-  email: wn23635@bristol.ac.uk
-  page: true
-
-dan:
-  name: Dan Robb
-  title: Team Member
-  email: ff24459@bristol.ac.uk
-  page: true
-
-henry:
-  name: Henry Edwards
-  title: Team Member
-  email: ym24345@bristol.ac.uk
-  page: true
-
-talal:
-  name: Talal Aljallal
-  title: Team Member
-  email: talal.aljallal.2023@bristol.ac.uk
-  page: true
-
-tom:
-  name: Tom Lam
-  title: Team Member
-  email: tom.lam.2024@bristol.ac.uk
-  page: true
