@@ -33,7 +33,9 @@ body:
     attributes:
       label: "Which area does the bug affect?"
       options:
-        -(Placeholder)
+        - Placeholder
+        - Placeholder2
+        - Placeholder3
     validations:
       required: true
   - type: textarea

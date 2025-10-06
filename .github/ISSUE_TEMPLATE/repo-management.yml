@@ -1,0 +1,45 @@
+name: Repo Management Issue
+description: Issue for making a change to the repository.
+title: "<Repo Management Task Title>"
+labels: ["project admin"]
+projects: ["spe-uob/2025-FMCWRadar"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill in the following information regarding your new issue.
+  - type: textarea
+    id: task-details
+    attributes:
+      label: "Task Details"
+      description: "Describe the details of the change that needs to be made to the repository."
+      placeholder: "We need to..."
+    validations:
+      required: true
+  - type: dropdown
+    id: support
+    attributes:
+      label: Do you need any support from a mentor with admin privileges to make this change?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+  - type: textarea
+    id: additional-information
+    attributes:
+      label: "Additional Information"
+      description: "Add any additional information or screenshots here."
+      placeholder: "Also..."
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Checklist"
+      description: "Tasks that must be completed before submitting issue."
+      options:
+        - label: "My description of the issue is detailed."
+          required: true
+        - label: "I have set all the issue metadata, including: assignee, labels, priority, story points, start date, end date, and milestone"
+          required: true
