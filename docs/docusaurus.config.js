@@ -10,9 +10,6 @@ import {themes as prismThemes} from 'prism-react-renderer';
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: '2025-FMCWRadar Project',
-  tagline: 'Identifying human subjects with FMCW Radar and Machine Learning',
-  favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -20,6 +17,9 @@ const config = {
   },
 
   // Set the production url of your site here
+  title: '2025-FMCWRadar Project',
+  tagline: 'Identifying human subjects with FMCW Radar and Machine Learning',
+  favicon: 'img/favicon.ico',
   url: 'https://expert-adventure-1elpz3v.pages.github.io/', // https://spe-uob.github.io 
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
@@ -98,6 +98,11 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       // Replace with your project's social card
+      docs: {
+      sidebar: {
+        hideable: true,
+        },
+      },
       image: 'img/docusaurus-social-card.jpg',
       colorMode: {
         respectPrefersColorScheme: true,
@@ -109,13 +114,13 @@ const config = {
           src: 'img/logo.svg',
         },
         items: [
+          {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
+            sidebarId: 'documentSidebar',
             position: 'left',
-            label: 'Tutorial',
+            label: 'Docs',
           },
-          {to: '/blog', label: 'Blog', position: 'left'},
           {to: '/meetings', label: 'Meetings', position: 'left'},
           {
             href: 'https://github.com/spe-uob/2025-FMCWRadar',
@@ -132,7 +137,7 @@ const config = {
             items: [
               {
                 label: 'Tutorial',
-                to: '/docs/intro',
+                to: '/docs/tutorial/intro',
               },
             ],
           },
