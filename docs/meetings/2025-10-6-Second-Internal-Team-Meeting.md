@@ -2,14 +2,13 @@
 slug: 2025-10-6-Second-Internal-Team-Meeting.md
 title: Second Team Meeting
 authors: [talal]
-tags: [Internal]
+tags: [internal]
 ---
 
 *Second Internal Team meeting notes for the 2025 FMCW Radar project.*
 
 **Date:** 06-10-2025 <br />
 **Time:** 14:00-15:00  <br />
-**Team:** Alina Zubova, Dan Robb, Henry Edwards, Talal Aljallal, Tom Lam <br />
 **Team:** Alina Zubova, Dan Robb, Henry Edwards, Talal Aljallal, Tom Lam <br />
 
 <!-- truncate -->
