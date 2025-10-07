@@ -114,7 +114,6 @@ const config = {
           src: 'img/logo.svg',
         },
         items: [
-          {to: '/blog', label: 'Blog', position: 'left'},
           {
             type: 'docSidebar',
             sidebarId: 'documentSidebar',
@@ -145,8 +144,8 @@ const config = {
             title: 'More',
             items: [
               {
-                label: 'Blog',
-                to: '/blog',
+                label: 'Meetings',
+                to: '/meetings',
               },
               {
                 label: 'GitHub',
