@@ -8,8 +8,12 @@ mentor:
   permalink: /mentor
   description: Mentor Meetings
 
-internal:
-  label: Internal
-  permalink: /internal
-  description: Internal Team Meetings
+stand_up:
+  label: Stand-up
+  permalink: /stand_up
+  description: Stand-up Meetings
 
+team_meeting:
+  label: Team Meeting
+  permalink: /team_meeting
+  description: Team Meetings
