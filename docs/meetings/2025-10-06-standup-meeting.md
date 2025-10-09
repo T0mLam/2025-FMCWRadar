@@ -1,11 +1,11 @@
 ---
-slug: 2025-10-6-Second-Internal-Team-Meeting.md
-title: Second Team Meeting
+slug: 2025-10-06-standup-meeting
+title: Standup Meeting - 6/10
 authors: [talal]
-tags: [internal]
+tags: [stand_up]
 ---
 
-*Second Internal Team meeting notes for the 2025 FMCW Radar project.*
+*Standup meeting notes for the 2025 FMCW Radar project.*
 
 **Date:** 06-10-2025 <br />
 **Time:** 14:00-15:00  <br />

@@ -1,6 +1,6 @@
 ---
-slug: 2025-10-03-first-mentor-meeting
-title: First Mentor Meeting
+slug: 2025-10-03-mentor-meeting
+title: Mentor Meeting - 3/10
 authors: [talal, alina]
 tags: [mentor]
 ---
