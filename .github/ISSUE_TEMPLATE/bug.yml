@@ -27,17 +27,18 @@ body:
         3.
         ...
     validations:
-      required: true
+      required: false
   - type: dropdown
     id: where
     attributes:
       label: "Which area does the bug affect?"
       options:
-        - Placeholder
-        - Placeholder2
-        - Placeholder3
+        - ML model
+        - Data visualizer
+        - CI/CD
+        - Documentations
     validations:
-      required: true
+      required: false
   - type: textarea
     id: screenshot
     attributes:
