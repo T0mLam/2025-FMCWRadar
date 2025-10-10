@@ -10,3 +10,14 @@ How does radar work?
     - When a chirp is plotted on amp vs time it is a sine wave which increases in frequency
     - Range estimations are calculated using the difference in frequency from the RX and TX chirps
     - Velocity estimations are calculated using a fourier transformation on the IF signal
+
+What does radar data look like?
+
+    - Most TI radar sensors have an on board processor that turns complex raw data into a more manageable format before ever leaving the device
+    - Data is sent in frames which are like snapshots in time
+    - Frame rate is configurable (normally 1-20Hz) 
+    - The sensor sends data using standard interfaces such as - UART, SPI or I2C
+    - The data in each frame is usually organized into packets called TLVs (Type, Length, Value)
+    - The TLVs clearly define what kind of information is being transmitted
+
+
