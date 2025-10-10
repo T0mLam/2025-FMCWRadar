@@ -20,4 +20,13 @@ What does radar data look like?
     - The data in each frame is usually organized into packets called TLVs (Type, Length, Value)
     - The TLVs clearly define what kind of information is being transmitted
 
+Types of radar data
+
+    - ADC data (raw data) : The most basic data from the sensor - useful for developing new algorithms
+    - Range profile : A simple plot showing how far away objects are, but provides no angle information
+    - Point cloud : The most common output. A list of detected points, each with an individual 3D position, velocity and signal strength
+    - Occupancy detection : A boolean output that indicates if there is an object in a pre-defined 3D area
+    - Tracks/targets : A more advanced processing step that groups points together to track real world objects (think a person moving - would have many different chirps being received by the RX, this groups it to show it as a person moving)
+    - Classifiers : USes on-chip ML to classify detected objects (determining if the target is a human or a chair for example) 
+
 
