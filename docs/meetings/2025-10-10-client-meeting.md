@@ -1,15 +1,18 @@
 ---
 slug: 2025-10-10-client-meeting
-title: Client Meeting Notes
+title: Client Meeting - 10/10
 date: 2025-10-10
-tags: [client_meeting]
+tags: [Client]
 authors: [dan] 
 ---
+*First client meeting notes for the 2025 FMCW Radar project.*
 
-# Client Meeting Notes:  (2025-10-10)
+**Date:** 10-10-2025 <br />
+**Time:** 09:00-10:00  <br />
+**Team:** Alina Zubova, Dan Robb, Henry Edwards, Talal Aljallal, Tom Lam <br />
 
-## Attendees
-Team Members, Greg (Client)
+<!-- truncate -->
+
 
 ## Key Decisions and Discussion Points
 

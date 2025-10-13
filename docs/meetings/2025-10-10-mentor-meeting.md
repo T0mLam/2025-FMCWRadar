@@ -5,8 +5,13 @@ date: 2025-10-10
 tags: [mentor]
 authors: [dan]
 ---
+*Mentor meeting notes for the 2025 FMCW Radar project.*
 
-# Mentor Meeting Notes (2025-10-10)
+**Date:** 10-10-2025 <br />
+**Time:** 09:00-10:00  <br />
+**Team:** Alina Zubova, Dan Robb, Henry Edwards, Talal Aljallal, Tom Lam <br />
+
+<!-- truncate -->
 
 ## Workflow & Git Practices
 * **Main Branch Rule:** Do not commit or merge directly into the **`main`** branch.
