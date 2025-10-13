@@ -1,9 +1,9 @@
-**Radar Research**
+# Radar Research
 
 This page outlines initial understanding of the FMCW radars used by Texas Instruments
 
 
-**How does radar work?**
+## How does radar work?
 
 - mmWave radar devices send out pulses of EM waves (called **chirps**) which will reflect off of any targets in the area and be received by the radar giving it information on range, velocity and direction.
 - TI uses FMCW tech (frequency modulated continuous wave) which means their radars are constantly sending out chirps rather than sending out chirps in frequent pulses.
@@ -16,7 +16,7 @@ This page outlines initial understanding of the FMCW radars used by Texas Instru
 - Range estimations are calculated using the difference in frequency from the RX and TX chirps
 - Velocity estimations are calculated using a fourier transformation on the IF signal
 
-**What does radar data look like?**
+## What does radar data look like?
 
 - Most TI radar sensors have an on board processor that turns complex raw data into a more manageable format before ever leaving the device
 - Data is sent in **frames** which are like snapshots in time
@@ -25,7 +25,7 @@ This page outlines initial understanding of the FMCW radars used by Texas Instru
 - The data in each frame is usually organized into packets called **TLVs** (Type, Length, Value)
 - The TLVs clearly define what kind of information is being transmitted
 
-**Types of radar data**
+## Types of radar data
 
 - ADC data (raw data) : The most basic data from the sensor - useful for developing new algorithms
 - Range profile : A simple plot showing how far away objects are, but provides no angle information
