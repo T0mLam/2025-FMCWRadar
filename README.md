@@ -11,10 +11,14 @@ Our work during this project will begin with a research-first baseline. We will 
 - End users such as:
     - Car owners using it to open their car
     - Security personnel using it as part of a security system
+    - Healthcare
+    - Civil infrustructure
 
 ## User stories
 - Car owner: As a car owner, I want to be able to open my car door hands free, so that I dont have to put down my shopping/child or anything else in my hands. It also prevents my hands getting wet from a wet handle.
 - Security personnel: I want there to be an early warning system for people being detected, so that if I am not actively monitoring surveillance there is an extra layer of security. 
+- Healthcare: I want to be sure that person under care is alright, without breaking their privacy. 
+- Civil infrustructure: I want to design a public toilet, that will be locked/unlocked depending if there is a person inside.
 
 
 
