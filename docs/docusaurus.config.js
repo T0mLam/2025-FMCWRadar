@@ -20,10 +20,10 @@ const config = {
   title: '2025-FMCWRadar Project',
   tagline: 'Identifying human subjects with FMCW Radar and Machine Learning',
   favicon: 'img/favicon.ico',
-  url: 'https://expert-adventure-1elpz3v.pages.github.io/', // https://spe-uob.github.io 
+  url: 'https://spe-uob.github.io/',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/', // /2025-FMCWRadar/
+  baseUrl: '/2025-FMCWRadar/', 
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -50,8 +50,8 @@ const config = {
           sidebarPath: './sidebars.js',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/spe-uob/2025-FMCWRadar/edit/main/docs',
+          // editUrl:
+          //   'https://github.com/spe-uob/2025-FMCWRadar/edit/main/docs',
         },
         blog: {
           showReadingTime: true,
@@ -61,8 +61,8 @@ const config = {
           },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/spe-uob/2025-FMCWRadar/edit/main/docs',
+          // editUrl:
+          //   'https://github.com/spe-uob/2025-FMCWRadar/edit/main/docs',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -86,7 +86,7 @@ const config = {
         blogDescription: 'Meeting notes and updates',
         showReadingTime: true,
         feedOptions: { type: ['rss', 'atom'], xslt: true },
-        editUrl: 'https://github.com/spe-uob/2025-FMCWRadar/edit/main/docs',
+        // editUrl: 'https://github.com/spe-uob/2025-FMCWRadar/edit/main/docs',
         onInlineTags: 'warn',
         onInlineAuthors: 'warn',
         onUntruncatedBlogPosts: 'warn',
@@ -126,6 +126,12 @@ const config = {
             label: 'GitHub',
             position: 'right',
           },
+                    {
+            href: 'https://uob-my.sharepoint.com/:f:/g/personal/ye24597_bristol_ac_uk/Ev_ahirvid1FjZCWQMA8qDoB7L83C-JUGdL5jHDYbqvm-A',
+            label: 'OneDrive',
+            position: 'right',
+          },
+          
         ],
       },
       footer: {
