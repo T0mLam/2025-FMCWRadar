@@ -1,4 +1,4 @@
-# Key Takeaways: MM Wave Radar Human Identification
+# MM Wave Radar Human Identification
 
 This research outlines the critical architecture and methodology needed to achieve **individual human identification** (identifying which person is present) using mmWave radar, based on the principles demonstrated by the TI Sensor-to-Cloud project.
 
