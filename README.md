@@ -15,10 +15,20 @@ Our work during this project will begin with a research-first baseline. We will 
     - Civil infrustructure
 
 ## User stories
-- Car owner: As a car owner, I want to be able to open my car door hands free, so that I dont have to put down my shopping/child or anything else in my hands. It also prevents my hands getting wet from a wet handle.
-- Security personnel: I want there to be an early warning system for people being detected, so that if I am not actively monitoring surveillance there is an extra layer of security. 
-- Healthcare: I want to be sure that person under care is alright, without breaking their privacy. 
-- Civil infrustructure: I want to design a public toilet, that will be locked/unlocked depending if there is a person inside.
+- **Car owners:**  
+  As a *car owner*, I want to be able to open my car door hands free, so that I don’t have to put down my shopping, child, or anything else I'm carrying. This also prevents my hands from getting wet from a wet handle.
+  
+- **Security personnel:**  
+  As a *security guard*, I want there to be an early warning system when people are detected, so that if I am not actively monitoring the surveillance systems, there is an extra layer of security.
+
+- **Healthcare:**  
+  As a *nurse*, I want ensure that patients under care are stable, without breaching their privacy.
+
+- **Civil infrastructure:**  
+  As a *civil engineer*, I want to design a public bathroom that will automatically lock or unclock depending on occupancy.
+
+- **Texas Instruments (TI):**  
+  As a *Texas Instruments (TI) Solutions Engineer*, I want a robust, reproducible demo and evaluation using our FMCW Radar outputs so that we can validate people-sensing use cases and identify gaps in our documentation and examples.
 
 
 
@@ -48,6 +58,7 @@ Our work during this project will begin with a research-first baseline. We will 
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
 
 
 
