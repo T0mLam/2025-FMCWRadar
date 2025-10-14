@@ -8,7 +8,7 @@ authors: [dan]
 *Mentor meeting notes for the 2025 FMCW Radar project.*
 
 **Date:** 10-10-2025 <br />
-**Time:** 09:00-10:00  <br />
+**Time:** 11:00-12:00  <br />
 **Team:** Alina Zubova, Dan Robb, Henry Edwards, Talal Aljallal, Tom Lam <br />
 
 <!-- truncate -->
