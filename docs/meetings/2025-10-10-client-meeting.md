@@ -2,7 +2,7 @@
 slug: 2025-10-10-client-meeting
 title: Client Meeting - 10/10
 date: 2025-10-10
-tags: [Client]
+tags: [client]
 authors: [dan] 
 ---
 *First client meeting notes for the 2025 FMCW Radar project.*
