@@ -1,0 +1,8 @@
+{
+  "label": "Paper Summaries",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Key takeaways from the literature review for the FMCW radar project."
+  }
+}
