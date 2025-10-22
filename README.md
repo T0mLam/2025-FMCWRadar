@@ -51,6 +51,7 @@ Our work during this project will begin with a research-first baseline. We will 
 | Henry Edwards   | ym24345@bristol.ac.uk             |
 | Talal Aljallal  | talal.aljallal.2023@bristol.ac.uk |
 | Tom Lam         | tom.lam.2024@bristol.ac.uk        |  
+| Michal Berkasiuk| qk24603@bristol.ac.uk             | 
 
 ## Client Contacts
 
@@ -58,6 +59,7 @@ Our work during this project will begin with a research-first baseline. We will 
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
 
 
 
