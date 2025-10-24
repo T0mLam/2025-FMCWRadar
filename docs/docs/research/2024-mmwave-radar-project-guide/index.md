@@ -6,6 +6,12 @@ title: 2024-mmWaveRadarSensors project instructions
 
 This page contains the guide for running the human pose recognition model on TI IWRL6432.
 
+## Download the zip file for the 2024-mmWaveRadarSensors project
+
+[-> Download link](https://github.com/spe-uob/2024-mmWaveRadarSensors/archive/refs/heads/dev.zip)
+
+![Download Project ZIP FILE](./download_project_zip.png)
+
 ## Install MMWAVE-L-SDK 05.04
 
 :::important
@@ -58,10 +64,10 @@ Move the newer version of the MMWAVE-L-SDK out of the `C:\ti` directory temporar
 
 ## Launch the visualizer
 
-1. Navigate to `C:\path\to\2024-mmWaveRadarSensors\visualiser` 
+1. Navigate to `/path/to/2024-mmWaveRadarSensors/visualiser` (replace /path/to/... with the link of the visualizer folder)
 2. Run the following command in the terminal 
-    ```
-    PS C:\path\to\2024-mmWaveRadarSensors\visualiser> python main.py
+    ```bash
+    python main.py
     ```
 3. Select the correct UART port, you can find it from device manager (in this example my webcam is blocked but it shouldn't affect the result anyways)
     ![Visualizer](./visualizer.png)
