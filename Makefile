@@ -4,7 +4,7 @@ tvm:
 	docker build -f docker/Dockerfile.tvm -t ti-tvm .
 	docker run -it --rm -v $(CURDIR):/workspace ti-tvm
 
-# make tvm-compile MODEL_PATH=... OUT_DIR=...
+# USAGE: make tvm-compile MODEL_PATH=./your_model_name.onnx OUT_DIR=./model_artifacts
 tvm-compile:
 	docker build -f docker/Dockerfile.tvm -t ti-tvm .
 	docker run -it --rm -v $(CURDIR):/workspace \
