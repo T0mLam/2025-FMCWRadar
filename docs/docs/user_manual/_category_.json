@@ -1,6 +1,6 @@
 {
-  "label": "🗂️ Dataset",
-  "position": 4,
+  "label": "📃 User Manual",
+  "position": 3,
   "link": {
     "type": "generated-index",
     "description": "Everything about our data collection process and our dataset releases."
