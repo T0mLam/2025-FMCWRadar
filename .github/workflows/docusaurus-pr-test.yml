@@ -1,4 +1,4 @@
-name: Deploy Docusaurus site to GitHub Pages
+name: Test Docusaurus builds correctly on pull requests
 
 on:
   pull:
