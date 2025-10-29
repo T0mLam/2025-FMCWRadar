@@ -7,7 +7,7 @@ tags: [mentor]
 
 *First Mentor meeting notes for the 2025 FMCW Radar project.*
 
-**Date:** 03-10-2025 <br />
+**Date:** 03-10-2025 <br 
 **Time:** 11:00-12:00  <br />
 **Mentor:** Jack Cains <br />
 **Team:** Alina Zubova, Dan Robb, Henry Edwards, Talal Aljallal, Tom Lam <br />
