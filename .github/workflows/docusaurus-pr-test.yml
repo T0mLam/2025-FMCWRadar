@@ -1,7 +1,7 @@
 name: Test Docusaurus builds correctly on pull requests
 
 on:
-  pull:
+  pull_request:
     branches:
       - dev
     
