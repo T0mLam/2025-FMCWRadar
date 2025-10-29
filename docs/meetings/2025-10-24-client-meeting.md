@@ -5,10 +5,10 @@ authors: [dan]
 tags: [client]
 ---
 
-*Notes from our team meeting*
+*Notes from our client meeting*
 
-**Date:** 17-10-2025 <br />
-**Time:** 11:00 - 11:35 <br />
+**Date:** 24-10-2025 <br />
+**Time:** 9:00 - 10:00 <br />
 **Team:** Alina Zubova, Dan Robb, Henry Edwards, Talal Aljallal, Tom Lam, Michal Berkasiuk  <br />
 
 <!-- truncate -->
