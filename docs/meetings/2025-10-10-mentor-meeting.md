@@ -9,6 +9,7 @@ authors: [dan]
 
 **Date:** 10-10-2025 <br />
 **Time:** 11:00-12:00  <br />
+**Mentor:** Jack Cains <br />
 **Team:** Alina Zubova, Dan Robb, Henry Edwards, Talal Aljallal, Tom Lam <br />
 
 <!-- truncate -->
