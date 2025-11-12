@@ -10,6 +10,8 @@ from uart_manager import UARTManager
 
 INITIAL_WINDOW_WIDTH = 1290
 INITIAL_WINDOW_HEIGHT = 600 
+
+
 # NEW
 USE_UART = True
 UART_PORT = "COM6"
@@ -94,6 +96,8 @@ class MainWindow:
             [random.uniform(-1.5, 1.5), random.uniform(-1.0, 1.0)]
             for _ in range(num_points)
         ])
+    
+    
     #NEW
     def setup_uart_mode(self):
         """
