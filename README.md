@@ -44,7 +44,9 @@ Our work during this project will begin with a research-first baseline. We will 
 - **Texas Instruments (TI):**  
   As a *Texas Instruments (TI) Solutions Engineer*, I want a robust, reproducible demo and evaluation using our FMCW Radar outputs so that we can validate people-sensing use cases and identify gaps in our documentation and examples.
 
+## Architecture diagram 
 
+![Architecture diagram](<Architecture diagram.jpg>)
 
 ## Launching the docs website
 
