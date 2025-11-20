@@ -48,6 +48,10 @@ Our work during this project will begin with a research-first baseline. We will 
 
 ![Architecture diagram](<Architecture diagram.jpg>)
 
+## Proposed diagram
+
+![Proposed diagram](<TI diagram.png>)
+
 ## Launching the docs website
 
 1. install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
