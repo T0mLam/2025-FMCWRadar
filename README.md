@@ -7,16 +7,50 @@ This project examines Texas Instruments (TI) FMCW radar sensors as compact, sing
 
 Our work during this project will begin with a research-first baseline. We will study the official TI materials and documentation to understand the sensor outputs and processing pipeline, define a clear data-collection and labelling protocol, assemble an internal dataset using the FMCW radar, and develop a machine learning model trained on the internal dataset to identify different people based on movement characteristics such as their unique walking gait. A visualisation tool will be created in order to view the captured radar data so results can be reviewed immediately.
 
-## (Potential) Stakeholders
-- End users such as:
-    - Car owners using it to open their car
-    - Security personnel using it as part of a security system
+## Stakeholders
+**Texas Instruments’ (TI) Staff**: 
+- Product & Solutions team: Require a robust, reproducible demo using FMCW radar outputs to validate people-sensing use cases and surface documentation gaps to test their technology.
+  
+- Sales team: Require clear examples, data formats, and reference flows to help market their radars to customers.
+
+**Texas Instruments’ (TI) customers**:
+- Civil tech companies: Want to implement reliable occupancy sensing technology for public facilities and stations.
+  
+- Healthcare technology providers: These companies seek privacy preserving patient movement monitoring systems, and Texas Instruments’ radars allow for that privacy.
+  
+- Automotive & Mobility companies: These businesses are interested in hands free vehicle access and in-cabin/approach detection technology that is robust in a variety of conditions and lighting.
+
+**End Users**:
+- Security Guards: Benefit from timely presence alerts when they’re not actively watching monitors.
+  
+- Patients in clinical rooms & elderly at home: Gain discreet safety monitoring without the use of cameras to prevent accidents from happening.
+  
+- Car Owners: Expect doors to open hands free without false triggers.
+
 
 ## User stories
-- Car owner: As a car owner, I want to be able to open my car door hands free, so that I dont have to put down my shopping/child or anything else in my hands. It also prevents my hands getting wet from a wet handle.
-- Security personnel: I want there to be an early warning system for people being detected, so that if I am not actively monitoring surveillance there is an extra layer of security. 
+- **Car owners:**  
+  As a *car owner*, I want to be able to open my car door hands free, so that I don’t have to put down my shopping, child, or anything else I'm carrying. This also prevents my hands from getting wet from a wet handle.
+  
+- **Security personnel:**  
+  As a *security guard*, I want there to be an early warning system when people are detected, so that if I am not actively monitoring the surveillance systems, there is an extra layer of security.
 
+- **Healthcare:**  
+  As a *nurse*, I want ensure that patients under care are stable, without breaching their privacy.
 
+- **Civil infrastructure:**  
+  As a *civil engineer*, I want to design a public bathroom that will automatically lock or unclock depending on occupancy.
+
+- **Texas Instruments (TI):**  
+  As a *Texas Instruments (TI) Solutions Engineer*, I want a robust, reproducible demo and evaluation using our FMCW Radar outputs so that we can validate people-sensing use cases and identify gaps in our documentation and examples.
+
+## Architecture diagram 
+
+![Architecture diagram](<Architecture diagram.jpg>)
+
+## Proposed diagram
+
+![Proposed diagram](<TI diagram.png>)
 
 ## Launching the docs website
 
@@ -37,6 +71,7 @@ Our work during this project will begin with a research-first baseline. We will 
 | Henry Edwards   | ym24345@bristol.ac.uk             |
 | Talal Aljallal  | talal.aljallal.2023@bristol.ac.uk |
 | Tom Lam         | tom.lam.2024@bristol.ac.uk        |  
+| Michal Berkasiuk| qk24603@bristol.ac.uk             | 
 
 ## Client Contacts
 
@@ -44,6 +79,9 @@ Our work during this project will begin with a research-first baseline. We will 
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
+
+
 
 
 

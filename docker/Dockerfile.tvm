@@ -1,0 +1,23 @@
+FROM ubuntu:22.04
+
+# System dependencies
+RUN apt-get update && apt-get install -y \
+    python3 python3-pip wget libllvm14 libncurses5 build-essential
+
+# Install TI-TVM and ONNX
+RUN wget https://spe-uob.github.io/2024-mmWaveRadarSensors/SetupFiles/ti_tvm-0.16.0-cp310-cp310-linux_x86_64.whl -O /tmp/ti_tvm-0.16.0-cp310-cp310-linux_x86_64.whl && \
+    pip3 install /tmp/ti_tvm-0.16.0-cp310-cp310-linux_x86_64.whl && \
+    pip3 install onnx==1.13.0 && \
+    rm /tmp/ti_tvm-0.16.0-cp310-cp310-linux_x86_64.whl
+
+# Install TI ARM Compiler
+RUN wget https://dr-download.ti.com/software-development/ide-configuration-compiler-or-debugger/MD-ayxs93eZNN/2.1.2.LTS/ti_cgt_armllvm_2.1.2.LTS_linux-x64_installer.bin && \
+    chmod +x ti_cgt_armllvm_2.1.2.LTS_linux-x64_installer.bin && \
+    ./ti_cgt_armllvm_2.1.2.LTS_linux-x64_installer.bin --mode unattended --prefix /opt && \
+    rm ti_cgt_armllvm_2.1.2.LTS_linux-x64_installer.bin
+
+# Set environment variables
+ENV PATH="/opt/ti-cgt-armllvm_2.1.2.LTS/bin:$PATH"
+
+WORKDIR /workspace
+ENTRYPOINT ["/bin/bash"]
