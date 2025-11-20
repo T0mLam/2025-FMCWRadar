@@ -46,7 +46,7 @@ Our work during this project will begin with a research-first baseline. We will 
 
 ## Architecture diagram 
 
-![Architecture diagram](<Architecture diagram.jpg>)
+![Architecture diagram]!(<Architecture diagram.jpg>)
 
 ## Proposed diagram
 
