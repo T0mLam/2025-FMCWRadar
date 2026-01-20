@@ -26,5 +26,4 @@ Thumbs.db
 # Visualiser artifacts
 *.log
 
-
-
+.vscode
