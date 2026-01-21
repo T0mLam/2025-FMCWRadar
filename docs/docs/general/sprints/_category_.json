@@ -1,0 +1,10 @@
+{
+  "label": "Sprints",
+  "collapsible": true,
+  "collapsed": true,
+  "link": {
+    "type": "generated-index",
+    "title": "Sprints",
+    "description": "Sprint notes, plans, and reviews."
+  }
+}
