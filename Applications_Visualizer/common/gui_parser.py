@@ -9,6 +9,7 @@ import numpy
 import os
 import struct
 import csv
+import copy
 json.fallback_table[numpy.ndarray] = lambda array: array.tolist()
 
 # Logger
@@ -66,7 +67,7 @@ class UARTParser():
         if raw is None and features is None:
             return
 
-        timeStamp = time.time() * 1000
+        #timeStamp = time.time() * 1000
         self.microDopplerCounter += 1
 
         raw_arr = None
@@ -78,7 +79,7 @@ class UARTParser():
             features_arr = np.asarray(features, dtype=np.dtype("<f4")).ravel()
 
         frameJSON = {
-            "timestamp": timeStamp,
+            #"timestamp": timeStamp,
 
             "microDopplerRawCount": int(outputDict.get("microDopplerRawCount", 0)),
             "microDopplerRawData": None if raw is None else np.asarray(raw, dtype=np.dtype("<f4")).tolist(),
@@ -88,6 +89,8 @@ class UARTParser():
         }
         self.microDopplerFrames.append(frameJSON)
 
+        #FIXME this attached to the frames per file if we will do time stamp this will need to be changed 
+        # #otherwise data will be missing (no more than 100 dopplers in file)
         idx = math.floor(self.microDopplerCounter / self.microDopplerFramesPerFile)
 
         dir = os.path.join("binData", self.filepath, "microDoppler")
@@ -107,11 +110,14 @@ class UARTParser():
                 w = csv.writer(f)
                 w.writerow([*features_arr.tolist()])
 
+        if (self.microDopplerCounter % self.microDopplerFramesPerFile) != 0:
+            return
+
         json_name = os.path.join(dir, f"microDoppler_replay_{idx}.json")
         payload = {
-            "cfg": self.cfg,
-            "demo": self.demo,
-            "device": self.device,
+            #"cfg": self.cfg,
+            #"demo": self.demo,
+            #"device": self.device,
             "data": self.microDopplerFrames
         }
         with open(json_name, "w") as f:
@@ -302,11 +308,11 @@ class UARTParser():
         # frameData now contains an entire frame, send it to parser
         if (self.parserType == "SingleCOMPort"):
             outputDict = parseStandardFrame(frameData, demo=self.demo)
-            if self.saveMicroDoppler == 1:
-                self.save_microdoppler(outputDict)
         else:
             log.error('FAILURE: Bad parserType')
 
+        if self.saveMicroDoppler == 1:
+                self.save_microdoppler(outputDict)
         # If save binary is enabled
         if(self.saveBinary == 1):
             self.binData += frameData
@@ -314,23 +320,23 @@ class UARTParser():
             self.uartCounter += 1
 
             # uncomment below to save bin data in Matlab-friendly format
-            self.binData += frameData
-            if (self.uartCounter % self.framesPerFile == 0):
-                # First file requires the path to be set up
-                if(self.first_file is True): 
-                    if(os.path.exists('binData/') == False):
-                        # Note that this will create the folder in the caller's path, not necessarily in the Industrial Viz Folder                        
-                        os.makedirs('binData/', exist_ok=True)
-                    os.makedirs('binData/'+self.filepath, exist_ok=True)
-                    self.first_file = False
-                toSave = bytes(self.binData)
+            # self.binData += frameData
+            # if (self.uartCounter % self.framesPerFile == 0):
+            #     # First file requires the path to be set up
+            #     if(self.first_file is True): 
+            #         if(os.path.exists('binData/') == False):
+            #             # Note that this will create the folder in the caller's path, not necessarily in the Industrial Viz Folder                        
+            #             os.makedirs('binData/', exist_ok=True)
+            #         os.makedirs('binData/'+self.filepath, exist_ok=True)
+            #         self.first_file = False
+            #     toSave = bytes(self.binData)
                 
-                fileName = 'binData/'+self.filepath+'/pHistBytes_'+str(math.floor(self.uartCounter/self.framesPerFile))+'.bin'
-                bfile = open(fileName, 'wb')
-                bfile.write(toSave)
-                bfile.close()
-                # Reset binData and missed frames
-                self.binData = []
+            #     fileName = 'binData/'+self.filepath+'/pHistBytes_'+str(math.floor(self.uartCounter/self.framesPerFile))+'.bin'
+            #     bfile = open(fileName, 'wb')
+            #     bfile.write(toSave)
+            #     bfile.close()
+            #     # Reset binData and missed frames
+            #     self.binData = []
 
             # Saving data here for replay
             frameJSON = {}
@@ -351,7 +357,7 @@ class UARTParser():
                     json_object = json.dumps(data, indent=4)
                     fp.write(json_object)
                     self.frames = [] # Uncomment to put data into one file at a time in 100 frame chunks
-            
+
         return outputDict
 
     # Find various utility functions here for connecting to COM Ports, send data, etc...
