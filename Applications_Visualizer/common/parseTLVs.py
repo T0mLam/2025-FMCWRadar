@@ -922,9 +922,14 @@ def parseMicroDopplerRawDataTLV(tlvData, tlvLength, outputDict):
         outputDict['microDopplerRawData'] = None
         return
 
-    outputDict['microDopplerRawData'] = arr
     outputDict['microDopplerRawLenBytes'] = tlvLength
     outputDict['microDopplerRawCount'] = int(arr.size)
+
+    n = outputDict.get("numDetectedTracks", 0)
+    if arr.size == n * 64:
+        outputDict['microDopplerRawData'] = arr.reshape((n, 64))
+    else:
+        outputDict['microDopplerRawData'] = arr
 
     
     #print(str(arr))
@@ -938,8 +943,14 @@ def parseMicroDopplerFeaturesTLV(tlvData, tlvLength, outputDict):
         outputDict['microDopplerFeatures'] = None
         return
 
-    outputDict['microDopplerFeatures'] = arr
     outputDict['microDopplerFeaturesLenBytes'] = tlvLength
-    outputDict['4'] = int(arr.size)
+    outputDict['microDopplerFeaturesCount'] = int(arr.size)
+
+    n = outputDict.get("numDetectedTracks", 0)
+    if arr.size == n * 6:
+        outputDict['microDopplerFeatures'] = arr.reshape((n, 6))
+    else:
+        outputDict['microDopplerFeatures'] = arr
+    
 
     #print(str(arr))
