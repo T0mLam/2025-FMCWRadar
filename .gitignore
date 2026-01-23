@@ -28,3 +28,5 @@ Thumbs.db
 build/
 binData/
 cache/
+
+.vscode
