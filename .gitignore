@@ -25,6 +25,6 @@ Thumbs.db
 
 # Visualiser artifacts
 *.log
-
-
-
+build/
+binData/
+cache/
