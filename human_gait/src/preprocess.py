@@ -3,6 +3,7 @@ import torch
 import glob
 import os 
 import numpy as np 
+import argparse
 
 def get_stable_start_index(timestamps, target_fps=9, tolerance=0.2, stable_count=5):
     """
@@ -114,10 +115,21 @@ def process_data(raw_dir, processed_dir, seq_len=32):
             
         print(f"--- Total samples in {class_name}/: {total_sample_count} ---")
 
-if __name__ == "__main__":
+def parse_args():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = os.path.dirname(script_dir)
 
-    RAW_DIR = os.path.join(project_root, "data", "raw", "2026-01-23")
-    PROC_DIR = os.path.join(project_root, "data", "processed") 
-    process_data(RAW_DIR, PROC_DIR)
+    default_raw  = os.path.join(project_root, "data", "raw", "2026-01-23")
+    default_proc = os.path.join(project_root, "data", "processed") 
+    default_seq_len = 32
+
+    parser = argparse.ArgumentParser(description="Process micro-doppler JSON into training sequences.")
+    parser.add_argument("-r", "--raw-dir", type=str, default=default_raw, help=f"Path to raw data folder (default: {default_raw})")
+    parser.add_argument("-p", "--processed-dir", type=str, default=default_proc, help=f"Path to output processed data folder (default: {default_proc})")
+    parser.add_argument("-s", "--seq-len", type=int, default=default_seq_len, help=f"Sliding window length in frames (default: {default_seq_len})")
+
+    return parser.parse_args()
+
+if __name__ == "__main__":
+    args = parse_args()
+    process_data(args.raw_dir, args.processed_dir, seq_len=args.seq_len)
