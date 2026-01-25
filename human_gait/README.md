@@ -78,13 +78,29 @@ python -m src.preprocess
 
 ```
 
-**Configuration:**
-You can modify the following parameters in `src/preprocess.py`:
+**Custom Configuration:**
+You can specify the input folder, output folder, and sequence length using flags:
 
-* `seq_len`: Length of the time window (Default: 32 frames).
-* `target_fps`: Expected frame rate for stability check (Default: 9 FPS).
-* `raw_dir`: Path to the directory storing the raw data (Default: `path/to/human_gait/data/raw/2026-01-23`).
-* `processed_dir`: Path to the directory storing the raw data (Default: `path/to/human_gait/data/processed`).
+```bash
+python -m src.preprocess --raw-dir data/raw/2026-02-01 --processed-dir data/processed/val --seq-len 64
+
+```
+
+**Arguments:**
+
+| Flag | Long Flag | Description | Default |
+| --- | --- | --- | --- |
+| `-r` | `--raw-dir` | Path to the specific raw data folder (e.g., a specific date). | `data/raw/2026-01-23` |
+| `-p` | `--processed-dir` | Path where the processed `.pt` files will be saved. | `data/processed` |
+| `-s` | `--seq-len` | Length of the sliding window in frames. | `32` |
+
+**Example:**
+To process a new dataset from February 1st and use a longer window size of 64 frames:
+
+```bash
+python -m src.preprocess -r "data/raw/2026-02-01" -s 64
+
+```
 
 
 ### Output
