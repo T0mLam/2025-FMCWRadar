@@ -39,7 +39,7 @@ class CameraTab(QWidget):
             else:
                 self.image_label.setText("ITS NOT WORKING")
         else:
-            self.iamge_label.setText("ITS NOT WORKING")
+            self.image_label.setText("ITS NOT WORKING")
 
     
     def stop_camera(self):
