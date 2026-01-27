@@ -1,5 +1,6 @@
 from PySide2.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PySide2.QtCore import Qt
+import cv2 
 
 class CameraTab(QWidget):
     def __init__ (self, parent=None):
