@@ -4,6 +4,7 @@ import glob
 import os 
 import numpy as np 
 import argparse
+import shutil 
 
 def get_stable_start_index(timestamps, target_fps=9, tolerance=0.2, stable_count=5):
     """
@@ -38,6 +39,8 @@ def process_data(raw_dir, processed_dir, seq_len=32):
     Parses JSON, removes unstable frames at the start of each file, filters human using ClassificationDecision, 
     and saves continuous sliding windows of sequences without gaps in Timestamp.
     """
+    if os.path.exists(processed_dir):
+        shutil.rmtree(processed_dir)
     os.makedirs(processed_dir, exist_ok=True)
 
     # Map names to integers: {'alina': 0, 'michal': 1}
@@ -133,3 +136,4 @@ def parse_args():
 if __name__ == "__main__":
     args = parse_args()
     process_data(args.raw_dir, args.processed_dir, seq_len=args.seq_len)
+    
