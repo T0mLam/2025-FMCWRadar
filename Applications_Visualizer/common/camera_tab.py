@@ -42,3 +42,12 @@ class CameraTab(QWidget):
             self.iamge_label.setText("ITS NOT WORKING")
 
     
+    def stop_camera(self):
+        if self.capture.isOpened():
+            self.capture.release()
+            self.timer.stop()
+
+    def closeEvent(self, event):
+        self.stop_camera()
+        super().closeEvent(event)
+        
