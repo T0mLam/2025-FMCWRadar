@@ -5,3 +5,4 @@ pyserial==3.5
 pyqtgraph==0.11.0
 json-fix==1.0.0
 opencv-python==4.13.0.90
+pyinstaller
