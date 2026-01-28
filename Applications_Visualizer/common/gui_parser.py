@@ -101,7 +101,7 @@ class UARTParser():
         })
     
 
-    
+
     def setSaveBinary(self, saveBinary):
         self.saveBinary = saveBinary
 
@@ -416,3 +416,4 @@ class UARTParser():
             print(ack)
             ack = self.cliCom.readline()
             print(ack)
+ 
