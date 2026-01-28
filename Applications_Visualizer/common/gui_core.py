@@ -259,7 +259,21 @@ class Window(QMainWindow):
         self.demoList = QComboBox()
         self.deviceList = QComboBox()
         self.recordAction = QCheckBox("Save Data to File", self)
-        self.microDopplerAction = QCheckBox("Save microDoppler to File", self)
+        
+         # Duration Label
+        self.durationLabel = QLabel("Duration (s):")
+        self.durationEdit = QLineEdit("3") # Default to 3 seconds
+        self.durationEdit.setToolTip("Enter recording duration in seconds")
+
+          # Record Push Button
+        self.microDopplerButton = QPushButton("Record MicroDoppler", self)
+        self.microDopplerButton.clicked.connect(self.startMicroDopplerRecording)
+
+         # Timer
+        self.mdTimer = QTimer(self) 
+        self.mdTimer.setSingleShot(True)
+        self.mdTimer.timeout.connect(self.stopMicroDopplerRecording)
+
 
         # TODO Add replay support
         self.demoList.addItems(self.core.getDemoList())
@@ -275,12 +289,16 @@ class Window(QMainWindow):
         self.comLayout.addWidget(self.dataCom, 2, 1)
         self.comLayout.addWidget(QLabel("Demo:"), 3, 0)
         self.comLayout.addWidget(self.demoList, 3, 1)
-        self.comLayout.addWidget(self.connectButton, 4, 0)
-        self.recordAction.stateChanged.connect(self.toggleSaveData)
-        self.microDopplerAction.stateChanged.connect(self.toggleSaveMicroDoppler)
-        self.comLayout.addWidget(self.recordAction, 5, 0)
-        self.comLayout.addWidget(self.microDopplerAction, 6, 0)
+    
+       
+        self.comLayout.addWidget(self.connectButton, 4, 0) 
         self.comLayout.addWidget(self.connectStatus, 4, 1)
+        self.comLayout.addWidget(self.recordAction, 5, 0)
+     
+        self.comLayout.addWidget(self.durationLabel, 6, 0)
+        self.comLayout.addWidget(self.durationEdit, 6, 1)
+
+        self.comLayout.addWidget(self.microDopplerButton, 7, 0, 1, 2) 
 
         self.comBox.setLayout(self.comLayout)
         self.demoList.setCurrentIndex(1)  # initialize this to a stable value
@@ -311,6 +329,56 @@ class Window(QMainWindow):
 
         self.core.isGUILaunched = 1
         self.loadCachedData()
+
+
+     # Start recording MicroDoppler.
+    def startMicroDopplerRecording(self):
+        # 1. Get the duration from the input box
+        try:
+            duration_sec = float(self.durationEdit.text())
+            if duration_sec <= 0: raise ValueError
+        except ValueError:
+            # Fallback if user types garbage or 0
+            duration_sec = 3.0
+            self.durationEdit.setText("3")
+            log.warning("Invalid duration entered. Defaulting to 3 seconds.")
+
+        # Convert to milliseconds for QTimer
+        duration_ms = int(duration_sec * 1000)
+
+        # 2. Set flags and UI state
+        self.core.parser.setSaveMicroDoppler(True)
+        
+        self.microDopplerButton.setEnabled(False)
+        self.microDopplerButton.setText(f"Recording ({duration_sec}s)...")
+        self.durationEdit.setEnabled(False) # Lock input while recording
+        
+        self.core.replay = False
+        
+        # Enable/Disable other UI elements
+        self.demoList.setEnabled(True)
+        self.deviceList.setEnabled(True)
+        self.cliCom.setEnabled(True)
+        self.dataCom.setEnabled(True)
+        self.connectButton.setEnabled(True)
+        self.filename_edit.setEnabled(True)
+        self.selectConfig.setEnabled(True)
+        self.start.setText("Start without Send Configuration")
+        
+        # 3. Start the timer
+        self.mdTimer.start(duration_ms)
+
+    #Stop recording microdoppler when time ends.
+    def stopMicroDopplerRecording(self):
+        self.core.parser.setSaveMicroDoppler(False)
+        
+        # Reset UI
+        self.microDopplerButton.setEnabled(True)
+        self.microDopplerButton.setText("Record MicroDoppler")
+        self.durationEdit.setEnabled(True) # Unlock input
+        
+        log.info("MicroDoppler recording stopped.")
+
 
     def initConfigPane(self):
         self.configBox = QGroupBox("Configuration")
