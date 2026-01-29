@@ -47,92 +47,62 @@ class UARTParser():
         # Data storage
         self.now_time = datetime.datetime.now().strftime('%Y%m%d-%H%M')
 
-        # microDoppler logging 
-        self.saveMicroDoppler = 0
-        self.microDopplerCounter = 0
-        self.microDopplerFramesPerFile = self.framesPerFile 
-        self.microDopplerFrames = []
-        self.microDoppler_first_file = True
+        # Data logging 
+        self.saveData = 0
+        self.dataCounter = 0
+    
+        self.dataFrames = []
+        self.dataSession = None
+        self.dataSessionIdx = 0
 
-    def setSaveMicroDoppler(self, saveMicroDoppler):
-        self.saveMicroDoppler = saveMicroDoppler
+        self.recordingStartMs = None
+        self.recordingEndMs = None
 
-    def save_microdoppler(self, outputDict: dict):
-        if self.saveMicroDoppler != 1:
-            return
-
-        raw = outputDict.get("microDopplerRawData", None)
-        features = outputDict.get("microDopplerFeatures", None)
-
-        if raw is None and features is None:
-            return
-
-        #timeStamp = time.time() * 1000
-        self.microDopplerCounter += 1
-
-        raw_arr = None
-        if raw is not None:
-            raw_arr = np.asarray(raw, dtype=np.dtype("<f4")).ravel()
-       
-        features_arr = None
-        if features is not None:
-            features_arr = np.asarray(features, dtype=np.dtype("<f4")).ravel()
-
-        frameJSON = {
-            #"timestamp": timeStamp,
-
-            "microDopplerRawCount": int(outputDict.get("microDopplerRawCount", 0)),
-            "microDopplerRawData": None if raw is None else np.asarray(raw, dtype=np.dtype("<f4")).tolist(),
-
-            "microDopplerFeaturesCount": int(outputDict.get("microDopplerFeaturesCount", 0)),
-            "microDopplerFeatures": None if features is None else np.asarray(features, dtype=np.dtype("<f4")).tolist(),
-        }
-        self.microDopplerFrames.append(frameJSON)
-
-        #FIXME this attached to the frames per file if we will do time stamp this will need to be changed 
-        # #otherwise data will be missing (no more than 100 dopplers in file)
-        idx = math.floor(self.microDopplerCounter / self.microDopplerFramesPerFile)
-
-        dir = os.path.join("binData", self.filepath, "microDoppler")
+    #Flush data to file
+    def flush_data(self):
+        dir = os.path.join("binData", self.filepath)
         os.makedirs(dir, exist_ok=True)
-
-        raw_csv_name  = os.path.join(dir, f"microDoppler_raw_{idx}.csv")
-        features_csv_name = os.path.join(dir, f"microDoppler_feat_{idx}.csv")
-
-        #NICETOHAVE Append to CSV files, each frame is a new row
-        if raw_arr is not None and raw_arr.size > 0:
-            with open(raw_csv_name, "a", newline="") as f:
-                w = csv.writer(f)
-                w.writerow([*raw_arr.tolist()])
-
-        if features_arr is not None and features_arr.size > 0:
-            with open(features_csv_name, "a", newline="") as f:
-                w = csv.writer(f)
-                w.writerow([*features_arr.tolist()])
-
-        if (self.microDopplerCounter % self.microDopplerFramesPerFile) != 0:
-            return
-
-        json_name = os.path.join(dir, f"microDoppler_replay_{idx}.json")
+        json_name = os.path.join(dir, f"{self.dataSession}.json")
         payload = {
-            #"cfg": self.cfg,
-            #"demo": self.demo,
-            #"device": self.device,
-            "data": self.microDopplerFrames
+            "startTimestamp": self.microDopplerStartMs,
+            "endTimestamp": self.microDopplerEndMs,
+            "cfg": self.cfg,
+            "demo": self.demo,
+            "device": self.device,
+            "data": self.dataFrames
         }
         with open(json_name, "w") as f:
-            f.write(json.dumps(payload, indent=4))
+            f.write(json.dumps(payload, indent = 4))
+        self.dataFrames = []
+    
+    #Set save data flag in class
+    def setSaveData(self, new_saveData):
+        if new_saveData == 1 and self.saveData != 1:
+            self.dataSessionIdx += 1
+            self.dataSession = f"data_{self.dataSessionIdx}"
+            self.dataCounter = 0
+            self.dataFrames = []
+            self.microDopplerStartMs = int(time.time() * 1000)
+            self.microDopplerEndMs = None
 
-        self.microDopplerFrames = []
+        if new_saveData != 1 and self.saveData == 1:
+            self.microDopplerEndMs = int(time.time() * 1000)
+            self.flush_data()
 
+        self.saveData = new_saveData
 
-    # def WriteFile(self, data):
-    #     filepath=self.now_time + '.bin'
-    #     objStruct = '6144B'
-    #     objSize = struct.calcsize(objStruct)
-    #     binfile = open(filepath, 'ab+') #open binary file for append
-    #     binfile.write(bytes(data))
-    #     binfile.close()
+    #Save data dictionary to the class storage variable 
+    def save_data(self, outputDict: dict):
+        if self.saveData != 1:
+            return
+
+        self.dataCounter += 1
+        self.dataFrames.append({
+            "timestamp": time.time() * 1000,
+            "frameData": outputDict
+        })
+    
+
 
     def setSaveBinary(self, saveBinary):
         self.saveBinary = saveBinary
@@ -311,8 +281,8 @@ class UARTParser():
         else:
             log.error('FAILURE: Bad parserType')
 
-        if self.saveMicroDoppler == 1:
-                self.save_microdoppler(outputDict)
+        if self.saveData == 1:
+                self.save_data(outputDict)
         # If save binary is enabled
         if(self.saveBinary == 1):
             self.binData += frameData
@@ -448,3 +418,4 @@ class UARTParser():
             print(ack)
             ack = self.cliCom.readline()
             print(ack)
+ 
