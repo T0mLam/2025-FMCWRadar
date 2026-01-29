@@ -5,7 +5,7 @@ sidebar_label: Sprint 1
 ---
 
 # Sprint 1 — 19/01/26 - 25/01/26
-First Sprint of TB2
+This document describes our first Sprint of TB2 and reflecting on the project structure of TB1
 
 ## Reflecting on the negatives of TB1
 - We met frequently, but conversations weren’t focused on sprint goals or deliverables.
