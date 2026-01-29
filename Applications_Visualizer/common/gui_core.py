@@ -65,7 +65,7 @@ from Demo_Classes.LifePresenceDetection import LifePresenceDetection
 from Demo_Classes.debug_plots import DebugPlots
 from Demo_Classes.smart_toilet import SmartToiletDemo
 from Demo_Classes.range_sensing import RangeSensing
-
+from camera_tab import CameraTab
 # Logger
 import logging
 log = logging.getLogger(__name__)
@@ -567,6 +567,8 @@ class Core:
         # Make call to selected demo's initialization function
         if self.demo in self.demoClassDict:
             self.demoClassDict[self.demo].setupGUI(gridLayout, demoTabs, self.device)
+            self.cam_tab = CameraTab()
+            demoTabs.addTab(self.cam_tab, "Camera feed")
 
     def changeDevice(self, demoList, deviceList, gridLayout, demoTabs):
         self.device = deviceList.currentText()
