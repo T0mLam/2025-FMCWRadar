@@ -66,16 +66,16 @@ Our work during this project will begin with a research-first baseline. We will 
 In Applications_Visualizer\Industrial_Visualizer open IndustrialVisualiser.exe
 1. choose xWRL6432 device
 2. - In device manager find UART prt number
-![Device manager COM port](</images/Device_manager.jpg)
+    <img src="images/Device_manager.jpg" alt="Device manager COM port" width="520"/>
   - Enter the COM port number in CLI port feld
 3. Choose x432 Out of Box Demo in demo field
-![Industrial Visualiser setup](</images/Industrial_Visualiser_1.jpg>)
+<img src="images/Industrial_Visualiser_1.jpg" alt="Industrial Visualiser setup" width="520"/>
 Press connect button.
 Press Select config button. In Applications_Visualizer\Industrial_Visualizer\chrip_configs chose one of the config files and press Open. 
-![Chrip config load](</images/Industrial_Visualiser_2.jpg>)
+<img src="images/Industrial_Visualiser_2.jpg" alt="Chrip config load" width="520"/>
 Press Start and Send configuration button.
 To record a data: set the time in seconds (3 sec default) and press the Record Data button.
-![Data record button](</images/Industrial_Visualiser_3.jpg>)
+<img src="images/Industrial_Visualiser_3.jpg" alt="Data record button" width="520"/>
 Recorded data will be located in Applications_Visualizer\Industrial_Visualizer\binData
 
 ## Team Members
