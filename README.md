@@ -68,7 +68,7 @@ In Applications_Visualizer\Industrial_Visualizer open IndustrialVisualiser.exe
 1. choose xWRL6432 device
 2. - In device manager find UART prt number
     <img src="images/Device_manager.jpg" alt="Device manager COM port" width="650"/>
-  - Enter the COM port number in CLI port feld
+    - Enter the COM port number in CLI port feld
 3. Choose x432 Out of Box Demo in demo field
 Press connect button.
 Press Select config button. In Applications_Visualizer\Industrial_Visualizer\chrip_configs chose one of the config files and press Open. 
