@@ -47,55 +47,57 @@ class UARTParser():
         # Data storage
         self.now_time = datetime.datetime.now().strftime('%Y%m%d-%H%M')
 
-        # microDoppler logging 
-        self.saveMicroDoppler = 0
-        self.microDopplerCounter = 0
+        # Data logging 
+        self.saveData = 0
+        self.dataCounter = 0
     
-        self.microDopplerFrames = []
-        self.microDopplerSession = None
-        self.mdSessionIdx = 0
+        self.dataFrames = []
+        self.dataSession = None
+        self.dataSessionIdx = 0
 
         self.recordingStartMs = None
         self.recordingEndMs = None
 
-    def flush_microdoppler(self):
-        dir = os.path.join("binData", self.filepath, "microDoppler")
+    #Flush data to file
+    def flush_data(self):
+        dir = os.path.join("binData", self.filepath)
         os.makedirs(dir, exist_ok=True)
-        json_name = os.path.join(dir, f"{self.microDopplerSession}.json")
+        json_name = os.path.join(dir, f"{self.dataSession}.json")
         payload = {
             "startTimestamp": self.microDopplerStartMs,
             "endTimestamp": self.microDopplerEndMs,
             "cfg": self.cfg,
             "demo": self.demo,
             "device": self.device,
-            "data": self.microDopplerFrames
+            "data": self.dataFrames
         }
         with open(json_name, "w") as f:
             f.write(json.dumps(payload, indent = 4))
-        self.microDopplerFrames = []
+        self.dataFrames = []
     
-    def setSaveMicroDoppler(self, new_saveMicroDoppler):
-
-        if new_saveMicroDoppler == 1 and self.saveMicroDoppler != 1:
-            self.mdSessionIdx += 1
-            self.microDopplerSession = f"data_{self.mdSessionIdx}"
-            self.microDopplerCounter = 0
-            self.microDopplerFrames = []
+    #Set save data flag in class
+    def setSaveData(self, new_saveData):
+        if new_saveData == 1 and self.saveData != 1:
+            self.dataSessionIdx += 1
+            self.dataSession = f"data_{self.dataSessionIdx}"
+            self.dataCounter = 0
+            self.dataFrames = []
             self.microDopplerStartMs = int(time.time() * 1000)
             self.microDopplerEndMs = None
 
-        if new_saveMicroDoppler != 1 and self.saveMicroDoppler == 1:
+        if new_saveData != 1 and self.saveData == 1:
             self.microDopplerEndMs = int(time.time() * 1000)
-            self.flush_microdoppler()
+            self.flush_data()
 
-        self.saveMicroDoppler = new_saveMicroDoppler
+        self.saveData = new_saveData
 
-    def save_microdoppler(self, outputDict: dict):
-        if self.saveMicroDoppler != 1:
+    #Save data dictionary to the class storage variable 
+    def save_data(self, outputDict: dict):
+        if self.saveData != 1:
             return
 
-        self.microDopplerCounter += 1
-        self.microDopplerFrames.append({
+        self.dataCounter += 1
+        self.dataFrames.append({
             "timestamp": time.time() * 1000,
             "frameData": outputDict
         })
@@ -279,8 +281,8 @@ class UARTParser():
         else:
             log.error('FAILURE: Bad parserType')
 
-        if self.saveMicroDoppler == 1:
-                self.save_microdoppler(outputDict)
+        if self.saveData == 1:
+                self.save_data(outputDict)
         # If save binary is enabled
         if(self.saveBinary == 1):
             self.binData += frameData
