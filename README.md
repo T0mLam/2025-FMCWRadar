@@ -2,6 +2,19 @@
 
 [![Docs](https://img.shields.io/badge/docs-website-blue)](https://spe-uob.github.io/2025-FMCWRadar)
 
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Stakeholders](#stakeholders)
+- [User Stories](#user-stories)
+- [Project Structure](#project-structure)
+- [Architecture diagram](#architecture-diagram)
+- [Proposed diagram](#proposed-diagram)
+- [Launching the docs website](#launching-the-docs-website)
+- [Internal Links](#internal-links)
+- [Team Members](#team-members)
+- [Client Contacts](#client-contacts)
+
 ## Project Overview
 This project examines Texas Instruments (TI) FMCW radar sensors as compact, single-chip devices for human-motion analysis. These sensors integrate radio, processing, and antenna resources to estimate target distance, motion, and bearing, with the advantage of functioning in varied environments, lighting conditions and mitigating privacy concerns. These sensors are commonly applied to people-sensing tasks in indoor environments.
 
@@ -28,7 +41,7 @@ Our work during this project will begin with a research-first baseline. We will 
 - Car Owners: Expect doors to open hands free without false triggers.
 
 
-## User stories
+## User Stories
 - **Car owners:**  
   As a *car owner*, I want to be able to open my car door hands free, so that I don’t have to put down my shopping, child, or anything else I'm carrying. This also prevents my hands from getting wet from a wet handle.
   
@@ -43,6 +56,14 @@ Our work during this project will begin with a research-first baseline. We will 
 
 - **Texas Instruments (TI):**  
   As a *Texas Instruments (TI) Solutions Engineer*, I want a robust, reproducible demo and evaluation using our FMCW Radar outputs so that we can validate people-sensing use cases and identify gaps in our documentation and examples.
+
+## Project Structure
+The below showcase how our sprints have been structed for the FMCW Radar project since TB2:
+- [All Sprints](docs/docs/general/sprints)
+- [Sprint 1](docs/docs/general/sprints/sprint-1.md)
+- [Sprint 2](docs/docs/general/sprints/sprint2.md)
+
+It is recommended to view the above using our documentation website.
 
 ## Architecture diagram 
 
@@ -79,6 +100,7 @@ Our work during this project will begin with a research-first baseline. We will 
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
 
 
 
