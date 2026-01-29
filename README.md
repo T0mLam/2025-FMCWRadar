@@ -46,11 +46,11 @@ Our work during this project will begin with a research-first baseline. We will 
 
 ## Architecture diagram 
 
-![Architecture diagram](<Architecture diagram.jpg>)
+![Architecture diagram](</images/Architecture diagram.jpg>)
 
 ## Proposed diagram
 
-![Proposed diagram](<TI diagram.png>)
+![Proposed diagram](</images/TI diagram.png>)
 
 ## Launching the docs website
 
@@ -61,6 +61,22 @@ Our work during this project will begin with a research-first baseline. We will 
 
 - [Kanban Board](https://github.com/orgs/spe-uob/projects/343)
 - [Gantt Chart](https://github.com/orgs/spe-uob/projects/343/views/2)
+
+## Industrial Visualiser user instructions 
+In Applications_Visualizer\Industrial_Visualizer open IndustrialVisualiser.exe
+1. choose xWRL6432 device
+2. - In device manager find UART prt number
+![Device manager COM port](<images\Device_manager.jpg)
+  - Enter the COM port number in CLI port feld
+3. Choose x432 Out of Box Demo in demo field
+![Industrial Visualiser setup](<images\Industrial_Visualiser_1.jpg>)
+Press connect button.
+Press Select config button. In Applications_Visualizer\Industrial_Visualizer\chrip_configs chose one of the config files and press Open. 
+![Chrip config load](<images\Industrial_Visualiser_2.jpg>)
+Press Start and Send configuration button.
+To record a data: set the time in seconds (3 sec default) and press the Record Data button.
+![Data record button](<images\Industrial_Visualiser_3.jpg>)
+Recorded data will be located in Applications_Visualizer\Industrial_Visualizer\binData
 
 ## Team Members
 
