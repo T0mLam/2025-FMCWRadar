@@ -7,11 +7,7 @@ from torch.optim import SGD
 from torchmetrics.classification import MulticlassF1Score
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
-class CNN1D(nn.Module):
-    def __init__(self, input_size: int, output_size: int):
-        super().__init__()
-        self.input_size = input_size
-        self.output_size = output_size
+from src.models.cnn_1d import CNN1D
 
 def accuracy_fn(y_true, y_pred):
     """Calculates accuracy between truth labels and predictions.
