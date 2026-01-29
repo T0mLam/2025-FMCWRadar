@@ -135,7 +135,7 @@ class Window(QMainWindow):
 
         self.playbackAction.triggered.connect(self.loadForReplay)
         self.playbackAction.setCheckable(True)
-        self.logOutputAction.triggered.connect(self.toggleLogOutput)
+        #self.logOutputAction.triggered.connect(self.toggleLogOutput)
         self.logOutputAction.setCheckable(True)
         self.helpAction.triggered.connect(self.openUserGuide)
 
@@ -202,44 +202,25 @@ class Window(QMainWindow):
         self.selectConfig.setEnabled(True)
         self.start.setText("Start without Send Configuration")
 
-    def toggleSaveMicroDoppler(self):
-        if self.microDopplerAction.isChecked():
-            self.core.parser.setSaveMicroDoppler(True) 
-            #self.core.cachedData.setCachedMicroDoppler("True")
-        else:
-            self.core.parser.setSaveMicroDoppler(False)
-            #self.core.cachedData.setCachedMicroDoppler("False")
 
-        self.core.replay = False
-        
-        # Enable COM Ports/Device/Demo/Config
-        self.demoList.setEnabled(True)
-        self.deviceList.setEnabled(True)
-        self.cliCom.setEnabled(True)
-        self.dataCom.setEnabled(True)
-        self.connectButton.setEnabled(True)
-        self.filename_edit.setEnabled(True)
-        self.selectConfig.setEnabled(True)
-        self.start.setText("Start without Send Configuration")
-
-    def toggleLogOutput(self):
-        if (
-            self.recordAction.isChecked()
-        ):  # Save terminal output to logFile, set 0 to show terminal output
-            ts = time.localtime()
-            terminalFileName = str(
-                "logfile_"
-                + str(ts[2])
-                + str(ts[1])
-                + str(ts[0])
-                + "_"
-                + str(ts[3])
-                + str(ts[4])
-                + ".txt"
-            )
-            sys.stdout = open(terminalFileName, "w")
-        else:
-            sys.stdout = sys.__stdout__
+    # def toggleLogOutput(self):
+    #     if (
+    #         self.recordAction.isChecked()
+    #     ):  # Save terminal output to logFile, set 0 to show terminal output
+    #         ts = time.localtime()
+    #         terminalFileName = str(
+    #             "logfile_"
+    #             + str(ts[2])
+    #             + str(ts[1])
+    #             + str(ts[0])
+    #             + "_"
+    #             + str(ts[3])
+    #             + str(ts[4])
+    #             + ".txt"
+    #         )
+    #         sys.stdout = open(terminalFileName, "w")
+    #     else:
+    #         sys.stdout = sys.__stdout__
     
     def openUserGuide(self):
         userGuideURL = QUrl('https://dev.ti.com/tirex/local?id=mmwave_applications_visualizer_user_guide&packageId=radar_toolbox')
@@ -258,7 +239,7 @@ class Window(QMainWindow):
         self.connectButton.clicked.connect(self.onConnect)
         self.demoList = QComboBox()
         self.deviceList = QComboBox()
-        self.recordAction = QCheckBox("Save Data to File", self)
+        #self.recordAction = QCheckBox("Save Data to File", self)
         
          # Duration Label
         self.durationLabel = QLabel("Duration (s):")
@@ -266,13 +247,13 @@ class Window(QMainWindow):
         self.durationEdit.setToolTip("Enter recording duration in seconds")
 
           # Record Push Button
-        self.microDopplerButton = QPushButton("Record MicroDoppler", self)
-        self.microDopplerButton.clicked.connect(self.startMicroDopplerRecording)
+        self.dataRecordButton = QPushButton("Record Data", self)
+        self.dataRecordButton.clicked.connect(self.startDataRecording)
 
          # Timer
         self.mdTimer = QTimer(self) 
         self.mdTimer.setSingleShot(True)
-        self.mdTimer.timeout.connect(self.stopMicroDopplerRecording)
+        self.mdTimer.timeout.connect(self.stopDataRecording)
 
 
         # TODO Add replay support
@@ -293,12 +274,12 @@ class Window(QMainWindow):
        
         self.comLayout.addWidget(self.connectButton, 4, 0) 
         self.comLayout.addWidget(self.connectStatus, 4, 1)
-        self.comLayout.addWidget(self.recordAction, 5, 0)
+        #self.comLayout.addWidget(self.recordAction, 5, 0)
      
         self.comLayout.addWidget(self.durationLabel, 6, 0)
         self.comLayout.addWidget(self.durationEdit, 6, 1)
 
-        self.comLayout.addWidget(self.microDopplerButton, 7, 0, 1, 2) 
+        self.comLayout.addWidget(self.dataRecordButton, 7, 0, 1, 2) 
 
         self.comBox.setLayout(self.comLayout)
         self.demoList.setCurrentIndex(1)  # initialize this to a stable value
@@ -328,11 +309,11 @@ class Window(QMainWindow):
                 self.dataCom.setText(comText)
 
         self.core.isGUILaunched = 1
-        self.loadCachedData()
+        #self.loadCachedData()
 
 
      # Start recording MicroDoppler.
-    def startMicroDopplerRecording(self):
+    def startDataRecording(self):
         # 1. Get the duration from the input box
         try:
             duration_sec = float(self.durationEdit.text())
@@ -347,10 +328,10 @@ class Window(QMainWindow):
         duration_ms = int(duration_sec * 1000)
 
         # 2. Set flags and UI state
-        self.core.parser.setSaveMicroDoppler(True)
+        self.core.parser.setSaveData(True)
         
-        self.microDopplerButton.setEnabled(False)
-        self.microDopplerButton.setText(f"Recording ({duration_sec}s)...")
+        self.dataRecordButton.setEnabled(False)
+        self.dataRecordButton.setText(f"Recording ({duration_sec}s)...")
         self.durationEdit.setEnabled(False) # Lock input while recording
         
         self.core.replay = False
@@ -369,12 +350,12 @@ class Window(QMainWindow):
         self.mdTimer.start(duration_ms)
 
     #Stop recording microdoppler when time ends.
-    def stopMicroDopplerRecording(self):
-        self.core.parser.setSaveMicroDoppler(False)
+    def stopDataRecording(self):
+        self.core.parser.setSaveData(False)
         
         # Reset UI
-        self.microDopplerButton.setEnabled(True)
-        self.microDopplerButton.setText("Record MicroDoppler")
+        self.dataRecordButton.setEnabled(True)
+        self.dataRecordButton.setText("Record MicroDoppler")
         self.durationEdit.setEnabled(True) # Unlock input
         
         log.info("MicroDoppler recording stopped.")
@@ -411,10 +392,10 @@ class Window(QMainWindow):
                 "Ensure that the device is in the proper SOP mode after flashing the correct binary, and that the cfg you are sending is valid")
         popUp.exec_()
     
-    def loadCachedData(self):
-        self.core.loadCachedData(
-            self.demoList, self.deviceList, self.recordAction, self.gridLayout, self.demoTabs
-        )
+    # def loadCachedData(self):
+    #     self.core.loadCachedData(
+    #         self.demoList, self.deviceList, self.recordAction, self.gridLayout, self.demoTabs
+    #     )
 
     # Callback function when device is changed
     def onChangeDevice(self):
@@ -536,26 +517,26 @@ class Core:
             DEMO_TOILET: SmartToiletDemo()
         }
 
-    def loadCachedData(self, demoList, deviceList, recordAction, gridLayout, demoTabs):
-        deviceName = self.cachedData.getCachedDeviceName()
-        demoName = self.cachedData.getCachedDemoName()
-        if self.cachedData.getCachedRecord() == "True":
-            recordState = True
-        else:
-            recordState = False
-        if deviceName in self.getDeviceList():
-            deviceList.setCurrentIndex(self.getDeviceList().index(deviceName))
+    # def loadCachedData(self, demoList, deviceList, recordAction, gridLayout, demoTabs):
+    #     deviceName = self.cachedData.getCachedDeviceName()
+    #     demoName = self.cachedData.getCachedDemoName()
+    #     if self.cachedData.getCachedRecord() == "True":
+    #         recordState = True
+    #     else:
+    #         recordState = False
+    #     if deviceName in self.getDeviceList():
+    #         deviceList.setCurrentIndex(self.getDeviceList().index(deviceName))
 
-        if demoName in self.getDemoList():
-            demoList.setCurrentIndex(self.getDemoList().index(demoName))
-            self.changeDemo(demoList, deviceList, gridLayout, demoTabs)
+    #     if demoName in self.getDemoList():
+    #         demoList.setCurrentIndex(self.getDemoList().index(demoName))
+    #         self.changeDemo(demoList, deviceList, gridLayout, demoTabs)
 
-        if recordState:
-            self.parser.setSaveBinary(True)
-            recordAction.setChecked(True)
-        else:
-            #default recordAction is false so no need to set that here
-            self.parser.setSaveBinary(False)
+    #     if recordState:
+    #         self.parser.setSaveBinary(True)
+    #         recordAction.setChecked(True)
+    #     else:
+    #         #default recordAction is false so no need to set that here
+    #         self.parser.setSaveBinary(False)
 
     def getDemoList(self):
         return DEVICE_DEMO_DICT[self.device]["demos"]
