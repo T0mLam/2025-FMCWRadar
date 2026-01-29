@@ -23,16 +23,16 @@ def accuracy_fn(y_true, y_pred):
     correct = (y_pred.argmax(dim=1) == y_true).sum().item()
     return correct / len(y_true) * 100
 
-def trainLoop(WINDOW_SIZE,FEATURE_COUNT,class_data,device,LEARNING_RATE,NUM_EPOCHS,train_dataLoader,test_dataLoader):
+def train(model, device, num_epoch, optimizer, class_data, train_dataLoader, test_dataLoader):
     # Define model size and send to CPU
-    model_0 = CNN1D(input_size=WINDOW_SIZE * FEATURE_COUNT, output_size=len(class_data))
+    #model_0 = CNN1D(input_size=WINDOW_SIZE * FEATURE_COUNT, output_size=len(class_data))
 
-    model_0.to(device)
+    model.to(device)
 
     loss_fn = nn.CrossEntropyLoss()
 
     # setup the optimizer function  
-    optimizer = SGD(params=model_0.parameters(), lr=LEARNING_RATE)
+    #optimizer = SGD(params=model_0.parameters(), lr=LEARNING_RATE)
     ## Alternative optimizer.
     # optimizer = Adam(params=model_0.parameters(), lr = LEARNING_RATE)   
 
@@ -47,16 +47,16 @@ def trainLoop(WINDOW_SIZE,FEATURE_COUNT,class_data,device,LEARNING_RATE,NUM_EPOC
     ###############################
     # Start the main training loop 
     ###############################
-    for epoch in range(NUM_EPOCHS):
+    for epoch in range(num_epoch):
         ### Training
-        model_0.train()
+        model.train()
         train_loss = 0
 
         # Add a loop to loop through training batches
         for X, y in train_dataLoader:
             # 1. Forward pass
             X, y = X.to(device), y.squeeze().long().to(device)
-            y_pred = model_0(X)
+            y_pred = model(X)
 
             # 2. Calculate loss (per batch)  
             loss = loss_fn(y_pred, y)
@@ -79,7 +79,7 @@ def trainLoop(WINDOW_SIZE,FEATURE_COUNT,class_data,device,LEARNING_RATE,NUM_EPOC
         ### Testing
         # Setup variables for accumulatively adding up loss and accuracy 
         test_loss, test_acc = 0, 0
-        model_0.eval()
+        model.eval()
 
         all_preds = []
         all_labels = []
@@ -90,7 +90,7 @@ def trainLoop(WINDOW_SIZE,FEATURE_COUNT,class_data,device,LEARNING_RATE,NUM_EPOC
             for X, y in test_dataLoader:
                 # 1. Forward pass   
                 X, y = X.to(device), y.squeeze().long().to(device)
-                test_pred = model_0(X)
+                test_pred = model(X)
 
                 # 2. Calculate loss (accumulatively)
                 loss = loss_fn(test_pred, y)
@@ -122,7 +122,7 @@ def trainLoop(WINDOW_SIZE,FEATURE_COUNT,class_data,device,LEARNING_RATE,NUM_EPOC
             test_acc /= len(test_dataLoader)
 
         ## Print out what's happening in the epoch loop
-        if epoch % (NUM_EPOCHS / 10) == 0:
+        if epoch % (num_epoch / 10) == 0:
             print(f"EPOCH: {epoch} | F1: {f1(test_pred, y):.5f}")
             print(f"Train loss: {train_loss:.5f} | Test loss: {test_loss:.5f}, Test acc: {test_acc:.2f}%")
             print(f'Distance: {distance}')
