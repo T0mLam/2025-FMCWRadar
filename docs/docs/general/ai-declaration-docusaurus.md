@@ -10,19 +10,19 @@ We do not rely on any AI tool to author large sections of code or documentation.
 
 ## Allowed use cases:
 - **Debugging support:** Asking for error interpretation, and alternative approaches.
-- **Code autocomplete:** Accept short completions (e.g. imports, boilerplate, trivial helpers) when we understand the result.
+- **Code autocomplete:** Accept short completeions (e.g. imports, boilerplate, trivial helpers) when we understand the result.
 - **Formatting Notes:** Used to help catch typos and correct grammar not write entire sections.
 - **Learning and research:** Request explanations of Python. libraries, TI radar concepts, etc.
 
-All research and learning with the help of AI Tools is cross referenced with official sources.
+All research and learning with the help of AI Tools is cross refrenced with official sources.
 
 ## Prohibited use cases:
 - **No large code generation:** We do not paste full functions/snippets of code produced by AI into the codebase.
 - **No sensitive data:** We do not paste any proprietary material or documentation not publicly available into AI tools.
-- **No copied text:** We do not use long passages suggested by AI to write our README.md or any other reports/presentations.
+- **No copied text:** We do not use Long passages suggested by AI to write our README.md or any other reports/presentations.
 
 ## Review:
-- All technical claims from AI are cross-referenced against primary sources (TI docs, SDK manuals etc.)
+- All technical claims from AI are cross-refrenced against primary sources (TI docs, SDK manuals etc.)
 
 ## Compliance:
 - We follow University guidance on acceptable AI assistance and academic integrity
