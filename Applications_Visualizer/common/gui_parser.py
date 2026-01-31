@@ -40,7 +40,7 @@ class UARTParser():
         self.isLowPowerDevice = False
         self.cfg = ""
         self.demo = DEMO_OOB_x432
-        self.device = "xWR6843"
+        self.device = "xWRL6432"
         self.frames = [] # TODO this needs to be reset if connection is reset
         self.comError = 0
         

@@ -26,9 +26,10 @@ from PySide2.QtWidgets import (
     QWidget,
     QShortcut,
     QSlider,
-    QCheckBox,
-    QMessageBox
+    QMessageBox,
+    QApplication,
 )
+from pathlib import Path
 
 # Local Imports
 from cached_data import CachedDataType
@@ -90,6 +91,11 @@ class Window(QMainWindow):
         # Add connect options
         self.initConfigPane()
         self.initConnectionPane()
+
+        #NICETOHAVE flag to prevent multiple config sends
+        self.send_cfg = False
+        self.send_cfg_first = False
+
 
         self.gridLayout.addWidget(self.comBox, 0, 0, 1, 1)
         self.gridLayout.addWidget(self.configBox, 1, 0, 1, 1)
@@ -312,7 +318,7 @@ class Window(QMainWindow):
         #self.loadCachedData()
 
 
-     # Start recording MicroDoppler.
+     # Start recording Data.
     def startDataRecording(self):
         # 1. Get the duration from the input box
         try:
@@ -349,16 +355,16 @@ class Window(QMainWindow):
         # 3. Start the timer
         self.mdTimer.start(duration_ms)
 
-    #Stop recording microdoppler when time ends.
+    #Stop recording data when time ends.
     def stopDataRecording(self):
         self.core.parser.setSaveData(False)
         
         # Reset UI
         self.dataRecordButton.setEnabled(True)
-        self.dataRecordButton.setText("Record MicroDoppler")
+        self.dataRecordButton.setText("Record Data")
         self.durationEdit.setEnabled(True) # Unlock input
         
-        log.info("MicroDoppler recording stopped.")
+        log.info("Data recording stopped.")
 
 
     def initConfigPane(self):
@@ -438,6 +444,8 @@ class Window(QMainWindow):
             self.connectStatus.setText("Not Connected")
             self.sendConfig.setEnabled(False)
             self.start.setEnabled(False)
+            self.send_cfg_first = False
+            self.sendConfig.setText("Start and Send Configuration")
 
             # need to do ser.close()
 
@@ -447,11 +455,35 @@ class Window(QMainWindow):
 
     # Callback function when 'Start and Send Configuration' is clicked
     def sendCfg(self):
-        self.core.sendCfg()
-        if(self.core.parser.comError == 1):
-            self.core.parser.comError = 0
-            self.displayErrorPopUp()
+        #NICETOHAVE flag to prevent multiple config sends
+        if self.send_cfg or self.send_cfg_first:
+            return
+        
+        self.send_cfg = True
+
+        self.sendConfig.setEnabled(False)
+        self.start.setEnabled(False)
+        self.sendConfig.setText("Sending...")
+
+        QApplication.processEvents()
+        self.sendConfig.repaint()
+
+        try:
+            self.core.sendCfg()
+
+            if self.core.parser.comError == 1:
+                self.core.parser.comError = 0
+                self.displayErrorPopUp()
+                self.sendConfig.setEnabled(True)
+                self.start.setEnabled(True)
+            self.send_cfg_first = True
+            self.sendConfig.setText("Configuration Sent (reset to resend)")
+            self.sendConfig.setEnabled(False)
+            self.start.setEnabled(True)
             
+        finally:
+            self.send_cfg = False
+                   
     # Callback function to send sensorStop to device
     def stopSensor(self):
         self.core.stopSensor()
@@ -471,11 +503,11 @@ class Core:
     def __init__(self):
         self.cachedData = CachedDataType()
 
-        self.device = "xWR6843"
-        self.demo = DEMO_OOB_x843
+        self.device = "xWRL6432"
+        self.demo = DEMO_OOB_x432
 
         self.frameTime = 50
-        self.parser = UARTParser(type="DoubleCOMPort")
+        self.parser = UARTParser(type="SingleCOMPort")
 
         self.replayFile = "replay.json"
         self.replay = False
@@ -840,19 +872,28 @@ class Core:
         self.replayFrameNum = self.sl.value()
 
     def parseData(self):
+        #not lat thread start if already running
+        if self.uart_thread.isRunning():
+            return
         self.uart_thread.start(priority=QThread.HighestPriority)
 
     def boardReset(self):
         try:
-            paths = json.load(open("..\common\External_Resources\path.json", 'r'))
-            xds_reset_path = paths.get("xds_reset_path")
-            reset_cmd = "xds110reset --action toggle"
-            try:
-                subprocess.run(reset_cmd, cwd= xds_reset_path, shell = True)
-            except:
-                log.error("Unable to reset the device. Check your xds reset path in <Industrial_Visualizer\misc\path.json>")
-        except:
-            log.warning("Unable to read path.json")
+            base = Path(__file__).resolve().parent          
+            xds_dir = base / "reset/uscif/xds110"                       
+            exe = xds_dir / "xds110reset.exe"               
+
+            if not exe.exists():
+                log.error(f"xds110reset.exe not found: {exe}")
+                return
+
+            cmd = f"\"{str(exe)}\" --action toggle"
+            subprocess.run(cmd, cwd=str(xds_dir), shell=True, timeout=3, check=False)
+
+            log.info("reset toggle OK")
+
+        except Exception as e:
+            log.error(f"Unable to reset the device: {e}")
 
     def gracefulReset(self):
         self.parseTimer.stop()
