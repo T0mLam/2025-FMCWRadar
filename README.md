@@ -64,6 +64,9 @@ Our work during this project will begin with a research-first baseline. We will 
 
 ## Industrial Visualiser User Instructions 
 
+<details>
+<summary><strong>Click to expand</strong></summary>
+
 ### In Applications_Visualizer\Industrial_Visualizer open IndustrialVisualiser.exe
 ![Industrial Visualiser setup](</images/Industrial_Visualiser_1.jpg>)
 ### 1. choose xWRL6432 device
@@ -79,6 +82,9 @@ Our work during this project will begin with a research-first baseline. We will 
 - To record data: set the time in seconds (3 seconds is the default) and press the Record Data button.
 ![Data record button](</images/Industrial_Visualiser_3.jpg>)
 - Recorded data will be located in Applications_Visualizer\Industrial_Visualizer\binData
+
+</details>
+
 ## Team Members
 
 | Name            | Email                             |
@@ -96,6 +102,7 @@ Our work during this project will begin with a research-first baseline. We will 
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
 
 
 
