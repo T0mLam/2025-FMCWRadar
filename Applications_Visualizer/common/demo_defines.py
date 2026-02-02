@@ -45,6 +45,13 @@ BUSINESS_DEMOS = {
 
 # Populated with all devices and the demos each of them can run
 DEVICE_DEMO_DICT = {
+    "xWRL6432": {
+        "isxWRx843": False,
+        "isxWRLx432": True,
+        "isxWRLx844" : False,
+        "singleCOM": True,
+        "demos": [DEMO_OOB_x432, DEMO_LEVEL_SENSING, DEMO_1D_SENSING, DEMO_GESTURE, DEMO_SURFACE, DEMO_PC_CLASS, DEMO_GROUND_SPEED, DEMO_SMALL_OBSTACLE, DEMO_KTO, DEMO_VITALS, DEMO_DASHCAM, DEMO_REPLAY, DEMO_EBIKES, DEMO_VIDEO_DOORBELL, DEMO_CALIBRATION, DEMO_DEBUG_PLOTS, DEMO_TOILET]
+    },
     "xWR6843": {
         "isxWRx843": True,
         "isxWRLx432": False,
@@ -58,13 +65,6 @@ DEVICE_DEMO_DICT = {
         "isxWRLx844" : False,
         "singleCOM": False,
         "demos": [DEMO_OOB_x843, DEMO_3D_PEOPLE_TRACKING, DEMO_GESTURE, DEMO_SURFACE, DEMO_LONG_RANGE, DEMO_MOBILE_TRACKER]
-    },
-    "xWRL6432": {
-        "isxWRx843": False,
-        "isxWRLx432": True,
-        "isxWRLx844" : False,
-        "singleCOM": True,
-        "demos": [DEMO_OOB_x432, DEMO_LEVEL_SENSING, DEMO_1D_SENSING, DEMO_GESTURE, DEMO_SURFACE, DEMO_PC_CLASS, DEMO_GROUND_SPEED, DEMO_SMALL_OBSTACLE, DEMO_KTO, DEMO_VITALS, DEMO_DASHCAM, DEMO_REPLAY, DEMO_EBIKES, DEMO_VIDEO_DOORBELL, DEMO_CALIBRATION, DEMO_DEBUG_PLOTS, DEMO_TOILET]
     },
     "xWRL1432": {
         "isxWRx843": False,
