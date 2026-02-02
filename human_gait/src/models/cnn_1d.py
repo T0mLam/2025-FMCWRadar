@@ -10,10 +10,10 @@ class CNN1D(nn.Module):
     Figure 4-2. 1D CNN Architecture for Motion Classification
     https://www.ti.com/lit/wp/swra774/swra774.pdf
     """
-    def __init__(self, input_size, output_size):
+    def __init__(self, num_features, time_steps, output_size):
         super().__init__()
         self.conv_block1 = nn.Sequential(
-            nn.Conv1d(1, 16, kernel_size=3, padding=1),
+            nn.Conv1d(num_features, 16, kernel_size=3, padding=1),
             nn.ReLU(),
             nn.BatchNorm1d(16)
         )
@@ -28,14 +28,11 @@ class CNN1D(nn.Module):
             nn.BatchNorm1d(64)
         )
         self.pool = nn.AvgPool1d(kernel_size=2)
-        self.fc = nn.Linear(64 * math.floor(input_size / 2), output_size)
+        self.fc = nn.Linear(64 * math.floor(time_steps / 2), output_size)
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
-        # (batch, length) -> (batch, channel, length)
-        if x.dim() == 2:
-            x = x.unsqueeze(1)
-
+        # Input shape: (batch, channel, length)
         out = self.conv_block1(x)
         out = self.conv_block2(out)
         out = self.conv_block3(out)
@@ -49,6 +46,5 @@ class CNN1D(nn.Module):
     
 
 if __name__ == "__main__":
-    input_size = 115
-    model = CNN1D(input_size=input_size, output_size=5)
-    summary(model, input_size=[1, input_size])
+    model = CNN1D(64, 32, 5)
+    summary(model, input_size=[32, 64, 32])
