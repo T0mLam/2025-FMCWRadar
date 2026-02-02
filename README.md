@@ -75,6 +75,7 @@ Our work during this project will begin with a research-first baseline. We will 
 ### b) Enter the COM port number in CLI port feld
 ### 3. Choose x432 Out of Box Demo in demo field
 ---
+### Functionality:
 - Press the connect button, then press the Select config button.
 - In Applications_Visualizer\Industrial_Visualizer\chrip_configs choose one of the config files and press Open. 
 ![Chrip config load](</images/Industrial_Visualiser_2.jpg>)
