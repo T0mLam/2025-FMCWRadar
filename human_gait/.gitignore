@@ -217,3 +217,4 @@ __marimo__/
 
 # Human gait recognition dataset
 data/
+output/

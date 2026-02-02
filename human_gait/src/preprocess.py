@@ -34,7 +34,7 @@ def get_stable_start_index(timestamps, target_fps=9, tolerance=0.2, stable_count
 
     return 0
 
-def process_data(raw_dir, processed_dir, seq_len=32):
+def process_data(raw_dir, processed_dir, seq_len=32, stride=1, trim_unstable_start=False):
     """
     Parses JSON, removes unstable frames at the start of each file, filters human using ClassificationDecision, 
     and saves continuous sliding windows of sequences without gaps in Timestamp.
@@ -45,14 +45,14 @@ def process_data(raw_dir, processed_dir, seq_len=32):
 
     # Map names to integers: {'alina': 0, 'michal': 1}
     classes = {name: i for i, name in enumerate(sorted(os.listdir(raw_dir)))} 
-    print(f"Classes: {classes} | Window size: {seq_len} frames")
+    print(f"Classes: {classes} | Window size: {seq_len} frames | Stride: {stride}")
 
     for class_name, label in classes.items():
         # Create a output dir
         class_out_dir = os.path.join(processed_dir, class_name)
         os.makedirs(class_out_dir, exist_ok=True)
 
-        # Match all replay_?.json files
+        # Match all .json files
         files = glob.glob(f"{raw_dir}/{class_name}/*.json")
         total_sample_count = 0
 
@@ -64,26 +64,21 @@ def process_data(raw_dir, processed_dir, seq_len=32):
             with open(file_path, "r") as f:
                 data = json.load(f)
 
-            # Step 1: Start parsing the data from the first stable index
-            timestamps = [frame["timestamp"] for frame in data["data"]]
-            start_idx = get_stable_start_index(timestamps)
+            # Step 1: Start parsing the data from the first stable index (optional)
+            start_idx = 0
+            if trim_unstable_start:
+                timestamps = [frame["timestamp"] for frame in data["data"]]
+                start_idx = get_stable_start_index(timestamps)
 
             stable_frames = data["data"][start_idx:]
             full_sequence = []
 
-            # Step 2: Filter the first human object only
+            # Step 2: Take the first object by default (ignore classification output)
             for frame in stable_frames:
                 frame_data = frame["frameData"]
 
                 raw_dopplers = frame_data.get("microDopplerRawData", [])
-                classifier_decisions = frame_data.get("ClassificationDecision", [])
-
-                # Drop all records without doppler or classifier output or not human
-                is_valid_human = (
-                    len(raw_dopplers) > 0 and 
-                    len(classifier_decisions) > 0 and 
-                    classifier_decisions[0] == "Human"
-                )
+                is_valid_human = len(raw_dopplers) > 0
 
                 # Append the bin data or None to mark a gap
                 full_sequence.append(raw_dopplers[0] if is_valid_human else None)
@@ -94,7 +89,7 @@ def process_data(raw_dir, processed_dir, seq_len=32):
             # Step 3: Sliding window to generate seq_len sequences
             chunks = []
 
-            for i in range(len(full_sequence) - seq_len + 1):
+            for i in range(0, len(full_sequence) - seq_len + 1, stride):
                 # Window shape: (seq_len, 64)
                 raw_window = full_sequence[i: i + seq_len]
 
@@ -125,15 +120,24 @@ def parse_args():
     default_raw  = os.path.join(project_root, "data", "raw", "2026-01-23")
     default_proc = os.path.join(project_root, "data", "processed") 
     default_seq_len = 32
+    default_stride = 1
 
     parser = argparse.ArgumentParser(description="Process micro-doppler JSON into training sequences.")
     parser.add_argument("-r", "--raw-dir", type=str, default=default_raw, help=f"Path to raw data folder (default: {default_raw})")
     parser.add_argument("-p", "--processed-dir", type=str, default=default_proc, help=f"Path to output processed data folder (default: {default_proc})")
-    parser.add_argument("-s", "--seq-len", type=int, default=default_seq_len, help=f"Sliding window length in frames (default: {default_seq_len})")
+    parser.add_argument("-l", "--seq-len", type=int, default=default_seq_len, help=f"Sliding window length in frames (default: {default_seq_len})")
+    parser.add_argument("-s", "--stride", type=int, default=default_stride, help=f"Sliding window stride in frames (default: {default_stride})")
+    parser.add_argument("-t", "--trim-unstable-start", action="store_true", help="Remove unstable starting frames using get_stable_start_index.")
 
     return parser.parse_args()
 
 if __name__ == "__main__":
     args = parse_args()
-    process_data(args.raw_dir, args.processed_dir, seq_len=args.seq_len)
+    process_data(
+        args.raw_dir,
+        args.processed_dir,
+        seq_len=args.seq_len,
+        stride=args.stride,
+        trim_unstable_start=args.trim_unstable_start,
+    )
     
