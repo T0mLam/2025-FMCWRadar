@@ -62,7 +62,8 @@ Our work during this project will begin with a research-first baseline. We will 
 The below showcase how our sprints have been structed for the FMCW Radar project since TB2:
 - [All Sprints](docs/docs/general/sprints)
 - [Sprint 1](docs/docs/general/sprints/sprint-1.md)
-- [Sprint 2](docs/docs/general/sprints/sprint2.md)
+- [Sprint 2](docs/docs/general/sprints/sprint-2.md)
+- [Sprint 3](docs/docs/general/sprints/sprint-3.md)
 
 It is recommended to view the above using our documentation website.
 
@@ -121,6 +122,7 @@ It is recommended to view the above using our documentation website.
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
 
 
 
