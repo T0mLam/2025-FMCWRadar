@@ -10,7 +10,7 @@
 - [User Stories](#user-stories)
 - [Project Structure](#project-structure)
 - [Architecture diagram](#architecture-diagram)
-- [Proposed diagram](#proposed-diagram)
+- [Industrial Visualiser User Instructions](#industrial-visualiser-user-instructions)
 - [Launching the docs website](#launching-the-docs-website)
 - [Internal Links](#internal-links)
 - [Team Members](#team-members)
@@ -66,23 +66,9 @@ The below showcase how our sprints have been structed for the FMCW Radar project
 
 It is recommended to view the above using our documentation website.
 
-## Architecture diagram 
+## Architecture diagram
 
-![Architecture diagram](</images/Architecture diagram.jpg>)
-
-## Proposed diagram
-
-![Proposed diagram](</images/TI diagram.png>)
-
-## Launching the docs website
-
-1. install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-2. Follow the step by step instructions in [`/docs/README.md`](/docs/README.md)
-
-## Internal Links
-
-- [Kanban Board](https://github.com/orgs/spe-uob/projects/343)
-- [Gantt Chart](https://github.com/orgs/spe-uob/projects/343/views/2)
+![Architecture Diagram](</images/TI diagram.png>)
 
 ## Industrial Visualiser User Instructions 
 
@@ -108,6 +94,16 @@ It is recommended to view the above using our documentation website.
 
 </details>
 
+## Launching the docs website
+
+1. install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+2. Follow the step by step instructions in [`/docs/README.md`](/docs/README.md)
+
+## Internal Links
+
+- [Kanban Board](https://github.com/orgs/spe-uob/projects/343)
+- [Gantt Chart](https://github.com/orgs/spe-uob/projects/343/views/2)
+
 ## Team Members
 
 | Name            | Email                             |
@@ -125,6 +121,7 @@ It is recommended to view the above using our documentation website.
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
 
 
 
