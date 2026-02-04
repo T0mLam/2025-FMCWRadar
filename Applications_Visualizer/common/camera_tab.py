@@ -13,7 +13,7 @@ class CameraTab(QWidget):
         self.layout.addWidget(self.image_label)
         self.setLayout(self.layout) 
 
-        self.capture = cv2.VideoCapture(0)
+        self.capture = cv2.VideoCapture(0,cv2.CAP_DSHOW)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
