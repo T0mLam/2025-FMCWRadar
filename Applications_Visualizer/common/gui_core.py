@@ -21,13 +21,16 @@ from PySide2.QtWidgets import (
     QLabel,
     QPushButton,
     QComboBox,
+    QRadioButton,
     QFileDialog,
     QMainWindow,
     QWidget,
     QShortcut,
     QSlider,
+    QCheckBox,
     QMessageBox,
     QApplication,
+    QVBoxLayout,
 )
 from pathlib import Path
 
@@ -92,6 +95,10 @@ class Window(QMainWindow):
         self.initConfigPane()
         self.initConnectionPane()
 
+        # MODE SWITCH PANE
+
+        self.initModePane()
+
         #NICETOHAVE flag to prevent multiple config sends
         self.send_cfg = False
         self.send_cfg_first = False
@@ -100,6 +107,9 @@ class Window(QMainWindow):
         self.gridLayout.addWidget(self.comBox, 0, 0, 1, 1)
         self.gridLayout.addWidget(self.configBox, 1, 0, 1, 1)
         self.gridLayout.addWidget(self.demoTabs, 0, 1, 8, 1)
+
+        # MODE SWITCH COORDS
+        self.gridLayout.addWidget(self.modeBox,2,0,1,1)
 
         self.core.sl.setMinimum(0)
         self.core.sl.setMaximum(30)
@@ -390,6 +400,26 @@ class Window(QMainWindow):
         self.configLayout.addWidget(self.sensorStop, 3, 0, 1, 2)
         # self.configLayout.addStretch(1)
         self.configBox.setLayout(self.configLayout)
+
+
+    def initModePane(self):
+        # NAME THE PANE
+        self.modeBox = QGroupBox("Data/Model")
+        self.modeLayout = QVBoxLayout()
+
+        # RADIO BUTTONS
+
+        self.radio_data_button = QRadioButton("Record Data")
+        self.radio_gait_button = QRadioButton("Gait Recognition")
+
+        # MAKE DATA DEFAULT 
+        self.radio_data_button.setChecked(True)
+
+        # ADD THE BUTTONS
+        self.modeLayout.addWidget(self.radio_data_button)
+        self.modeLayout.addWidget(self.radio_gait_button)
+
+        self.modeBox.setLayout(self.modeLayout)
 
     def displayErrorPopUp(self):
         popUp = QMessageBox.critical(
