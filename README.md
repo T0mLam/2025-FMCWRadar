@@ -1,5 +1,10 @@
 ﻿# 2025-FMCWRadar
 
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=python,pytorch,opencv,docker" />
+</p>
+
+
 ### View our documentation website below:
 [![Docs](https://img.shields.io/badge/docs-website-blue)](https://spe-uob.github.io/2025-FMCWRadar)
 
@@ -8,9 +13,13 @@
 - [Project Overview](#project-overview)
 - [Stakeholders](#stakeholders)
 - [User Stories](#user-stories)
+- [Project Workflow](#project-workflow)
 - [Project Structure](#project-structure)
+- [Tech Stack](#tech-stack)
 - [Architecture diagram](#architecture-diagram)
-- [Proposed diagram](#proposed-diagram)
+- [Industrial Visualiser User Instructions](#industrial-visualiser-user-instructions)
+- [ Model Compilation User Instructions](#model-compilation-user-instructions)
+- [Research](#research)  
 - [Launching the docs website](#launching-the-docs-website)
 - [Internal Links](#internal-links)
 - [Team Members](#team-members)
@@ -58,31 +67,84 @@ Our work during this project will begin with a research-first baseline. We will 
 - **Texas Instruments (TI):**  
   As a *Texas Instruments (TI) Solutions Engineer*, I want a robust, reproducible demo and evaluation using our FMCW Radar outputs so that we can validate people-sensing use cases and identify gaps in our documentation and examples.
 
-## Project Structure
+## Project Workflow
 The below showcase how our sprints have been structed for the FMCW Radar project since TB2:
 - [All Sprints](docs/docs/general/sprints)
 - [Sprint 1](docs/docs/general/sprints/sprint-1.md)
-- [Sprint 2](docs/docs/general/sprints/sprint2.md)
+- [Sprint 2](docs/docs/general/sprints/sprint-2.md)
+- [Sprint 3](docs/docs/general/sprints/sprint-3.md)
 
 It is recommended to view the above using our documentation website.
 
-## Architecture diagram 
+## Project Structure
 
-![Architecture diagram](</images/Architecture diagram.jpg>)
+```
+2025-FMCWRadar/
+├─ .github/                              # GitHub workflows / repo configuration
+├─ Applications_Visualizer/              # Industrial visualiser (UART + live visualisation)
+│  ├─ requirements.txt                   # Visualiser dependencies (Qt/OpenGL/serial/etc.)
+│  └─ Industrial_Visualizer/             # Packaged exe + configs + output folders
+│     ├─ chirp_configs/                  # Radar config files used by the visualiser
+│     └─ binData/                        # Recorded binary radar captures (output)
+├─ docker/                               # Container tooling for TI-TVM / ONNX workflows
+├─ docs/                                 # Docusaurus documentation website
+│  ├─ README.md                          # How to run/build docs locally
+│  ├─ package.json                       # Docs dependencies + scripts
+│  └─ docs/                              # Documentation content (sprints, guides, etc.)
+├─ human_gait/                           # Gait identification pipeline (data → preprocess → train)
+│  ├─ configs/                           # Configuration files
+│  ├─ data/
+│  │  ├─ raw/                            # Original JSON radar recordings
+│  │  └─ processed/                      # Preprocessed .pt tensors for training
+│  ├─ src/
+│  │  ├─ dataset.py                      # PyTorch Dataset class
+│  │  ├─ preprocess.py                   # Data cleaning and windowing script
+│  │  ├─ train.py                        # Training loop
+│  │  └─ models/                         # CNN architecture definitions
+│  ├─ README.md
+│  └─ requirements.txt
+├─ images/                               # Images used in README/docs (architecture, screenshots)
+├─ posture/                              # Posture model experiments + artifacts
+│  ├─ pytorch_fp_model-POSTURE.ipynb
+│  └─ pytorch_fp_model-POSTURE-RELATIVE_POS.ipynb
+├─ scripts/
+│  └─ linux/
+│     └─ compile_model.sh                # TVM (tvmc) compiles ONNX → C/AOT library for Cortex-M4 (CCS)
+├─ .gitignore                            # Git ignore rules
+├─ Makefile                              # Shortcuts (docker/tvm commands, etc.)
+├─ README.md                             # Main project overview
+└─ package-lock.json                     # Node lockfile (docs tooling)
+```
 
-## Proposed diagram
+## Tech Stack
+### Hardware
+- [**TI IWRL6432BOOST Radar**](https://www.ti.com/tool/IWRL6432BOOST?keyMatch=iwrl6432boost&tisearch=universal_search)
+- [**Logitech C720 Webcam**](https://www.logitech.com/en-gb/shop/p/c270-hd-webcam)
 
-![Proposed diagram](</images/TI diagram.png>)
+### Software
+- [**Python (3.10)**](https://www.python.org)
+- [**Jupyter Notebook**](https://jupyter.org)
+- [**PyTorch**](https://pytorch.org)
 
-## Launching the docs website
+### Developer tools
+| Tool | Why we use it |
+|---|---|
+| [TI mmWave Software Development Kit](https://www.ti.com/tool/MMWAVE-L-SDK) | TI’s official kit providing firmware, drivers, and reference demos/tools for configuring the sensor and processing mmWave data. |
+| [Code Composer Studio (CCS)](https://www.ti.com/tool/CCSTUDIO) | TI’s IDE for building, flashing, and debugging code on TI devices. |
+| [Docusaurus](https://spe-uob.github.io/2025-FMCWRadar/) | Builds and hosts the documentation website. |
+| [PySide2](https://pypi.org/project/PySide2/) | Desktop GUI framework for building the visualiser UI. |
+| [PyOpenGL](https://pypi.org/project/PyOpenGL/) | Hardware-accelerated 2D/3D rendering. |
+| [pyqtgraph](https://www.pyqtgraph.org/) | Fast real-time plotting for streaming signals. |
+| [pyserial](https://pypi.org/project/pyserial/) | Reads radar frames over UART/serial. |
+| [NumPy](https://numpy.org/) | Efficient numerical processing on incoming frames/point clouds. |
+| [OpenCV](https://pypi.org/project/opencv-python/) | Image-style processing and display utilities. |
+| [json-fix](https://pypi.org/project/json-fix/) | More robust JSON handling for config files. |
+| [PyInstaller](https://pyinstaller.org/) | Packages the visualiser into a standalone executable for distribution. |
+| [Git](https://git-scm.com/about) + [GitHub](https://github.com/) | Version control and collaboration. |
+| [ONNX](https://onnx.ai/) | Used as the export format for trained PyTorch models before compiling them with TVM (`tvmc`) into C/AOT artifacts for deployment in a CCS project (Cortex-M4). |
+## Architecture diagram
 
-1. install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
-2. Follow the step by step instructions in [`/docs/README.md`](/docs/README.md)
-
-## Internal Links
-
-- [Kanban Board](https://github.com/orgs/spe-uob/projects/343)
-- [Gantt Chart](https://github.com/orgs/spe-uob/projects/343/views/2)
+![Architecture Diagram](</images/TI diagram.png>)
 
 ## Industrial Visualiser User Instructions 
 
@@ -108,6 +170,58 @@ It is recommended to view the above using our documentation website.
 
 </details>
 
+## Model Compilation User Instructions
+<details>
+<summary><strong>Click to expand</strong></summary>
+
+
+Once you have exported your trained PyTorch model to a onnx file, you will need to compile the model into C binaries in order to run on the board as a CCS project.
+
+### A) Use our TI-TVM Docker container
+- Launch the container and run custom commands
+
+    ```bash
+    make tvm 
+    ```
+
+- Shortcut for launching the container and run compilation
+
+    ```bash
+    make tvm-compile MODEL_PATH=./your_model_name.onnx OUT_DIR=./model_artifacts
+    ```
+ 
+Example terminal output:
+
+![Terminal Output](docs/docs/user_manual/model_compilation/terminal_output.png)
+
+**Output Files:**
+
+![Output Files](docs/docs/user_manual/model_compilation/file_output.png)
+
+### B) Setup your own environment:
+The [2024-mmWaveRadarSensors](https://github.com/spe-uob/2024-mmWaveRadarSensors) team has written a detailed guide on model compilation, you can follow the instructions step by step to achieve the same result.
+
+[*-> Model Compilation Guide*](https://spe-uob.github.io/2024-mmWaveRadarSensors/General/User_Instructions.html#compiling-the-model)
+
+</details>
+  
+## Research
+Most of our research for this project is written down on our documentation site however, below are a few of the key notes:
+
+- [**Radar Research**](https://spe-uob.github.io/2025-FMCWRadar/docs/research/radar-research)
+- [**Introduction to Micro Doppler**](https://spe-uob.github.io/2025-FMCWRadar/docs/research/micro-doppler-research/introduction)
+- [**What the data looks like**](https://spe-uob.github.io/2025-FMCWRadar/docs/research/micro-doppler-research/data_overview)
+
+## Launching the docs website
+
+1. install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+2. Follow the step by step instructions in [`/docs/README.md`](/docs/README.md)
+
+## Internal Links
+
+- [Kanban Board](https://github.com/orgs/spe-uob/projects/343)
+- [Gantt Chart](https://github.com/orgs/spe-uob/projects/343/views/2)
+
 ## Team Members
 
 | Name            | Email                             |
@@ -125,6 +239,11 @@ It is recommended to view the above using our documentation website.
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
+
+
+
+
 
 
 
