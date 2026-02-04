@@ -13,6 +13,7 @@
 - [Project Overview](#project-overview)
 - [Stakeholders](#stakeholders)
 - [User Stories](#user-stories)
+- [Project Workflow](#project-workflow)
 - [Project Structure](#project-structure)
 - [Tech Stack](#tech-stack)
 - [Architecture diagram](#architecture-diagram)
@@ -64,7 +65,7 @@ Our work during this project will begin with a research-first baseline. We will 
 - **Texas Instruments (TI):**  
   As a *Texas Instruments (TI) Solutions Engineer*, I want a robust, reproducible demo and evaluation using our FMCW Radar outputs so that we can validate people-sensing use cases and identify gaps in our documentation and examples.
 
-## Project Structure
+## Project Workflow
 The below showcase how our sprints have been structed for the FMCW Radar project since TB2:
 - [All Sprints](docs/docs/general/sprints)
 - [Sprint 1](docs/docs/general/sprints/sprint-1.md)
@@ -72,6 +73,46 @@ The below showcase how our sprints have been structed for the FMCW Radar project
 - [Sprint 3](docs/docs/general/sprints/sprint-3.md)
 
 It is recommended to view the above using our documentation website.
+
+## Project Structure
+
+```
+2025-FMCWRadar/
+├─ .github/                              # GitHub workflows / repo configuration
+├─ Applications_Visualizer/              # Industrial visualiser (UART + live visualisation)
+│  ├─ requirements.txt                   # Visualiser dependencies (Qt/OpenGL/serial/etc.)
+│  └─ Industrial_Visualizer/             # Packaged exe + configs + output folders
+│     ├─ chirp_configs/                  # Radar config files used by the visualiser
+│     └─ binData/                        # Recorded binary radar captures (output)
+├─ docker/                               # Container tooling for TI-TVM / ONNX workflows
+├─ docs/                                 # Docusaurus documentation website
+│  ├─ README.md                          # How to run/build docs locally
+│  ├─ package.json                       # Docs dependencies + scripts
+│  └─ docs/                              # Documentation content (sprints, guides, etc.)
+├─ human_gait/                           # Gait identification pipeline (data → preprocess → train)
+│  ├─ configs/                           # Configuration files
+│  ├─ data/
+│  │  ├─ raw/                            # Original JSON radar recordings
+│  │  └─ processed/                      # Preprocessed .pt tensors for training
+│  ├─ src/
+│  │  ├─ dataset.py                      # PyTorch Dataset class
+│  │  ├─ preprocess.py                   # Data cleaning and windowing script
+│  │  ├─ train.py                        # Training loop
+│  │  └─ models/                         # CNN architecture definitions
+│  ├─ README.md
+│  └─ requirements.txt
+├─ images/                               # Images used in README/docs (architecture, screenshots)
+├─ posture/                              # Posture model experiments + artifacts
+│  ├─ pytorch_fp_model-POSTURE.ipynb
+│  └─ pytorch_fp_model-POSTURE-RELATIVE_POS.ipynb
+├─ scripts/
+│  └─ linux/
+│     └─ compile_model.sh                # TVM (tvmc) compiles ONNX → C/AOT library for Cortex-M4 (CCS)
+├─ .gitignore                            # Git ignore rules
+├─ Makefile                              # Shortcuts (docker/tvm commands, etc.)
+├─ README.md                             # Main project overview
+└─ package-lock.json                     # Node lockfile (docs tooling)
+```
 
 ## Tech Stack
 ### Hardware
@@ -98,7 +139,7 @@ It is recommended to view the above using our documentation website.
 | [json-fix](https://pypi.org/project/json-fix/) | More robust JSON handling for config files. |
 | [PyInstaller](https://pyinstaller.org/) | Packages the visualiser into a standalone executable for distribution. |
 | [Git](https://git-scm.com/about) + [GitHub](https://github.com/) | Version control and collaboration. |
-| [ONNX](https://onnx.ai/) | We use ONNX to export trained PyTorch models into a portable format that can be compiled into C/C++ binaries for the Radar. |
+| [ONNX](https://onnx.ai/) | Used as the export format for trained PyTorch models before compiling them with TVM (`tvmc`) into C/AOT artifacts for deployment in a CCS project (Cortex-M4). |
 ## Architecture diagram
 
 ![Architecture Diagram](</images/TI diagram.png>)
@@ -154,6 +195,7 @@ It is recommended to view the above using our documentation website.
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
 
 
 
