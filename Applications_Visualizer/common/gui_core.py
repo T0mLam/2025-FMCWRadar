@@ -109,7 +109,7 @@ class Window(QMainWindow):
         self.gridLayout.addWidget(self.demoTabs, 0, 1, 8, 1)
 
         # MODE SWITCH COORDS
-        self.gridLayout.addWidget(self.modeBox,2,0,1,1)
+        self.gridLayout.addWidget(self.modeBox,7,0,1,1)
 
         self.core.sl.setMinimum(0)
         self.core.sl.setMaximum(30)
