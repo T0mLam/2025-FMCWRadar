@@ -1,5 +1,10 @@
 ﻿# 2025-FMCWRadar
 
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=python,pytorch,opencv,docker" />
+</p>
+
+
 ### View our documentation website below:
 [![Docs](https://img.shields.io/badge/docs-website-blue)](https://spe-uob.github.io/2025-FMCWRadar)
 
@@ -9,6 +14,7 @@
 - [Stakeholders](#stakeholders)
 - [User Stories](#user-stories)
 - [Project Structure](#project-structure)
+- [Tech Stack](#tech-stack)
 - [Architecture diagram](#architecture-diagram)
 - [Industrial Visualiser User Instructions](#industrial-visualiser-user-instructions)
 - [Launching the docs website](#launching-the-docs-website)
@@ -67,6 +73,32 @@ The below showcase how our sprints have been structed for the FMCW Radar project
 
 It is recommended to view the above using our documentation website.
 
+## Tech Stack
+### Hardware
+- [**TI IWRL6432BOOST Radar**](https://www.ti.com/tool/IWRL6432BOOST?keyMatch=iwrl6432boost&tisearch=universal_search)
+- [Logitech C720 Webcam](https://www.logitech.com/en-gb/shop/p/c270-hd-webcam)
+
+### Software
+- [**Python (3.10)**](https://www.python.org)
+- [**Jupyter Notebook**](https://jupyter.org)
+- [**PyTorch**](https://pytorch.org)
+
+### Developer tools
+| Tool | Why we use it |
+|---|---|
+| [TI mmWave Software Development Kit](https://www.ti.com/tool/MMWAVE-L-SDK) | TI’s official kit providing firmware, drivers, and reference demos/tools for configuring the sensor and processing mmWave data. |
+| [Code Composer Studio (CCS)](https://www.ti.com/tool/CCSTUDIO) | TI’s IDE for building, flashing, and debugging code on TI devices. |
+| [Docusaurus](https://spe-uob.github.io/2025-FMCWRadar/) | Builds and hosts the documentation website. |
+| [PySide2](https://pypi.org/project/PySide2/) | Desktop GUI framework for building the visualiser UI. |
+| [PyOpenGL](https://pypi.org/project/PyOpenGL/) | Hardware-accelerated 2D/3D rendering. |
+| [pyqtgraph](https://www.pyqtgraph.org/) | Fast real-time plotting for streaming signals. |
+| [pyserial](https://pypi.org/project/pyserial/) | Reads radar frames over UART/serial. |
+| [NumPy](https://numpy.org/) | Efficient numerical processing on incoming frames/point clouds. |
+| [OpenCV](https://pypi.org/project/opencv-python/) | Image-style processing and display utilities. |
+| [json-fix](https://pypi.org/project/json-fix/) | More robust JSON handling for config files. |
+| [PyInstaller](https://pyinstaller.org/) | Packages the visualiser into a standalone executable for distribution. |
+| [Git](https://git-scm.com/about) + [GitHub](https://github.com/) | Version control and collaboration. |
+| [ONNX](https://onnx.ai/) | We use ONNX to export trained PyTorch models into a portable format that can be compiled into C/C++ binaries for the Radar. |
 ## Architecture diagram
 
 ![Architecture Diagram](</images/TI diagram.png>)
@@ -122,6 +154,7 @@ It is recommended to view the above using our documentation website.
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
 
 
 
