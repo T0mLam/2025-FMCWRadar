@@ -18,6 +18,8 @@
 - [Tech Stack](#tech-stack)
 - [Architecture diagram](#architecture-diagram)
 - [Industrial Visualiser User Instructions](#industrial-visualiser-user-instructions)
+- [ Model Compilation User Instructions](#model-compilation-user-instructions)
+- [Research](#research)  
 - [Launching the docs website](#launching-the-docs-website)
 - [Internal Links](#internal-links)
 - [Team Members](#team-members)
@@ -117,7 +119,7 @@ It is recommended to view the above using our documentation website.
 ## Tech Stack
 ### Hardware
 - [**TI IWRL6432BOOST Radar**](https://www.ti.com/tool/IWRL6432BOOST?keyMatch=iwrl6432boost&tisearch=universal_search)
-- [Logitech C720 Webcam](https://www.logitech.com/en-gb/shop/p/c270-hd-webcam)
+- [**Logitech C720 Webcam**](https://www.logitech.com/en-gb/shop/p/c270-hd-webcam)
 
 ### Software
 - [**Python (3.10)**](https://www.python.org)
@@ -168,6 +170,48 @@ It is recommended to view the above using our documentation website.
 
 </details>
 
+## Model Compilation User Instructions
+<details>
+<summary><strong>Click to expand</strong></summary>
+
+
+Once you have exported your trained PyTorch model to a onnx file, you will need to compile the model into C binaries in order to run on the board as a CCS project.
+
+### A) Use our TI-TVM Docker container
+- Launch the container and run custom commands
+
+    ```bash
+    make tvm 
+    ```
+
+- Shortcut for launching the container and run compilation
+
+    ```bash
+    make tvm-compile MODEL_PATH=./your_model_name.onnx OUT_DIR=./model_artifacts
+    ```
+ 
+Example terminal output:
+
+![Terminal Output](docs/docs/user_manual/model_compilation/terminal_output.png)
+
+**Output Files:**
+
+![Output Files](docs/docs/user_manual/model_compilation/file_output.png)
+
+### B) Setup your own environment:
+The [2024-mmWaveRadarSensors](https://github.com/spe-uob/2024-mmWaveRadarSensors) team has written a detailed guide on model compilation, you can follow the instructions step by step to achieve the same result.
+
+[*-> Model Compilation Guide*](https://spe-uob.github.io/2024-mmWaveRadarSensors/General/User_Instructions.html#compiling-the-model)
+
+</details>
+  
+## Research
+Most of our research for this project is written down on our documentation site however, below are a few of the key notes:
+
+- [**Radar Research**](https://spe-uob.github.io/2025-FMCWRadar/docs/research/radar-research)
+- [**Introduction to Micro Doppler**](https://spe-uob.github.io/2025-FMCWRadar/docs/research/micro-doppler-research/introduction)
+- [**What the data looks like**](https://spe-uob.github.io/2025-FMCWRadar/docs/research/micro-doppler-research/data_overview)
+
 ## Launching the docs website
 
 1. install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
@@ -195,6 +239,7 @@ It is recommended to view the above using our documentation website.
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
 
 
 
