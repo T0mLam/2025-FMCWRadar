@@ -135,7 +135,6 @@ class Window(QMainWindow):
             self.demoList.setEnabled(False)
             self.deviceList.setEnabled(False)
             self.cliCom.setEnabled(False)
-            self.dataCom.setEnabled(False)
             self.connectButton.setEnabled(False)
             self.filename_edit.setEnabled(False)
             self.selectConfig.setEnabled(False)
@@ -151,7 +150,6 @@ class Window(QMainWindow):
             self.demoList.setEnabled(True)
             self.deviceList.setEnabled(True)
             self.cliCom.setEnabled(True)
-            self.dataCom.setEnabled(True)
             self.connectButton.setEnabled(True)
             self.filename_edit.setEnabled(True)
             self.selectConfig.setEnabled(True)
@@ -174,7 +172,6 @@ class Window(QMainWindow):
         self.demoList.setEnabled(True)
         self.deviceList.setEnabled(True)
         self.cliCom.setEnabled(True)
-        self.dataCom.setEnabled(True)
         self.connectButton.setEnabled(True)
         self.filename_edit.setEnabled(True)
         self.selectConfig.setEnabled(True)
@@ -211,7 +208,6 @@ class Window(QMainWindow):
     def initConnectionPane(self):
         self.comBox = QGroupBox("Connect to COM Ports")
         self.cliCom = QLineEdit("")
-        self.dataCom = QLineEdit("")
         self.connectStatus = QLabel("Not Connected")
         self.connectButton = QPushButton("Connect")
         self.connectButton.clicked.connect(self.onConnect)
@@ -244,10 +240,8 @@ class Window(QMainWindow):
         self.comLayout.addWidget(self.deviceList, 0, 1)
         self.comLayout.addWidget(QLabel("CLI COM:"), 1, 0)
         self.comLayout.addWidget(self.cliCom, 1, 1)
-        self.comLayout.addWidget(QLabel("DATA COM:"), 2, 0)
-        self.comLayout.addWidget(self.dataCom, 2, 1)
-        self.comLayout.addWidget(QLabel("Demo:"), 3, 0)
-        self.comLayout.addWidget(self.demoList, 3, 1)
+        self.comLayout.addWidget(QLabel("Demo:"), 2, 0)
+        self.comLayout.addWidget(self.demoList, 2, 1)
     
        
         self.comLayout.addWidget(self.connectButton, 4, 0) 
@@ -274,15 +268,11 @@ class Window(QMainWindow):
             ):
                 log.info(f"CLI COM Port found: {port.device}")
                 self.cliCom.setText(port.device)
-            elif (
-                DATA_XDS_SERIAL_PORT_NAME in port.description
-                or DATA_SIL_SERIAL_PORT_NAME in port.description
-            ):
-                log.info(f"Data COM Port found: {port.device}")
-                self.cliCom.setText(port.device)
 
         self.core.isGUILaunched = 1
         #self.loadCachedData()
+        self.core.changeDemo(self.demoList, self.deviceList, self.gridLayout, self.demoTabs)
+        self.core.updateResetButton(self.sensorStop)
 
 
      # Start recording Data.
@@ -313,7 +303,6 @@ class Window(QMainWindow):
         self.demoList.setEnabled(True)
         self.deviceList.setEnabled(True)
         self.cliCom.setEnabled(True)
-        self.dataCom.setEnabled(True)
         self.connectButton.setEnabled(True)
         self.filename_edit.setEnabled(True)
         self.selectConfig.setEnabled(True)
@@ -372,10 +361,7 @@ class Window(QMainWindow):
 
     # Callback function when device is changed
     def onChangeDevice(self):
-        self.core.changeDevice(
-            self.demoList, self.deviceList, self.gridLayout, self.demoTabs
-        )
-        self.core.updateCOMPorts(self.cliCom, self.dataCom)
+        self.core.changeDevice(self.demoList, self.deviceList, self.gridLayout, self.demoTabs)
         self.core.updateResetButton(self.sensorStop)
 
     # Callback function when demo is changed
@@ -394,7 +380,7 @@ class Window(QMainWindow):
     # Callback function when connect button clicked
     def onConnect(self):
         if (self.connectStatus.text() == "Not Connected" or self.connectStatus.text() == "Unable to Connect"):
-            if self.core.connectCom(self.cliCom, self.dataCom, self.connectStatus) == 0:
+            if self.core.connectCom(self.cliCom, self.connectStatus) == 0:
                 self.connectButton.setText("Reset Connection")
                 # When 2-Pass Video doorbell is the demo, you cannot send a cfg file over UART
                 if(self.core.demo == "Video Doorbell"):
@@ -554,20 +540,11 @@ class Core:
             self.cachedData.setCachedDemoName(demoList.currentText())
             self.cachedData.setCachedDeviceName(self.device)
 
-        if DEVICE_DEMO_DICT[self.device]["singleCOM"]:
-            self.parser.parserType = "SingleCOMPort"
-        else:
-            self.parser.parserType = "DoubleCOMPort"
+
+        self.parser.parserType = "SingleCOMPort"
 
         demoList.clear()
         demoList.addItems(DEVICE_DEMO_DICT[self.device]["demos"])
-
-    def updateCOMPorts(self, cliCom, dataCom):
-        if DEVICE_DEMO_DICT[self.device]["isxWRLx432"]:
-            dataCom.setText(cliCom.text())
-            dataCom.setEnabled(False)
-        else:
-            dataCom.setEnabled(True)
 
     def updateResetButton(self, sensorStopButton):
         if DEVICE_DEMO_DICT[self.device]["isxWRLx432"]:
@@ -741,7 +718,7 @@ class Core:
     def updateGraph(self, outputDict):
         self.demoClassDict[self.demo].updateGraph(outputDict)
 
-    def connectCom(self, cliCom, dataCom, connectStatus):
+    def connectCom(self, cliCom, connectStatus):
         # init threads and timers
         self.uart_thread = parseUartThread(self.parser)
 
@@ -752,14 +729,9 @@ class Core:
         try:
             if os.name == "nt":
                 uart = cliCom.text().strip()
-                data = dataCom.text().strip()
             else:
                 uart = cliCom.text().strip()
-                data = dataCom.text().strip()
-            if DEVICE_DEMO_DICT[self.device]["isxWRx843"] or DEVICE_DEMO_DICT[self.device]["isxWRLx844"]:  # If using x843 device
-                self.parser.connectComPorts(uart, data)
-            else:  # If not x843 device then defer to x432 device
-                self.parser.connectComPort(uart)
+            self.parser.connectComPort(uart)
             connectStatus.setText("Connected")
         except Exception as e:
             log.error(e)
@@ -836,8 +808,6 @@ class Core:
         self.uart_thread.stop()
         if self.parser.cliCom is not None:
             self.parser.cliCom.close()
-        if self.parser.dataCom is not None:
-            self.parser.dataCom.close()
         for demo in self.demoClassDict.values():
             if hasattr(demo, "plot_3d_thread"):
                 demo.plot_3d_thread.stop()
