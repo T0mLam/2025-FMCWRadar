@@ -254,7 +254,6 @@ class Window(QMainWindow):
         self.comLayout.addWidget(self.dataRecordButton, 7, 0, 1, 2) 
 
         self.comBox.setLayout(self.comLayout)
-        self.demoList.setCurrentIndex(1)  # initialize this to a stable value
         self.demoList.setCurrentIndex(0)  # initialize this to a stable value
 
         # Find all Com Ports

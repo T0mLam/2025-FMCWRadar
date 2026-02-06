@@ -43,10 +43,7 @@ class parseUartThread(QThread):
             self.parser = uParser
 
     def run(self):
-        if(self.parser.parserType == "SingleCOMPort"):
-            outputDict = self.parser.readAndParseUartSingleCOMPort()
-        else:
-            outputDict = self.parser.readAndParseUartDoubleCOMPort()
+        outputDict = self.parser.readAndParseUartSingleCOMPort()
         self.fin.emit(outputDict)
 
     def stop(self):
