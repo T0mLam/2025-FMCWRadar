@@ -35,38 +35,10 @@ from pathlib import Path
 from cached_data import CachedDataType
 from demo_defines import *
 from gui_threads import *
-from parseFrame import parseStandardFrame
 
-from Common_Tabs.plot_1d import Plot1D
-from Common_Tabs.plot_2d import Plot2D
-from Common_Tabs.plot_3d import Plot3D
-
-from Demo_Classes.surface_classification import SurfaceClassification
-from Demo_Classes.point_cloud_classification import PointCloudClassification
-from Demo_Classes.people_tracking import PeopleTracking
-from Demo_Classes.gesture_recognition import GestureRecognition
-from Demo_Classes.level_sensing import LevelSensing
-from Demo_Classes.small_obstacle import SmallObstacle
-from Demo_Classes.out_of_box_x843 import OOBx843
 from Demo_Classes.out_of_box_x432 import OOBx432
-from Demo_Classes.out_of_box_x844 import OOBx844
-from Demo_Classes.true_ground_speed import TrueGroundSpeed
-from Demo_Classes.long_range_pd import LongRangePD
-from Demo_Classes.mobile_tracker import MobileTracker
-from Demo_Classes.kick_to_open import KickToOpen
-from Demo_Classes.calibration import Calibration
-from Demo_Classes.vital_signs import VitalSigns
-from Demo_Classes.dashcam import Dashcam
-from Demo_Classes.ebikes_x432 import EBikes
-from Demo_Classes.video_doorbell import VideoDoorbell
-from Demo_Classes.intruder_detection import IntruderDetection
-from Demo_Classes.SeatBeltReminder import SeatBeltReminder
-from Demo_Classes.ChildPresenceDetection import ChildPresenceDetection
-from Demo_Classes.LifePresenceDetection import LifePresenceDetection
-from Demo_Classes.debug_plots import DebugPlots
-from Demo_Classes.smart_toilet import SmartToiletDemo
-from Demo_Classes.range_sensing import RangeSensing
-from camera_tab import CameraTab
+
+#TEMP from camera_tab import CameraTab
 # Logger
 import logging
 log = logging.getLogger(__name__)
@@ -301,18 +273,13 @@ class Window(QMainWindow):
                 or CLI_SIL_SERIAL_PORT_NAME in port.description
             ):
                 log.info(f"CLI COM Port found: {port.device}")
-                comText = port.device
-                comText = comText.replace("COM", "")
-                self.cliCom.setText(comText)
-
+                self.cliCom.setText(port.device)
             elif (
                 DATA_XDS_SERIAL_PORT_NAME in port.description
                 or DATA_SIL_SERIAL_PORT_NAME in port.description
             ):
                 log.info(f"Data COM Port found: {port.device}")
-                comText = port.device
-                comText = comText.replace("COM", "")
-                self.dataCom.setText(comText)
+                self.cliCom.setText(port.device)
 
         self.core.isGUILaunched = 1
         #self.loadCachedData()
@@ -522,31 +489,7 @@ class Core:
 
         # Populated with each demo and it's corresponding object
         self.demoClassDict = {
-            DEMO_OOB_x843: OOBx843(),
-            DEMO_OOB_x432: OOBx432(),
-            DEMO_OOB_x844: OOBx844(),
-            DEMO_3D_PEOPLE_TRACKING: PeopleTracking(),
-            DEMO_VITALS: VitalSigns(),
-            DEMO_SMALL_OBSTACLE: SmallObstacle(),
-            DEMO_GESTURE: GestureRecognition(),
-            DEMO_SURFACE: SurfaceClassification(),
-            DEMO_PC_CLASS: PointCloudClassification(),
-            DEMO_LEVEL_SENSING: LevelSensing(),
-            DEMO_1D_SENSING: RangeSensing(),
-            DEMO_GROUND_SPEED: TrueGroundSpeed(),
-            DEMO_LONG_RANGE: LongRangePD(),
-            DEMO_MOBILE_TRACKER: MobileTracker(),
-            DEMO_KTO: KickToOpen(),
-            DEMO_CALIBRATION: Calibration(),
-            DEMO_DASHCAM: Dashcam(),
-            DEMO_EBIKES: EBikes(),
-            DEMO_VIDEO_DOORBELL: VideoDoorbell(),
-            DEMO_INTRUDER: IntruderDetection(),
-            DEMO_SBR : SeatBeltReminder(),
-            # DEMO_CPD : ChildPresenceDetection(), no longer supported
-            DEMO_LPD : LifePresenceDetection(),
-            DEMO_DEBUG_PLOTS: DebugPlots(),
-            DEMO_TOILET: SmartToiletDemo()
+            DEMO_OOB_x432: OOBx432()
         }
 
     # def loadCachedData(self, demoList, deviceList, recordAction, gridLayout, demoTabs):
@@ -599,8 +542,8 @@ class Core:
         # Make call to selected demo's initialization function
         if self.demo in self.demoClassDict:
             self.demoClassDict[self.demo].setupGUI(gridLayout, demoTabs, self.device)
-            self.cam_tab = CameraTab()
-            demoTabs.addTab(self.cam_tab, "Camera feed")
+            #self.cam_tab = CameraTab() TEMP
+            #demoTabs.addTab(self.cam_tab, "Camera feed")
 
     def changeDevice(self, demoList, deviceList, gridLayout, demoTabs):
         self.device = deviceList.currentText()
@@ -784,8 +727,6 @@ class Core:
             )
 
         log.debug("Demo Changed to " + self.demo)
-        if self.demo == DEMO_CALIBRATION:
-            self.demoClassDict[self.demo].checkCalibrationParams()
 
     def sendCfg(self):
         try:
@@ -801,8 +742,6 @@ class Core:
         self.demoClassDict[self.demo].updateGraph(outputDict)
 
     def connectCom(self, cliCom, dataCom, connectStatus):
-        if self.demo == DEMO_GESTURE or self.demo == DEMO_VIDEO_DOORBELL:
-            self.frameTime = 25 # Gesture demo runs at 35ms frame time
         # init threads and timers
         self.uart_thread = parseUartThread(self.parser)
 
@@ -812,18 +751,15 @@ class Core:
         self.parseTimer.timeout.connect(self.parseData)
         try:
             if os.name == "nt":
-                uart = "COM" + cliCom.text()
-                data = "COM" + dataCom.text()
+                uart = cliCom.text().strip()
+                data = dataCom.text().strip()
             else:
-                uart = cliCom.text()
-                data = dataCom.text()
+                uart = cliCom.text().strip()
+                data = dataCom.text().strip()
             if DEVICE_DEMO_DICT[self.device]["isxWRx843"] or DEVICE_DEMO_DICT[self.device]["isxWRLx844"]:  # If using x843 device
                 self.parser.connectComPorts(uart, data)
             else:  # If not x843 device then defer to x432 device
-                if self.demo == DEMO_GESTURE or self.demo == DEMO_KTO or self.demo == DEMO_TOILET or self.demo == DEMO_1D_SENSING:
-                    self.parser.connectComPort(uart, 1250000)
-                else:
-                    self.parser.connectComPort(uart)
+                self.parser.connectComPort(uart)
             connectStatus.setText("Connected")
         except Exception as e:
             log.error(e)
@@ -887,7 +823,7 @@ class Core:
                 log.error(f"xds110reset.exe not found: {exe}")
                 return
 
-            cmd = f"\"{str(exe)}\" --action toggle"
+            cmd = ["wine", str(exe), "--action", "toggle"]
             subprocess.run(cmd, cwd=str(xds_dir), shell=True, timeout=3, check=False)
 
             log.info("reset toggle OK")
