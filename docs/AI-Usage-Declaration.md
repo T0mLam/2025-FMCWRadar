@@ -42,11 +42,11 @@ All research and learning with the help of AI Tools is cross-referenced with off
 
 
 ## Review Process
-- All technical claims from AI are cross-referenced against primary sources (TI docs, SDK manuals etc.)
+- All technical claims from AI are cross-referenced against primary sources (TI docs, SDK manuals etc.).
 
 - Any AI-assisted edits that are kept are reviewed for correctness, style, and compliance with project standards.
 
 ## Compliance
-- We follow University guidance on acceptable AI assistance and academic integrity
+- We follow University guidance on acceptable AI assistance and academic integrity.
 
 - We, the FMCW Radar team, declare that this document is accurate to our AI usage throughout the course of SEP.
