@@ -35,7 +35,6 @@ class UARTParser():
         self.framesPerFile = 100
         self.first_file = True
         self.filepath = datetime.datetime.now().strftime("%m_%d_%Y_%H_%M_%S")
-        self.parserType = type
         self.isLowPowerDevice = False
         self.cfg = ""
         self.demo = DEMO_OOB_x432
@@ -167,10 +166,7 @@ class UARTParser():
         frameData += bytearray(self.cliCom.read(frameLength))
 
         # frameData now contains an entire frame, send it to parser
-        if (self.parserType == "SingleCOMPort"):
-            outputDict = parseStandardFrame(frameData, demo=self.demo)
-        else:
-            log.error('FAILURE: Bad parserType')
+        outputDict = parseStandardFrame(frameData, demo=self.demo)
 
         if self.saveData == 1:
                 self.save_data(outputDict)
