@@ -539,9 +539,6 @@ class Core:
             self.cachedData.setCachedDemoName(demoList.currentText())
             self.cachedData.setCachedDeviceName(self.device)
 
-
-        self.parser.parserType = "SingleCOMPort"
-
         demoList.clear()
         demoList.addItems(DEVICE_DEMO_DICT[self.device]["demos"])
 
