@@ -419,7 +419,19 @@ class Window(QMainWindow):
         self.modeLayout.addWidget(self.radio_data_button)
         self.modeLayout.addWidget(self.radio_gait_button)
 
+        self.radio_data_button.toggled.connect(self.update_mode)
+        self.radio_gait_button.toggled.connect(self.update_mode)
+
         self.modeBox.setLayout(self.modeLayout)
+
+
+    def update_mode(self):
+        if self.radio_gait_button.isChecked():
+            self.core.model_enabled = True
+            print("Switched to model")
+        else: 
+            self.core.model_enabled = False
+            print("Switched to data collection")
 
     def displayErrorPopUp(self):
         popUp = QMessageBox.critical(
@@ -542,6 +554,7 @@ class Core:
         self.replayFile = "replay.json"
         self.replay = False
 
+        self.model_enabled = False
         # set to 1 
         self.isGUILaunched = 0
 
