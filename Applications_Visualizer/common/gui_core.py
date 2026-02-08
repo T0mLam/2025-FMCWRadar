@@ -1,6 +1,4 @@
 # General Library Imports
-import json
-import time
 from serial.tools import list_ports
 import os
 import subprocess
@@ -32,13 +30,12 @@ from PySide2.QtWidgets import (
 from pathlib import Path
 
 # Local Imports
-from cached_data import CachedDataType
 from demo_defines import *
 from gui_threads import *
 
 from Demo_Classes.out_of_box_x432 import OOBx432
 
-#TEMP from camera_tab import CameraTab
+from camera_tab import CameraTab
 # Logger
 import logging
 log = logging.getLogger(__name__)
@@ -103,100 +100,14 @@ class Window(QMainWindow):
     def initMenuBar(self):
         menuBar = self.menuBar()
         # Creating menus using a QMenu object
-        fileMenu = QMenu("&File", self)
-        playbackMenu = QMenu("&Playback", self)
         helpMenu = QMenu("&Help", self)
 
-        self.logOutputAction = QAction("Log Terminal Output to File", self)
-        self.playbackAction = QAction("Load and Replay", self)
         self.helpAction = QAction("Visualizer User Guide", self)
 
-        self.playbackAction.triggered.connect(self.loadForReplay)
-        self.playbackAction.setCheckable(True)
-        #self.logOutputAction.triggered.connect(self.toggleLogOutput)
-        self.logOutputAction.setCheckable(True)
         self.helpAction.triggered.connect(self.openUserGuide)
-
-        playbackMenu.addAction(self.playbackAction)
-        fileMenu.addAction(self.logOutputAction)
         helpMenu.addAction(self.helpAction)
-        menuBar.addMenu(fileMenu)
-        menuBar.addMenu(playbackMenu)
         menuBar.addMenu(helpMenu)
 
-    def loadForReplay(self, state):
-        if (state):
-            self.recordAction.setChecked(False)
-            self.core.replayFile = QFileDialog.getOpenFileName(self, 'Open Replay JSON File', '.',"JSON Files (*.json)")
-            self.core.replay = True
-            self.core.loadForReplay(True)
-
-            # Disable COM Ports/Device/Demo/Config
-            self.demoList.setEnabled(False)
-            self.deviceList.setEnabled(False)
-            self.cliCom.setEnabled(False)
-            self.connectButton.setEnabled(False)
-            self.filename_edit.setEnabled(False)
-            self.selectConfig.setEnabled(False)
-            self.sendConfig.setEnabled(False)
-            self.start.setEnabled(True)
-            self.start.setText("Replay")
-
-            self.replayBox.setVisible(True)
-        else:
-            self.core.replay = False
-
-            # Disable COM Ports/Device/Demo/Config
-            self.demoList.setEnabled(True)
-            self.deviceList.setEnabled(True)
-            self.cliCom.setEnabled(True)
-            self.connectButton.setEnabled(True)
-            self.filename_edit.setEnabled(True)
-            self.selectConfig.setEnabled(True)
-            self.sendConfig.setEnabled(True)
-            self.start.setText("Start without Send Configuration")
-
-            self.replayBox.setVisible(False)
-
-    def toggleSaveData(self):
-        if self.recordAction.isChecked():
-            self.core.parser.setSaveBinary(True)
-            self.core.cachedData.setCachedRecord("True")
-        else:
-            self.core.parser.setSaveBinary(False)
-            self.core.cachedData.setCachedRecord("False")
-        
-        self.core.replay = False
-        
-        # Enable COM Ports/Device/Demo/Config
-        self.demoList.setEnabled(True)
-        self.deviceList.setEnabled(True)
-        self.cliCom.setEnabled(True)
-        self.connectButton.setEnabled(True)
-        self.filename_edit.setEnabled(True)
-        self.selectConfig.setEnabled(True)
-        self.start.setText("Start without Send Configuration")
-
-
-    # def toggleLogOutput(self):
-    #     if (
-    #         self.recordAction.isChecked()
-    #     ):  # Save terminal output to logFile, set 0 to show terminal output
-    #         ts = time.localtime()
-    #         terminalFileName = str(
-    #             "logfile_"
-    #             + str(ts[2])
-    #             + str(ts[1])
-    #             + str(ts[0])
-    #             + "_"
-    #             + str(ts[3])
-    #             + str(ts[4])
-    #             + ".txt"
-    #         )
-    #         sys.stdout = open(terminalFileName, "w")
-    #     else:
-    #         sys.stdout = sys.__stdout__
-    
     def openUserGuide(self):
         userGuideURL = QUrl('https://dev.ti.com/tirex/local?id=mmwave_applications_visualizer_user_guide&packageId=radar_toolbox')
         openUserGuide = QtGui.QDesktopServices.openUrl(userGuideURL)
@@ -269,7 +180,6 @@ class Window(QMainWindow):
                 self.cliCom.setText(port.device)
 
         self.core.isGUILaunched = 1
-        #self.loadCachedData()
         self.core.changeDemo(self.demoList, self.deviceList, self.gridLayout, self.demoTabs)
         self.core.updateResetButton(self.sensorStop)
 
@@ -453,7 +363,6 @@ class Window(QMainWindow):
 
 class Core:
     def __init__(self):
-        self.cachedData = CachedDataType()
 
         self.device = "xWRL6432"
         self.demo = DEMO_OOB_x432
@@ -507,9 +416,6 @@ class Core:
     def changeDemo(self, demoList, deviceList, gridLayout, demoTabs):
         self.demo = demoList.currentText()
 
-        if (self.isGUILaunched):
-            self.cachedData.setCachedDemoName(self.demo)
-            self.cachedData.setCachedDeviceName(deviceList.currentText())
 
         permanentWidgetsList = ["Connect to COM Ports", "Configuration", "Tabs", "Replay"]
         # Destroy current contents of graph pane
@@ -527,17 +433,14 @@ class Core:
         # Make call to selected demo's initialization function
         if self.demo in self.demoClassDict:
             self.demoClassDict[self.demo].setupGUI(gridLayout, demoTabs, self.device)
-            #self.cam_tab = CameraTab() TEMP
-            #demoTabs.addTab(self.cam_tab, "Camera feed")
+            self.cam_tab = CameraTab() 
+            demoTabs.addTab(self.cam_tab, "Camera feed")
 
     def changeDevice(self, demoList, deviceList, gridLayout, demoTabs):
         self.device = deviceList.currentText()
 
         self.parser.device = self.device
 
-        if (self.isGUILaunched):
-            self.cachedData.setCachedDemoName(demoList.currentText())
-            self.cachedData.setCachedDeviceName(self.device)
 
         demoList.clear()
         demoList.addItems(DEVICE_DEMO_DICT[self.device]["demos"])
@@ -555,9 +458,6 @@ class Core:
         try:
             current_dir = os.getcwd()
             configDirectory = current_dir
-            path = self.cachedData.getCachedCfgPath()
-            if path != "":
-                configDirectory = path
         except:
             configDirectory = ""
 
@@ -691,7 +591,6 @@ class Core:
     def selectCfg(self, filename):
         try:
             file = self.selectFile(filename)
-            self.cachedData.setCachedCfgPath(file)  # cache the file and demo used
             self.parseCfg(file)
         except Exception as e:
             log.error(e)
@@ -748,19 +647,6 @@ class Core:
         else :
             self.parseTimer.start(int(self.frameTime))  # need this line, this is for normal plotting
 
-    def loadForReplay(self, state):
-        if (state):
-            self.cachedData.setCachedRecord = "True"
-            with open(self.replayFile[0], 'r') as fp:
-                self.data = json.load(fp)
-            self.parseCfg("")
-            self.sl.setMinimum(0)
-            self.sl.setMaximum(len(self.data['data']) - 1)
-            self.sl.setValue(0)
-            self.sl.setTickInterval(5)
-            # TODO need to load correct demo from file
-        else:
-            self.cachedData.setCachedRecord = "False"
 
 
     def replayData(self):
@@ -791,7 +677,8 @@ class Core:
                 log.error(f"xds110reset.exe not found: {exe}")
                 return
 
-            cmd = ["wine", str(exe), "--action", "toggle"]
+            #cmd = ["wine", str(exe), "--action", "toggle"] #uncoment for linux 
+            cmd = [str(exe), "--action", "toggle"]
             subprocess.run(cmd, cwd=str(xds_dir), shell=True, timeout=3, check=False)
 
             log.info("reset toggle OK")

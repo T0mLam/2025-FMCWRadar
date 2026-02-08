@@ -7,9 +7,6 @@ import json_fix # import this anytime before the JSON.dumps gets called
 import json
 import numpy
 import os
-import struct
-import csv
-import copy
 json.fallback_table[numpy.ndarray] = lambda array: array.tolist()
 
 # Logger
