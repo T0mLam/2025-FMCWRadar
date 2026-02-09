@@ -1,11 +1,11 @@
 //To run from Visual studion install everything from requirments.txt and run gui_main.py 
 //folowing command was used to complile .exe
 (.venv) PS C:\ti\radar_toolbox_3_30_00_06\tools\visualizers\Applications_Visualizer\Industrial_Visualizer> python -m PyInstaller --noconfirm --clean --onefile --console --name IndustrialVisualiser `
->>   --distpath . --workpath build --specpath . `
->>   --paths "..\common" `
->>   --add-data "..\common;common" `
->>   --add-data "images;images" `
->>   gui_main.py
+   --distpath . --workpath build --specpath . `
+   --paths "..\common" `
+   --add-data "..\common;common" `
+   --add-data "images;images" `
+   gui_main.py
 
 //vnev activation 
 //Important do ether 3.9 or 3.10 python
