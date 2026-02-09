@@ -1,6 +1,4 @@
 # General Library Imports
-import json
-import time
 from serial.tools import list_ports
 import os
 import subprocess
@@ -35,40 +33,11 @@ from PySide2.QtWidgets import (
 from pathlib import Path
 
 # Local Imports
-from cached_data import CachedDataType
 from demo_defines import *
 from gui_threads import *
-from parseFrame import parseStandardFrame
 
-from Common_Tabs.plot_1d import Plot1D
-from Common_Tabs.plot_2d import Plot2D
-from Common_Tabs.plot_3d import Plot3D
-
-from Demo_Classes.surface_classification import SurfaceClassification
-from Demo_Classes.point_cloud_classification import PointCloudClassification
-from Demo_Classes.people_tracking import PeopleTracking
-from Demo_Classes.gesture_recognition import GestureRecognition
-from Demo_Classes.level_sensing import LevelSensing
-from Demo_Classes.small_obstacle import SmallObstacle
-from Demo_Classes.out_of_box_x843 import OOBx843
 from Demo_Classes.out_of_box_x432 import OOBx432
-from Demo_Classes.out_of_box_x844 import OOBx844
-from Demo_Classes.true_ground_speed import TrueGroundSpeed
-from Demo_Classes.long_range_pd import LongRangePD
-from Demo_Classes.mobile_tracker import MobileTracker
-from Demo_Classes.kick_to_open import KickToOpen
-from Demo_Classes.calibration import Calibration
-from Demo_Classes.vital_signs import VitalSigns
-from Demo_Classes.dashcam import Dashcam
-from Demo_Classes.ebikes_x432 import EBikes
-from Demo_Classes.video_doorbell import VideoDoorbell
-from Demo_Classes.intruder_detection import IntruderDetection
-from Demo_Classes.SeatBeltReminder import SeatBeltReminder
-from Demo_Classes.ChildPresenceDetection import ChildPresenceDetection
-from Demo_Classes.LifePresenceDetection import LifePresenceDetection
-from Demo_Classes.debug_plots import DebugPlots
-from Demo_Classes.smart_toilet import SmartToiletDemo
-from Demo_Classes.range_sensing import RangeSensing
+
 from camera_tab import CameraTab
 # Logger
 import logging
@@ -141,103 +110,14 @@ class Window(QMainWindow):
     def initMenuBar(self):
         menuBar = self.menuBar()
         # Creating menus using a QMenu object
-        fileMenu = QMenu("&File", self)
-        playbackMenu = QMenu("&Playback", self)
         helpMenu = QMenu("&Help", self)
 
-        self.logOutputAction = QAction("Log Terminal Output to File", self)
-        self.playbackAction = QAction("Load and Replay", self)
         self.helpAction = QAction("Visualizer User Guide", self)
 
-        self.playbackAction.triggered.connect(self.loadForReplay)
-        self.playbackAction.setCheckable(True)
-        #self.logOutputAction.triggered.connect(self.toggleLogOutput)
-        self.logOutputAction.setCheckable(True)
         self.helpAction.triggered.connect(self.openUserGuide)
-
-        playbackMenu.addAction(self.playbackAction)
-        fileMenu.addAction(self.logOutputAction)
         helpMenu.addAction(self.helpAction)
-        menuBar.addMenu(fileMenu)
-        menuBar.addMenu(playbackMenu)
         menuBar.addMenu(helpMenu)
 
-    def loadForReplay(self, state):
-        if (state):
-            self.recordAction.setChecked(False)
-            self.core.replayFile = QFileDialog.getOpenFileName(self, 'Open Replay JSON File', '.',"JSON Files (*.json)")
-            self.core.replay = True
-            self.core.loadForReplay(True)
-
-            # Disable COM Ports/Device/Demo/Config
-            self.demoList.setEnabled(False)
-            self.deviceList.setEnabled(False)
-            self.cliCom.setEnabled(False)
-            self.dataCom.setEnabled(False)
-            self.connectButton.setEnabled(False)
-            self.filename_edit.setEnabled(False)
-            self.selectConfig.setEnabled(False)
-            self.sendConfig.setEnabled(False)
-            self.start.setEnabled(True)
-            self.start.setText("Replay")
-
-            self.replayBox.setVisible(True)
-        else:
-            self.core.replay = False
-
-            # Disable COM Ports/Device/Demo/Config
-            self.demoList.setEnabled(True)
-            self.deviceList.setEnabled(True)
-            self.cliCom.setEnabled(True)
-            self.dataCom.setEnabled(True)
-            self.connectButton.setEnabled(True)
-            self.filename_edit.setEnabled(True)
-            self.selectConfig.setEnabled(True)
-            self.sendConfig.setEnabled(True)
-            self.start.setText("Start without Send Configuration")
-
-            self.replayBox.setVisible(False)
-
-    def toggleSaveData(self):
-        if self.recordAction.isChecked():
-            self.core.parser.setSaveBinary(True)
-            self.core.cachedData.setCachedRecord("True")
-        else:
-            self.core.parser.setSaveBinary(False)
-            self.core.cachedData.setCachedRecord("False")
-        
-        self.core.replay = False
-        
-        # Enable COM Ports/Device/Demo/Config
-        self.demoList.setEnabled(True)
-        self.deviceList.setEnabled(True)
-        self.cliCom.setEnabled(True)
-        self.dataCom.setEnabled(True)
-        self.connectButton.setEnabled(True)
-        self.filename_edit.setEnabled(True)
-        self.selectConfig.setEnabled(True)
-        self.start.setText("Start without Send Configuration")
-
-
-    # def toggleLogOutput(self):
-    #     if (
-    #         self.recordAction.isChecked()
-    #     ):  # Save terminal output to logFile, set 0 to show terminal output
-    #         ts = time.localtime()
-    #         terminalFileName = str(
-    #             "logfile_"
-    #             + str(ts[2])
-    #             + str(ts[1])
-    #             + str(ts[0])
-    #             + "_"
-    #             + str(ts[3])
-    #             + str(ts[4])
-    #             + ".txt"
-    #         )
-    #         sys.stdout = open(terminalFileName, "w")
-    #     else:
-    #         sys.stdout = sys.__stdout__
-    
     def openUserGuide(self):
         userGuideURL = QUrl('https://dev.ti.com/tirex/local?id=mmwave_applications_visualizer_user_guide&packageId=radar_toolbox')
         openUserGuide = QtGui.QDesktopServices.openUrl(userGuideURL)
@@ -249,7 +129,6 @@ class Window(QMainWindow):
     def initConnectionPane(self):
         self.comBox = QGroupBox("Connect to COM Ports")
         self.cliCom = QLineEdit("")
-        self.dataCom = QLineEdit("")
         self.connectStatus = QLabel("Not Connected")
         self.connectButton = QPushButton("Connect")
         self.connectButton.clicked.connect(self.onConnect)
@@ -282,10 +161,8 @@ class Window(QMainWindow):
         self.comLayout.addWidget(self.deviceList, 0, 1)
         self.comLayout.addWidget(QLabel("CLI COM:"), 1, 0)
         self.comLayout.addWidget(self.cliCom, 1, 1)
-        self.comLayout.addWidget(QLabel("DATA COM:"), 2, 0)
-        self.comLayout.addWidget(self.dataCom, 2, 1)
-        self.comLayout.addWidget(QLabel("Demo:"), 3, 0)
-        self.comLayout.addWidget(self.demoList, 3, 1)
+        self.comLayout.addWidget(QLabel("Demo:"), 2, 0)
+        self.comLayout.addWidget(self.demoList, 2, 1)
     
        
         self.comLayout.addWidget(self.connectButton, 4, 0) 
@@ -298,7 +175,6 @@ class Window(QMainWindow):
         self.comLayout.addWidget(self.dataRecordButton, 7, 0, 1, 2) 
 
         self.comBox.setLayout(self.comLayout)
-        self.demoList.setCurrentIndex(1)  # initialize this to a stable value
         self.demoList.setCurrentIndex(0)  # initialize this to a stable value
 
         # Find all Com Ports
@@ -311,21 +187,11 @@ class Window(QMainWindow):
                 or CLI_SIL_SERIAL_PORT_NAME in port.description
             ):
                 log.info(f"CLI COM Port found: {port.device}")
-                comText = port.device
-                comText = comText.replace("COM", "")
-                self.cliCom.setText(comText)
-
-            elif (
-                DATA_XDS_SERIAL_PORT_NAME in port.description
-                or DATA_SIL_SERIAL_PORT_NAME in port.description
-            ):
-                log.info(f"Data COM Port found: {port.device}")
-                comText = port.device
-                comText = comText.replace("COM", "")
-                self.dataCom.setText(comText)
+                self.cliCom.setText(port.device)
 
         self.core.isGUILaunched = 1
-        #self.loadCachedData()
+        self.core.changeDemo(self.demoList, self.deviceList, self.gridLayout, self.demoTabs)
+        self.core.updateResetButton(self.sensorStop)
 
 
      # Start recording Data.
@@ -356,7 +222,6 @@ class Window(QMainWindow):
         self.demoList.setEnabled(True)
         self.deviceList.setEnabled(True)
         self.cliCom.setEnabled(True)
-        self.dataCom.setEnabled(True)
         self.connectButton.setEnabled(True)
         self.filename_edit.setEnabled(True)
         self.selectConfig.setEnabled(True)
@@ -447,10 +312,7 @@ class Window(QMainWindow):
 
     # Callback function when device is changed
     def onChangeDevice(self):
-        self.core.changeDevice(
-            self.demoList, self.deviceList, self.gridLayout, self.demoTabs
-        )
-        self.core.updateCOMPorts(self.cliCom, self.dataCom)
+        self.core.changeDevice(self.demoList, self.deviceList, self.gridLayout, self.demoTabs)
         self.core.updateResetButton(self.sensorStop)
 
     # Callback function when demo is changed
@@ -469,7 +331,7 @@ class Window(QMainWindow):
     # Callback function when connect button clicked
     def onConnect(self):
         if (self.connectStatus.text() == "Not Connected" or self.connectStatus.text() == "Unable to Connect"):
-            if self.core.connectCom(self.cliCom, self.dataCom, self.connectStatus) == 0:
+            if self.core.connectCom(self.cliCom, self.connectStatus) == 0:
                 self.connectButton.setText("Reset Connection")
                 # When 2-Pass Video doorbell is the demo, you cannot send a cfg file over UART
                 if(self.core.demo == "Video Doorbell"):
@@ -543,7 +405,6 @@ class Window(QMainWindow):
 
 class Core:
     def __init__(self):
-        self.cachedData = CachedDataType()
 
         self.device = "xWRL6432"
         self.demo = DEMO_OOB_x432
@@ -565,31 +426,7 @@ class Core:
 
         # Populated with each demo and it's corresponding object
         self.demoClassDict = {
-            DEMO_OOB_x843: OOBx843(),
-            DEMO_OOB_x432: OOBx432(),
-            DEMO_OOB_x844: OOBx844(),
-            DEMO_3D_PEOPLE_TRACKING: PeopleTracking(),
-            DEMO_VITALS: VitalSigns(),
-            DEMO_SMALL_OBSTACLE: SmallObstacle(),
-            DEMO_GESTURE: GestureRecognition(),
-            DEMO_SURFACE: SurfaceClassification(),
-            DEMO_PC_CLASS: PointCloudClassification(),
-            DEMO_LEVEL_SENSING: LevelSensing(),
-            DEMO_1D_SENSING: RangeSensing(),
-            DEMO_GROUND_SPEED: TrueGroundSpeed(),
-            DEMO_LONG_RANGE: LongRangePD(),
-            DEMO_MOBILE_TRACKER: MobileTracker(),
-            DEMO_KTO: KickToOpen(),
-            DEMO_CALIBRATION: Calibration(),
-            DEMO_DASHCAM: Dashcam(),
-            DEMO_EBIKES: EBikes(),
-            DEMO_VIDEO_DOORBELL: VideoDoorbell(),
-            DEMO_INTRUDER: IntruderDetection(),
-            DEMO_SBR : SeatBeltReminder(),
-            # DEMO_CPD : ChildPresenceDetection(), no longer supported
-            DEMO_LPD : LifePresenceDetection(),
-            DEMO_DEBUG_PLOTS: DebugPlots(),
-            DEMO_TOILET: SmartToiletDemo()
+            DEMO_OOB_x432: OOBx432()
         }
 
     # def loadCachedData(self, demoList, deviceList, recordAction, gridLayout, demoTabs):
@@ -622,9 +459,6 @@ class Core:
     def changeDemo(self, demoList, deviceList, gridLayout, demoTabs):
         self.demo = demoList.currentText()
 
-        if (self.isGUILaunched):
-            self.cachedData.setCachedDemoName(self.demo)
-            self.cachedData.setCachedDeviceName(deviceList.currentText())
 
         permanentWidgetsList = ["Connect to COM Ports", "Configuration", "Tabs", "Replay"]
         # Destroy current contents of graph pane
@@ -642,7 +476,7 @@ class Core:
         # Make call to selected demo's initialization function
         if self.demo in self.demoClassDict:
             self.demoClassDict[self.demo].setupGUI(gridLayout, demoTabs, self.device)
-            self.cam_tab = CameraTab()
+            self.cam_tab = CameraTab() 
             demoTabs.addTab(self.cam_tab, "Camera feed")
 
     def changeDevice(self, demoList, deviceList, gridLayout, demoTabs):
@@ -650,24 +484,9 @@ class Core:
 
         self.parser.device = self.device
 
-        if (self.isGUILaunched):
-            self.cachedData.setCachedDemoName(demoList.currentText())
-            self.cachedData.setCachedDeviceName(self.device)
-
-        if DEVICE_DEMO_DICT[self.device]["singleCOM"]:
-            self.parser.parserType = "SingleCOMPort"
-        else:
-            self.parser.parserType = "DoubleCOMPort"
 
         demoList.clear()
         demoList.addItems(DEVICE_DEMO_DICT[self.device]["demos"])
-
-    def updateCOMPorts(self, cliCom, dataCom):
-        if DEVICE_DEMO_DICT[self.device]["isxWRLx432"]:
-            dataCom.setText(cliCom.text())
-            dataCom.setEnabled(False)
-        else:
-            dataCom.setEnabled(True)
 
     def updateResetButton(self, sensorStopButton):
         if DEVICE_DEMO_DICT[self.device]["isxWRLx432"]:
@@ -682,9 +501,6 @@ class Core:
         try:
             current_dir = os.getcwd()
             configDirectory = current_dir
-            path = self.cachedData.getCachedCfgPath()
-            if path != "":
-                configDirectory = path
         except:
             configDirectory = ""
 
@@ -818,7 +634,6 @@ class Core:
     def selectCfg(self, filename):
         try:
             file = self.selectFile(filename)
-            self.cachedData.setCachedCfgPath(file)  # cache the file and demo used
             self.parseCfg(file)
         except Exception as e:
             log.error(e)
@@ -827,8 +642,6 @@ class Core:
             )
 
         log.debug("Demo Changed to " + self.demo)
-        if self.demo == DEMO_CALIBRATION:
-            self.demoClassDict[self.demo].checkCalibrationParams()
 
     def sendCfg(self):
         try:
@@ -843,9 +656,7 @@ class Core:
     def updateGraph(self, outputDict):
         self.demoClassDict[self.demo].updateGraph(outputDict)
 
-    def connectCom(self, cliCom, dataCom, connectStatus):
-        if self.demo == DEMO_GESTURE or self.demo == DEMO_VIDEO_DOORBELL:
-            self.frameTime = 25 # Gesture demo runs at 35ms frame time
+    def connectCom(self, cliCom, connectStatus):
         # init threads and timers
         self.uart_thread = parseUartThread(self.parser)
 
@@ -855,18 +666,10 @@ class Core:
         self.parseTimer.timeout.connect(self.parseData)
         try:
             if os.name == "nt":
-                uart = "COM" + cliCom.text()
-                data = "COM" + dataCom.text()
+                uart = cliCom.text().strip()
             else:
-                uart = cliCom.text()
-                data = dataCom.text()
-            if DEVICE_DEMO_DICT[self.device]["isxWRx843"] or DEVICE_DEMO_DICT[self.device]["isxWRLx844"]:  # If using x843 device
-                self.parser.connectComPorts(uart, data)
-            else:  # If not x843 device then defer to x432 device
-                if self.demo == DEMO_GESTURE or self.demo == DEMO_KTO or self.demo == DEMO_TOILET or self.demo == DEMO_1D_SENSING:
-                    self.parser.connectComPort(uart, 1250000)
-                else:
-                    self.parser.connectComPort(uart)
+                uart = cliCom.text().strip()
+            self.parser.connectComPort(uart)
             connectStatus.setText("Connected")
         except Exception as e:
             log.error(e)
@@ -887,19 +690,6 @@ class Core:
         else :
             self.parseTimer.start(int(self.frameTime))  # need this line, this is for normal plotting
 
-    def loadForReplay(self, state):
-        if (state):
-            self.cachedData.setCachedRecord = "True"
-            with open(self.replayFile[0], 'r') as fp:
-                self.data = json.load(fp)
-            self.parseCfg("")
-            self.sl.setMinimum(0)
-            self.sl.setMaximum(len(self.data['data']) - 1)
-            self.sl.setValue(0)
-            self.sl.setTickInterval(5)
-            # TODO need to load correct demo from file
-        else:
-            self.cachedData.setCachedRecord = "False"
 
 
     def replayData(self):
@@ -930,7 +720,8 @@ class Core:
                 log.error(f"xds110reset.exe not found: {exe}")
                 return
 
-            cmd = f"\"{str(exe)}\" --action toggle"
+            #cmd = ["wine", str(exe), "--action", "toggle"] #uncoment for linux 
+            cmd = [str(exe), "--action", "toggle"]
             subprocess.run(cmd, cwd=str(xds_dir), shell=True, timeout=3, check=False)
 
             log.info("reset toggle OK")
@@ -943,8 +734,6 @@ class Core:
         self.uart_thread.stop()
         if self.parser.cliCom is not None:
             self.parser.cliCom.close()
-        if self.parser.dataCom is not None:
-            self.parser.dataCom.close()
         for demo in self.demoClassDict.values():
             if hasattr(demo, "plot_3d_thread"):
                 demo.plot_3d_thread.stop()
