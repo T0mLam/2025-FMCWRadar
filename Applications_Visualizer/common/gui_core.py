@@ -119,6 +119,7 @@ class Window(QMainWindow):
         menuBar.addMenu(helpMenu)
 
     def openUserGuide(self):
+        #TODO change when user instructions ready
         userGuideURL = QUrl('https://dev.ti.com/tirex/local?id=mmwave_applications_visualizer_user_guide&packageId=radar_toolbox')
         openUserGuide = QtGui.QDesktopServices.openUrl(userGuideURL)
         
@@ -312,10 +313,6 @@ class Window(QMainWindow):
                 "Ensure that the device is in the proper SOP mode after flashing the correct binary, and that the cfg you are sending is valid")
         popUp.exec_()
     
-    # def loadCachedData(self):
-    #     self.core.loadCachedData(
-    #         self.demoList, self.deviceList, self.recordAction, self.gridLayout, self.demoTabs
-    #     )
 
     # Callback function when device is changed
     def onChangeDevice(self):

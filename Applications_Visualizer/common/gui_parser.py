@@ -183,49 +183,8 @@ class UARTParser():
             # Save data every framesPerFile frames
             self.uartCounter += 1
 
-            # uncomment below to save bin data in Matlab-friendly format
-            # self.binData += frameData
-            # if (self.uartCounter % self.framesPerFile == 0):
-            #     # First file requires the path to be set up
-            #     if(self.first_file is True): 
-            #         if(os.path.exists('binData/') == False):
-            #             # Note that this will create the folder in the caller's path, not necessarily in the Industrial Viz Folder                        
-            #             os.makedirs('binData/', exist_ok=True)
-            #         os.makedirs('binData/'+self.filepath, exist_ok=True)
-            #         self.first_file = False
-            #     toSave = bytes(self.binData)
-                
-            #     fileName = 'binData/'+self.filepath+'/pHistBytes_'+str(math.floor(self.uartCounter/self.framesPerFile))+'.bin'
-            #     bfile = open(fileName, 'wb')
-            #     bfile.write(toSave)
-            #     bfile.close()
-            #     # Reset binData and missed frames
-            #     self.binData = []
-
-            # Saving data here for replay
-            frameJSON = {}
-            frameJSON['frameData'] = outputDict
-            frameJSON['timestamp'] = time.time() * 1000
-
-            self.frames.append(frameJSON)
-            data['data'] = self.frames
-
-            if (self.uartCounter % self.framesPerFile == 0):
-                if(self.first_file is True): 
-                    if(os.path.exists('binData/') == False):
-                        # Note that this will create the folder in the caller's path, not necessarily in the viz folder            
-                        os.makedirs('binData/', exist_ok=True)
-                    os.makedirs('binData/'+self.filepath, exist_ok=True)
-                    self.first_file = False
-                with open('./binData/'+self.filepath+'/replay_' + str(math.floor(self.uartCounter/self.framesPerFile)) + '.json', 'w') as fp:
-                    json_object = json.dumps(data, indent=4)
-                    fp.write(json_object)
-                    self.frames = [] # Uncomment to put data into one file at a time in 100 frame chunks
-
         return outputDict
 
-        
-    
     # Separate connectComPort (not PortS) for xWRL6432 because it only uses one port
     def connectComPort(self, cliCom, cliBaud=115200):
         # Longer timeout time for xWRL6432 to support applications with low power / low update rate
