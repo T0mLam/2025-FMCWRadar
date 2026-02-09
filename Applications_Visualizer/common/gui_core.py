@@ -37,7 +37,7 @@ from gui_threads import *
 
 from Demo_Classes.out_of_box_x432 import OOBx432
 
-#TEMP from camera_tab import CameraTab
+from camera_tab import CameraTab
 # Logger
 import logging
 log = logging.getLogger(__name__)
@@ -447,8 +447,8 @@ class Core:
         # Make call to selected demo's initialization function
         if self.demo in self.demoClassDict:
             self.demoClassDict[self.demo].setupGUI(gridLayout, demoTabs, self.device)
-            # self.cam_tab = CameraTab() TEMP
-            # demoTabs.addTab(self.cam_tab, "Camera feed")
+            self.cam_tab = CameraTab() 
+            demoTabs.addTab(self.cam_tab, "Camera feed")
 
     def changeDevice(self, demoList, deviceList, gridLayout, demoTabs):
         self.device = deviceList.currentText()
