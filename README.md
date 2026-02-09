@@ -16,9 +16,9 @@
 - [Project Workflow](#project-workflow)
 - [Project Structure](#project-structure)
 - [Tech Stack](#tech-stack)
-- [Architecture diagram](#architecture-diagram)
+- [Architecture Diagram](#architecture-diagram)
 - [Industrial Visualiser User Instructions](#industrial-visualiser-user-instructions)
-- [ Model Compilation User Instructions](#model-compilation-user-instructions)
+- [Model Compilation User Instructions](#model-compilation-user-instructions)
 - [Research](#research)  
 - [Launching the docs website](#launching-the-docs-website)
 - [Internal Links](#internal-links)
@@ -26,7 +26,7 @@
 - [Client Contacts](#client-contacts)
 
 ## Project Overview
-This project examines Texas Instruments (TI) FMCW radar sensors as compact, single-chip devices for human-motion analysis. These sensors integrate radio, processing, and antenna resources to estimate target distance, motion, and bearing, with the advantage of functioning in varied environments, lighting conditions and mitigating privacy concerns. These sensors are commonly applied to people-sensing tasks in indoor environments.
+This project examines Texas Instruments (TI) FMCW radar sensors as compact, single-chip devices for human-motion analysis. These sensors integrate radio, processing, and antenna resources to estimate target distance, motion, and bearing, with the advantage of functioning in varied environments, lighting conditions, and mitigating privacy concerns. These sensors are commonly applied to people-sensing tasks in indoor environments.
 
 Our work during this project will begin with a research-first baseline. We will study the official TI materials and documentation to understand the sensor outputs and processing pipeline, define a clear data-collection and labelling protocol, assemble an internal dataset using the FMCW radar, and develop a machine learning model trained on the internal dataset to identify different people based on movement characteristics such as their unique walking gait. A visualisation tool will be created in order to view the captured radar data so results can be reviewed immediately.
 
@@ -39,27 +39,27 @@ Our work during this project will begin with a research-first baseline. We will 
 **Texas Instruments’ (TI) customers**:
 - Civil tech companies: Want to implement reliable occupancy sensing technology for public facilities and stations.
   
-- Healthcare technology providers: These companies seek privacy preserving patient movement monitoring systems, and Texas Instruments’ radars allow for that privacy.
+- Healthcare technology providers: These companies seek privacy-preserving patient movement monitoring systems, and Texas Instruments’ radars allow for that privacy.
   
-- Automotive & Mobility companies: These businesses are interested in hands free vehicle access and in-cabin/approach detection technology that is robust in a variety of conditions and lighting.
+- Automotive & Mobility companies: These businesses are interested in hands-free vehicle access and in-cabin/approach detection technology that is robust in a variety of conditions and lighting.
 
 **End Users**:
 - Security Guards: Benefit from timely presence alerts when they’re not actively watching monitors.
   
 - Patients in clinical rooms & elderly at home: Gain discreet safety monitoring without the use of cameras to prevent accidents from happening.
   
-- Car Owners: Expect doors to open hands free without false triggers.
+- Car Owners: Expect doors to open hands-free without false triggers.
 
 
 ## User Stories
 - **Car owners:**  
-  As a *car owner*, I want to be able to open my car door hands free, so that I don’t have to put down my shopping, child, or anything else I'm carrying. This also prevents my hands from getting wet from a wet handle.
+  As a *car owner*, I want to be able to open my car door hands-free, so that I don’t have to put down my shopping, child, or anything else I'm carrying. This also prevents my hands from getting wet from a wet handle.
   
 - **Security personnel:**  
   As a *security guard*, I want there to be an early warning system when people are detected, so that if I am not actively monitoring the surveillance systems, there is an extra layer of security.
 
 - **Healthcare:**  
-  As a *nurse*, I want ensure that patients under care are stable, without breaching their privacy.
+  As a *nurse*, I want to ensure that patients under care are stable, without breaching their privacy.
 
 - **Civil infrastructure:**  
   As a *civil engineer*, I want to design a public bathroom that will automatically lock or unclock depending on occupancy.
@@ -68,7 +68,7 @@ Our work during this project will begin with a research-first baseline. We will 
   As a *Texas Instruments (TI) Solutions Engineer*, I want a robust, reproducible demo and evaluation using our FMCW Radar outputs so that we can validate people-sensing use cases and identify gaps in our documentation and examples.
 
 ## Project Workflow
-The below showcase how our sprints have been structed for the FMCW Radar project since TB2:
+The below showcase how our sprints have been structured for the FMCW Radar project since TB2:
 - [All Sprints](docs/docs/general/sprints)
 - [Sprint 1](docs/docs/general/sprints/sprint-1.md)
 - [Sprint 2](docs/docs/general/sprints/sprint-2.md)
@@ -119,7 +119,7 @@ It is recommended to view the above using our documentation website.
 ## Tech Stack
 ### Hardware
 - [**TI IWRL6432BOOST Radar**](https://www.ti.com/tool/IWRL6432BOOST?keyMatch=iwrl6432boost&tisearch=universal_search)
-- [**Logitech C720 Webcam**](https://www.logitech.com/en-gb/shop/p/c270-hd-webcam)
+- [**Logitech C270 Webcam**](https://www.logitech.com/en-gb/shop/p/c270-hd-webcam)
 
 ### Software
 - [**Python (3.10)**](https://www.python.org)
@@ -142,6 +142,9 @@ It is recommended to view the above using our documentation website.
 | [PyInstaller](https://pyinstaller.org/) | Packages the visualiser into a standalone executable for distribution. |
 | [Git](https://git-scm.com/about) + [GitHub](https://github.com/) | Version control and collaboration. |
 | [ONNX](https://onnx.ai/) | Used as the export format for trained PyTorch models before compiling them with TVM (`tvmc`) into C/AOT artifacts for deployment in a CCS project (Cortex-M4). |
+||
+
+
 ## Architecture diagram
 
 ![Architecture Diagram](</images/TI diagram.png>)
@@ -151,22 +154,22 @@ It is recommended to view the above using our documentation website.
 <details>
 <summary><strong>Click to expand</strong></summary>
 
-### In Applications_Visualizer\Industrial_Visualizer open IndustrialVisualiser.exe
+### In `Applications_Visualizer\Industrial_Visualizer` open `IndustrialVisualiser.exe`
 ![Industrial Visualiser setup](</images/Industrial_Visualiser_1.jpg>)
-### 1. choose xWRL6432 device
-### 2.  a) device manager find UART prt number
+### 1. Choose xWRL6432 device
+### 2.  a) device manager find UART port number
   ![Device manager COM port](</images/Device_manager.jpg>)
-### b) Enter the COM port number in CLI port feld
+### b) Enter the COM port number in CLI port field
 ### 3. Choose x432 Out of Box Demo in demo field
 ---
 ### Functionality:
 - Press the connect button, then press the Select config button.
-- In Applications_Visualizer\Industrial_Visualizer\chrip_configs choose one of the config files and press Open. 
-![Chrip config load](</images/Industrial_Visualiser_2.jpg>)
+- In `Applications_Visualizer\Industrial_Visualizer\chirp_configs` choose one of the config files and press Open. 
+![Chirp config load](</images/Industrial_Visualiser_2.jpg>)
 - Press the Start and Send configuration button.
 - To record data: set the time in seconds (3 seconds is the default) and press the Record Data button.
 ![Data record button](</images/Industrial_Visualiser_3.jpg>)
-- Recorded data will be located in Applications_Visualizer\Industrial_Visualizer\binData
+- Recorded data will be located in `Applications_Visualizer\Industrial_Visualizer\binData`
 
 </details>
 
@@ -175,7 +178,7 @@ It is recommended to view the above using our documentation website.
 <summary><strong>Click to expand</strong></summary>
 
 
-Once you have exported your trained PyTorch model to a onnx file, you will need to compile the model into C binaries in order to run on the board as a CCS project.
+Once you have exported your trained PyTorch model to an ONNX file, you will need to compile the model into C binaries in order to run on the board as a CCS project.
 
 ### A) Use our TI-TVM Docker container
 - Launch the container and run custom commands
@@ -184,7 +187,7 @@ Once you have exported your trained PyTorch model to a onnx file, you will need 
     make tvm 
     ```
 
-- Shortcut for launching the container and run compilation
+- Shortcut for launching the container and running compilation
 
     ```bash
     make tvm-compile MODEL_PATH=./your_model_name.onnx OUT_DIR=./model_artifacts
@@ -198,7 +201,7 @@ Example terminal output:
 
 ![Output Files](docs/docs/user_manual/model_compilation/file_output.png)
 
-### B) Setup your own environment:
+### B) Setup your own environment
 The [2024-mmWaveRadarSensors](https://github.com/spe-uob/2024-mmWaveRadarSensors) team has written a detailed guide on model compilation, you can follow the instructions step by step to achieve the same result.
 
 [*-> Model Compilation Guide*](https://spe-uob.github.io/2024-mmWaveRadarSensors/General/User_Instructions.html#compiling-the-model)
@@ -214,7 +217,7 @@ Most of our research for this project is written down on our documentation site 
 
 ## Launching the docs website
 
-1. install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+1. Install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 2. Follow the step by step instructions in [`/docs/README.md`](/docs/README.md)
 
 ## Internal Links
@@ -239,6 +242,8 @@ Most of our research for this project is written down on our documentation site 
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
+
 
 
 
