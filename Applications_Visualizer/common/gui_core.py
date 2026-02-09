@@ -214,9 +214,11 @@ class Window(QMainWindow):
         duration_ms = int(duration_sec * 1000)
 
         # 2. Set flags and UI state
+        self.core.parser.setDataFileBaseName(self.dataFileBaseEdit.text())
         self.core.parser.setSaveData(True)
         
         self.dataRecordButton.setEnabled(False)
+        self.dataFileBaseEdit.setEnabled(False)
         self.dataRecordButton.setText(f"Recording ({duration_sec}s)...")
         self.durationEdit.setEnabled(False) # Lock input while recording
         
@@ -240,6 +242,7 @@ class Window(QMainWindow):
         
         # Reset UI
         self.dataRecordButton.setEnabled(True)
+        self.dataFileBaseEdit.setEnabled(True)
         self.dataRecordButton.setText("Record Data")
         self.durationEdit.setEnabled(True) # Unlock input
         
@@ -425,26 +428,6 @@ class Core:
             DEMO_OOB_x432: OOBx432()
         }
 
-    # def loadCachedData(self, demoList, deviceList, recordAction, gridLayout, demoTabs):
-    #     deviceName = self.cachedData.getCachedDeviceName()
-    #     demoName = self.cachedData.getCachedDemoName()
-    #     if self.cachedData.getCachedRecord() == "True":
-    #         recordState = True
-    #     else:
-    #         recordState = False
-    #     if deviceName in self.getDeviceList():
-    #         deviceList.setCurrentIndex(self.getDeviceList().index(deviceName))
-
-    #     if demoName in self.getDemoList():
-    #         demoList.setCurrentIndex(self.getDemoList().index(demoName))
-    #         self.changeDemo(demoList, deviceList, gridLayout, demoTabs)
-
-    #     if recordState:
-    #         self.parser.setSaveBinary(True)
-    #         recordAction.setChecked(True)
-    #     else:
-    #         #default recordAction is false so no need to set that here
-    #         self.parser.setSaveBinary(False)
 
     def getDemoList(self):
         return DEVICE_DEMO_DICT[self.device]["demos"]

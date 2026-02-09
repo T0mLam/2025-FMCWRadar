@@ -47,11 +47,20 @@ class UARTParser():
         self.dataCounter = 0
     
         self.dataFrames = []
-        self.dataSession = None
+        self.dataFileBaseName = "data"
+        self._lastDataBaseName = "data"
         self.dataSessionIdx = 0
 
         self.recordingStartMs = None
         self.recordingEndMs = None
+
+    def setDataFileBaseName(self, base: str):
+        # reset numbering if base changes
+        if base != self._lastDataBaseName:
+            self._lastDataBaseName = base
+            self.dataSessionIdx = 0  
+
+        self.dataFileBaseName = base
 
     #Flush data to file
     def flush_data(self):
@@ -73,8 +82,9 @@ class UARTParser():
     #Set save data flag in class
     def setSaveData(self, new_saveData):
         if new_saveData == 1 and self.saveData != 1:
+            self.setDataFileBaseName(self.dataFileBaseName)
             self.dataSessionIdx += 1
-            self.dataSession = f"data_{self.dataSessionIdx}"
+            self.dataSession = f"{self.dataFileBaseName}_{self.dataSessionIdx}"
             self.dataCounter = 0
             self.dataFrames = []
             self.microDopplerStartMs = int(time.time() * 1000)
