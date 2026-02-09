@@ -25,7 +25,6 @@ from PySide2.QtWidgets import (
     QWidget,
     QShortcut,
     QSlider,
-    QCheckBox,
     QMessageBox,
     QApplication,
     QVBoxLayout,
@@ -135,7 +134,6 @@ class Window(QMainWindow):
         self.connectButton.clicked.connect(self.onConnect)
         self.demoList = QComboBox()
         self.deviceList = QComboBox()
-        #self.recordAction = QCheckBox("Save Data to File", self)
         
          # Duration Label
         self.durationLabel = QLabel("Duration (s):")
@@ -154,8 +152,6 @@ class Window(QMainWindow):
         self.mdTimer.setSingleShot(True)
         self.mdTimer.timeout.connect(self.stopDataRecording)
 
-
-        # TODO Add replay support
         self.demoList.addItems(self.core.getDemoList())
         self.demoList.currentIndexChanged.connect(self.onChangeDemo)
         self.deviceList.addItems(self.core.getDeviceList())
@@ -171,8 +167,7 @@ class Window(QMainWindow):
        
         self.comLayout.addWidget(self.connectButton, 4, 0) 
         self.comLayout.addWidget(self.connectStatus, 4, 1)
-        #self.comLayout.addWidget(self.recordAction, 5, 0)
-     
+
         self.comLayout.addWidget(self.durationLabel, 6, 0)
         self.comLayout.addWidget(self.durationEdit, 6, 1)
         self.comLayout.addWidget(self.dataFileBaseLabel, 7, 0)
@@ -466,7 +461,7 @@ class Core:
 
     def updateResetButton(self, sensorStopButton):
         if DEVICE_DEMO_DICT[self.device]["isxWRLx432"]:
-            sensorStopButton.setHidden(True) # TODO change to false once sending sensorStop is implemented
+            sensorStopButton.setHidden(True) 
         else:
             sensorStopButton.setHidden(True)
 
@@ -559,7 +554,6 @@ class Core:
                     else:
                         with suppress(AttributeError):
                             self.demoClassDict[self.demo].parseChirpTimingCfg(args)
-                # TODO This is specifically guiMonitor for 60Lo, this parsing will break the gui when an SDK 3 config is sent
                 elif args[0] == "guiMonitor":
                     if DEVICE_DEMO_DICT[self.device]["isxWRLx432"]:
                         if len(args) < 12:

@@ -1,7 +1,6 @@
 # Standard Imports
 import serial
 import time
-import math
 import datetime
 import json_fix # import this anytime before the JSON.dumps gets called
 import json
@@ -107,10 +106,6 @@ class UARTParser():
             "frameData": outputDict
         })
     
-
-
-    def setSaveBinary(self, saveBinary):
-        self.saveBinary = saveBinary
 
 
     # This function is identical to the readAndParseUartDoubleCOMPort function, but it's modified to work for SingleCOMPort devices in the xWRLx432 family
