@@ -1,9 +1,9 @@
 import sys
 import os
 
-#sys.path.insert(1, os.path.abspath(os.path.join(os.getcwd(), "common")))# Uncomment for debug in VSCode or running from Applications_Visualizer dir
-base_dir = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(sys.executable)))
-sys.path.insert(1, os.path.join(base_dir, "common"))
+sys.path.insert(1, os.path.abspath(os.path.join(os.getcwd(), "common")))# Uncomment for debug in VSCode or running from Applications_Visualizer dir
+#base_dir = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(sys.executable)))
+#sys.path.insert(1, os.path.join(base_dir, "common"))
 
 # PySide2 Imports
 from PySide2.QtCore import Qt

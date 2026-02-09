@@ -38,7 +38,7 @@ from gui_threads import *
 
 from Demo_Classes.out_of_box_x432 import OOBx432
 
-from camera_tab import CameraTab
+#TEMP from camera_tab import CameraTab
 # Logger
 import logging
 log = logging.getLogger(__name__)
@@ -140,6 +140,9 @@ class Window(QMainWindow):
         self.durationLabel = QLabel("Duration (s):")
         self.durationEdit = QLineEdit("3") # Default to 3 seconds
         self.durationEdit.setToolTip("Enter recording duration in seconds")
+        self.dataFileBaseLabel = QLabel("Data file name:")
+        self.dataFileBaseEdit = QLineEdit("data")   # default base name
+        self.dataFileBaseEdit.setToolTip("Base name. File will save as <name>_<n>.json")
 
           # Record Push Button
         self.dataRecordButton = QPushButton("Record Data", self)
@@ -171,8 +174,9 @@ class Window(QMainWindow):
      
         self.comLayout.addWidget(self.durationLabel, 6, 0)
         self.comLayout.addWidget(self.durationEdit, 6, 1)
-
-        self.comLayout.addWidget(self.dataRecordButton, 7, 0, 1, 2) 
+        self.comLayout.addWidget(self.dataFileBaseLabel, 7, 0)
+        self.comLayout.addWidget(self.dataFileBaseEdit, 7, 1)
+        self.comLayout.addWidget(self.dataRecordButton, 8, 0, 1, 2)
 
         self.comBox.setLayout(self.comLayout)
         self.demoList.setCurrentIndex(0)  # initialize this to a stable value
@@ -320,11 +324,7 @@ class Window(QMainWindow):
         self.core.changeDemo(
             self.demoList, self.deviceList, self.gridLayout, self.demoTabs
         )
-        # When 2-Pass Video doorbell is the demo, you cannot send a cfg file over UART
-        if(self.core.demo == "Video Doorbell"):
-            self.sendConfig.setDisabled(1)
-        else:
-            self.sendConfig.setDisabled(0)
+        self.sendConfig.setDisabled(0)
 
         # self.core.changeDevice(self.demoList, self.deviceList, self.gridLayout, self.demoTabs)
 
@@ -333,11 +333,7 @@ class Window(QMainWindow):
         if (self.connectStatus.text() == "Not Connected" or self.connectStatus.text() == "Unable to Connect"):
             if self.core.connectCom(self.cliCom, self.connectStatus) == 0:
                 self.connectButton.setText("Reset Connection")
-                # When 2-Pass Video doorbell is the demo, you cannot send a cfg file over UART
-                if(self.core.demo == "Video Doorbell"):
-                    self.sendConfig.setEnabled(False)
-                else:
-                    self.sendConfig.setEnabled(True)
+                self.sendConfig.setEnabled(True)
                 self.start.setEnabled(True)
             else:
                 self.sendConfig.setEnabled(False)
@@ -476,8 +472,8 @@ class Core:
         # Make call to selected demo's initialization function
         if self.demo in self.demoClassDict:
             self.demoClassDict[self.demo].setupGUI(gridLayout, demoTabs, self.device)
-            self.cam_tab = CameraTab() 
-            demoTabs.addTab(self.cam_tab, "Camera feed")
+            # self.cam_tab = CameraTab() TEMP
+            # demoTabs.addTab(self.cam_tab, "Camera feed")
 
     def changeDevice(self, demoList, deviceList, gridLayout, demoTabs):
         self.device = deviceList.currentText()
