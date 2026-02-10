@@ -1,7 +1,6 @@
 # Standard Imports
 import serial
 import time
-import math
 import datetime
 import json_fix # import this anytime before the JSON.dumps gets called
 import json
@@ -47,11 +46,20 @@ class UARTParser():
         self.dataCounter = 0
     
         self.dataFrames = []
-        self.dataSession = None
+        self.dataFileBaseName = "data"
+        self._lastDataBaseName = "data"
         self.dataSessionIdx = 0
 
         self.recordingStartMs = None
         self.recordingEndMs = None
+
+    def setDataFileBaseName(self, base: str):
+        # reset numbering if base changes
+        if base != self._lastDataBaseName:
+            self._lastDataBaseName = base
+            self.dataSessionIdx = 0  
+
+        self.dataFileBaseName = base
 
     #Flush data to file
     def flush_data(self):
@@ -73,8 +81,9 @@ class UARTParser():
     #Set save data flag in class
     def setSaveData(self, new_saveData):
         if new_saveData == 1 and self.saveData != 1:
+            self.setDataFileBaseName(self.dataFileBaseName)
             self.dataSessionIdx += 1
-            self.dataSession = f"data_{self.dataSessionIdx}"
+            self.dataSession = f"{self.dataFileBaseName}_{self.dataSessionIdx}"
             self.dataCounter = 0
             self.dataFrames = []
             self.microDopplerStartMs = int(time.time() * 1000)
@@ -97,10 +106,6 @@ class UARTParser():
             "frameData": outputDict
         })
     
-
-
-    def setSaveBinary(self, saveBinary):
-        self.saveBinary = saveBinary
 
 
     # This function is identical to the readAndParseUartDoubleCOMPort function, but it's modified to work for SingleCOMPort devices in the xWRLx432 family
@@ -173,49 +178,8 @@ class UARTParser():
             # Save data every framesPerFile frames
             self.uartCounter += 1
 
-            # uncomment below to save bin data in Matlab-friendly format
-            # self.binData += frameData
-            # if (self.uartCounter % self.framesPerFile == 0):
-            #     # First file requires the path to be set up
-            #     if(self.first_file is True): 
-            #         if(os.path.exists('binData/') == False):
-            #             # Note that this will create the folder in the caller's path, not necessarily in the Industrial Viz Folder                        
-            #             os.makedirs('binData/', exist_ok=True)
-            #         os.makedirs('binData/'+self.filepath, exist_ok=True)
-            #         self.first_file = False
-            #     toSave = bytes(self.binData)
-                
-            #     fileName = 'binData/'+self.filepath+'/pHistBytes_'+str(math.floor(self.uartCounter/self.framesPerFile))+'.bin'
-            #     bfile = open(fileName, 'wb')
-            #     bfile.write(toSave)
-            #     bfile.close()
-            #     # Reset binData and missed frames
-            #     self.binData = []
-
-            # Saving data here for replay
-            frameJSON = {}
-            frameJSON['frameData'] = outputDict
-            frameJSON['timestamp'] = time.time() * 1000
-
-            self.frames.append(frameJSON)
-            data['data'] = self.frames
-
-            if (self.uartCounter % self.framesPerFile == 0):
-                if(self.first_file is True): 
-                    if(os.path.exists('binData/') == False):
-                        # Note that this will create the folder in the caller's path, not necessarily in the viz folder            
-                        os.makedirs('binData/', exist_ok=True)
-                    os.makedirs('binData/'+self.filepath, exist_ok=True)
-                    self.first_file = False
-                with open('./binData/'+self.filepath+'/replay_' + str(math.floor(self.uartCounter/self.framesPerFile)) + '.json', 'w') as fp:
-                    json_object = json.dumps(data, indent=4)
-                    fp.write(json_object)
-                    self.frames = [] # Uncomment to put data into one file at a time in 100 frame chunks
-
         return outputDict
 
-        
-    
     # Separate connectComPort (not PortS) for xWRL6432 because it only uses one port
     def connectComPort(self, cliCom, cliBaud=115200):
         # Longer timeout time for xWRL6432 to support applications with low power / low update rate
