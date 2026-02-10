@@ -53,6 +53,9 @@ class UARTParser():
         self.recordingStartMs = None
         self.recordingEndMs = None
 
+        # Run gait model
+        self.enable_gait_model = False
+
     #Flush data to file
     def flush_data(self):
         dir = os.path.join("binData", self.filepath)
@@ -163,7 +166,7 @@ class UARTParser():
         frameData += bytearray(self.cliCom.read(frameLength))
 
         # frameData now contains an entire frame, send it to parser
-        outputDict = parseStandardFrame(frameData, demo=self.demo)
+        outputDict = parseStandardFrame(frameData, self.demo, self.enable_gait_model)
 
         if self.saveData == 1:
                 self.save_data(outputDict)
