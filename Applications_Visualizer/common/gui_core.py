@@ -292,10 +292,10 @@ class Window(QMainWindow):
 
     def update_mode(self):
         if self.radio_gait_button.isChecked():
-            self.core.model_enabled = True
+            self.core.parser.enable_gait_model = True
             print("Switched to model")
         else: 
-            self.core.model_enabled = False
+            self.core.parser.enable_gait_model = False
             print("Switched to data collection")
 
     def displayErrorPopUp(self):
