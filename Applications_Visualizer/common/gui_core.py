@@ -25,7 +25,6 @@ from PySide2.QtWidgets import (
     QWidget,
     QShortcut,
     QSlider,
-    QCheckBox,
     QMessageBox,
     QApplication,
     QVBoxLayout,
@@ -119,6 +118,7 @@ class Window(QMainWindow):
         menuBar.addMenu(helpMenu)
 
     def openUserGuide(self):
+        #TODO change when user instructions ready
         userGuideURL = QUrl('https://dev.ti.com/tirex/local?id=mmwave_applications_visualizer_user_guide&packageId=radar_toolbox')
         openUserGuide = QtGui.QDesktopServices.openUrl(userGuideURL)
         
@@ -134,12 +134,14 @@ class Window(QMainWindow):
         self.connectButton.clicked.connect(self.onConnect)
         self.demoList = QComboBox()
         self.deviceList = QComboBox()
-        #self.recordAction = QCheckBox("Save Data to File", self)
         
          # Duration Label
         self.durationLabel = QLabel("Duration (s):")
         self.durationEdit = QLineEdit("3") # Default to 3 seconds
         self.durationEdit.setToolTip("Enter recording duration in seconds")
+        self.dataFileBaseLabel = QLabel("Data file name:")
+        self.dataFileBaseEdit = QLineEdit("data")   # default base name
+        self.dataFileBaseEdit.setToolTip("Base name. File will save as <name>_<n>.json")
 
           # Record Push Button
         self.dataRecordButton = QPushButton("Record Data", self)
@@ -150,8 +152,6 @@ class Window(QMainWindow):
         self.mdTimer.setSingleShot(True)
         self.mdTimer.timeout.connect(self.stopDataRecording)
 
-
-        # TODO Add replay support
         self.demoList.addItems(self.core.getDemoList())
         self.demoList.currentIndexChanged.connect(self.onChangeDemo)
         self.deviceList.addItems(self.core.getDeviceList())
@@ -167,12 +167,12 @@ class Window(QMainWindow):
        
         self.comLayout.addWidget(self.connectButton, 4, 0) 
         self.comLayout.addWidget(self.connectStatus, 4, 1)
-        #self.comLayout.addWidget(self.recordAction, 5, 0)
-     
+
         self.comLayout.addWidget(self.durationLabel, 6, 0)
         self.comLayout.addWidget(self.durationEdit, 6, 1)
-
-        self.comLayout.addWidget(self.dataRecordButton, 7, 0, 1, 2) 
+        self.comLayout.addWidget(self.dataFileBaseLabel, 7, 0)
+        self.comLayout.addWidget(self.dataFileBaseEdit, 7, 1)
+        self.comLayout.addWidget(self.dataRecordButton, 8, 0, 1, 2)
 
         self.comBox.setLayout(self.comLayout)
         self.demoList.setCurrentIndex(0)  # initialize this to a stable value
@@ -210,9 +210,11 @@ class Window(QMainWindow):
         duration_ms = int(duration_sec * 1000)
 
         # 2. Set flags and UI state
+        self.core.parser.setDataFileBaseName(self.dataFileBaseEdit.text())
         self.core.parser.setSaveData(True)
         
         self.dataRecordButton.setEnabled(False)
+        self.dataFileBaseEdit.setEnabled(False)
         self.dataRecordButton.setText(f"Recording ({duration_sec}s)...")
         self.durationEdit.setEnabled(False) # Lock input while recording
         
@@ -236,6 +238,7 @@ class Window(QMainWindow):
         
         # Reset UI
         self.dataRecordButton.setEnabled(True)
+        self.dataFileBaseEdit.setEnabled(True)
         self.dataRecordButton.setText("Record Data")
         self.durationEdit.setEnabled(True) # Unlock input
         
@@ -305,10 +308,6 @@ class Window(QMainWindow):
                 "Ensure that the device is in the proper SOP mode after flashing the correct binary, and that the cfg you are sending is valid")
         popUp.exec_()
     
-    # def loadCachedData(self):
-    #     self.core.loadCachedData(
-    #         self.demoList, self.deviceList, self.recordAction, self.gridLayout, self.demoTabs
-    #     )
 
     # Callback function when device is changed
     def onChangeDevice(self):
@@ -320,11 +319,7 @@ class Window(QMainWindow):
         self.core.changeDemo(
             self.demoList, self.deviceList, self.gridLayout, self.demoTabs
         )
-        # When 2-Pass Video doorbell is the demo, you cannot send a cfg file over UART
-        if(self.core.demo == "Video Doorbell"):
-            self.sendConfig.setDisabled(1)
-        else:
-            self.sendConfig.setDisabled(0)
+        self.sendConfig.setDisabled(0)
 
         # self.core.changeDevice(self.demoList, self.deviceList, self.gridLayout, self.demoTabs)
 
@@ -333,11 +328,7 @@ class Window(QMainWindow):
         if (self.connectStatus.text() == "Not Connected" or self.connectStatus.text() == "Unable to Connect"):
             if self.core.connectCom(self.cliCom, self.connectStatus) == 0:
                 self.connectButton.setText("Reset Connection")
-                # When 2-Pass Video doorbell is the demo, you cannot send a cfg file over UART
-                if(self.core.demo == "Video Doorbell"):
-                    self.sendConfig.setEnabled(False)
-                else:
-                    self.sendConfig.setEnabled(True)
+                self.sendConfig.setEnabled(True)
                 self.start.setEnabled(True)
             else:
                 self.sendConfig.setEnabled(False)
@@ -429,26 +420,6 @@ class Core:
             DEMO_OOB_x432: OOBx432()
         }
 
-    # def loadCachedData(self, demoList, deviceList, recordAction, gridLayout, demoTabs):
-    #     deviceName = self.cachedData.getCachedDeviceName()
-    #     demoName = self.cachedData.getCachedDemoName()
-    #     if self.cachedData.getCachedRecord() == "True":
-    #         recordState = True
-    #     else:
-    #         recordState = False
-    #     if deviceName in self.getDeviceList():
-    #         deviceList.setCurrentIndex(self.getDeviceList().index(deviceName))
-
-    #     if demoName in self.getDemoList():
-    #         demoList.setCurrentIndex(self.getDemoList().index(demoName))
-    #         self.changeDemo(demoList, deviceList, gridLayout, demoTabs)
-
-    #     if recordState:
-    #         self.parser.setSaveBinary(True)
-    #         recordAction.setChecked(True)
-    #     else:
-    #         #default recordAction is false so no need to set that here
-    #         self.parser.setSaveBinary(False)
 
     def getDemoList(self):
         return DEVICE_DEMO_DICT[self.device]["demos"]
@@ -490,7 +461,7 @@ class Core:
 
     def updateResetButton(self, sensorStopButton):
         if DEVICE_DEMO_DICT[self.device]["isxWRLx432"]:
-            sensorStopButton.setHidden(True) # TODO change to false once sending sensorStop is implemented
+            sensorStopButton.setHidden(True) 
         else:
             sensorStopButton.setHidden(True)
 
@@ -583,7 +554,6 @@ class Core:
                     else:
                         with suppress(AttributeError):
                             self.demoClassDict[self.demo].parseChirpTimingCfg(args)
-                # TODO This is specifically guiMonitor for 60Lo, this parsing will break the gui when an SDK 3 config is sent
                 elif args[0] == "guiMonitor":
                     if DEVICE_DEMO_DICT[self.device]["isxWRLx432"]:
                         if len(args) < 12:
