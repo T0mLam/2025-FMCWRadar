@@ -53,6 +53,9 @@ class UARTParser():
         self.recordingStartMs = None
         self.recordingEndMs = None
 
+        # Run gait model
+        self.enable_gait_model = False
+        
     def setDataFileBaseName(self, base: str):
         # reset numbering if base changes
         if base != self._lastDataBaseName:
@@ -106,8 +109,6 @@ class UARTParser():
             "frameData": outputDict
         })
     
-
-
     # This function is identical to the readAndParseUartDoubleCOMPort function, but it's modified to work for SingleCOMPort devices in the xWRLx432 family
     def readAndParseUartSingleCOMPort(self):
         # Reopen CLI port
@@ -168,7 +169,7 @@ class UARTParser():
         frameData += bytearray(self.cliCom.read(frameLength))
 
         # frameData now contains an entire frame, send it to parser
-        outputDict = parseStandardFrame(frameData, demo=self.demo)
+        outputDict = parseStandardFrame(frameData, self.demo, self.enable_gait_model)
 
         if self.saveData == 1:
                 self.save_data(outputDict)
