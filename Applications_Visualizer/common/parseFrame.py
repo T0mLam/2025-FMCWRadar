@@ -94,7 +94,7 @@ unusedTLVs = [
     MMWDEMO_OUTPUT_DEBUG_PHASE_DOPPLER_FFT_VOXEL_HEATMAP
 ]
 
-def parseStandardFrame(frameData, demo=None):
+def parseStandardFrame(frameData, demo=None, enable_gait_model=False):
     # Constants for parsing frame header
     headerStruct = 'Q8I'
     frameHeaderLen = struct.calcsize(headerStruct)
@@ -168,7 +168,7 @@ def parseStandardFrame(frameData, demo=None):
         outputDict['error'] = 3
         
     # Run supplemental logic on TLV Data before saving to file
-    classificationSupplement.run_frame(outputDict)
+    classificationSupplement.run_frame(outputDict, enable_gait_model)
 
     # Debug print to show Radar TLV data in
     # print(outputDict)

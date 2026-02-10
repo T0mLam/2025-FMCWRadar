@@ -1,6 +1,12 @@
 import math
+import sys
+import os
 from collections import deque
 import copy
+import torch
+import numpy as np 
+
+from .models.cnn_1d import CNN1D 
 
 NUM_CLASSES_IN_CLASSIFIER = 2
 CLASSIFIER_BUFFER_LEN = 30
@@ -9,6 +15,12 @@ MIN_CLASSIFICATION_VELOCITY = 0.3
 TAG_HISTORY_LEN = 5
 MAX_NUM_UNKNOWN_TAGS_FOR_HUMAN_DETECTION = 1
 MAX_NUM_TRACKS = 20 # This could vary depending on the configuration file. Use 20 here as a safe likely maximum to ensure there's enough memory for the classifier
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(_HERE, "models", "gait_model_weights.pt")
+MODEL_SEQ_LEN = 32
+PREDICTION_THRESHOLD = 0.75
+CLASS_DATA = { 0: "Alina", 1: "Michal" }
 
 class ClassificationSupplement():
     def __init__(self):
@@ -19,12 +31,24 @@ class ClassificationSupplement():
         self.classifierTags = [deque([0] * TAG_HISTORY_LEN, maxlen = TAG_HISTORY_LEN) for i in range(MAX_NUM_TRACKS)]
         self.tracksIDsInPreviousFrame = []
         self.wasTargetHuman = [0 for i in range(MAX_NUM_TRACKS)]
+
+        # Initialize pytorch model 
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.model = CNN1D(64, MODEL_SEQ_LEN, len(CLASS_DATA))
+        self.model.load_state_dict(torch.load(MODEL_PATH, weights_only=True))
+        self.model.eval()
         
-    def run_frame(self, outputDict):
+        # Initialize a list of queues to store the MODEL_SEQ_LEN number of 
+        # previous frames for each trackID
+        self.dopplerBuffer = [deque(maxlen=MODEL_SEQ_LEN) for _ in range(MAX_NUM_TRACKS)]
+        
+    def run_frame(self, outputDict, enable_gait_model=False):
         # Hold the track IDs detected in the current frame
         trackIDsInCurrFrame = []
         classifierOutput = None
         tracks = None
+        raw_doppler_data = outputDict.get('microDopplerRawData', None)
+
         if ('classifierOutput' in outputDict):
             classifierOutput = outputDict['classifierOutput']
         if ('trackData' in outputDict):
@@ -38,6 +62,12 @@ class ClassificationSupplement():
                 trackID = int(trackName[0])
                 # Hold the track IDs detected in the current frame
                 trackIDsInCurrFrame.append(trackID)
+
+                # Update doppler buffer 
+                if raw_doppler_data is not None:
+                    current_frame_data = raw_doppler_data[trackNum]
+                    self.dopplerBuffer[trackID].append(current_frame_data)
+
                 # Track Velocity (radial) = (x * v_x + y*v_y + z*v_z)/ r
                 trackVelocity = (trackName[1] * trackName[4] + trackName[2] * trackName[5] + trackName[3] * trackName[6]) \
                 / math.sqrt(math.pow(trackName[1], 2) + math.pow(trackName[2], 2) + math.pow(trackName[3], 2))
@@ -71,6 +101,12 @@ class ClassificationSupplement():
                     self.wasTargetHuman[trackID] = 1 # Target WAS detected to be human in the current frame, save for next frame
                     outputDict['ClassificationDecision'][trackID] = "Human"
 
+                    # Run model (optional)
+                    if enable_gait_model and self.model and len(self.dopplerBuffer[trackID]) == MODEL_SEQ_LEN:
+                        class_id, prob = self.run_human_gait_model_inference(trackID)
+                        # if (prob >= PREDICTION_THRESHOLD):
+                        outputDict['ClassificationDecision'][trackID] = f"{CLASS_DATA[class_id]} {prob:.2f}"
+
         # Regardless of whether you get tracks in the current frame, if there were tracks in the previous frame, reset the
         # tag buffer and wasHumanTarget flag for tracks that aren't detected in the current frame but were detected in the previous frame
         tracksToShuffle = set(self.tracksIDsInPreviousFrame) - set(trackIDsInCurrFrame)
@@ -81,3 +117,19 @@ class ClassificationSupplement():
 
         # Put the current tracks detected into the previous track list for the next frame
         self.tracksIDsInPreviousFrame = copy.deepcopy(trackIDsInCurrFrame)
+
+    def run_human_gait_model_inference(self, trackID):
+        data_sequence = np.array(self.dopplerBuffer[trackID])
+
+        input_tensor = torch.from_numpy(data_sequence).float().to(self.device)
+        input_tensor = input_tensor.unsqueeze(0)
+        # (Batch, Time, Feature) -> (Batch, Feature, Time)
+        input_tensor = input_tensor.permute(0, 2, 1)
+
+        with torch.no_grad():
+            probs = self.model(input_tensor)
+            # probs shape: (batch, num_classes)
+            predicted_class = torch.argmax(probs, dim=1).item()
+
+        # Return (class_id, prob) for the single-item batch
+        return (predicted_class, probs[0, predicted_class].item())
