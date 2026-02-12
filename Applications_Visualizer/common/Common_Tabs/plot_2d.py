@@ -2,7 +2,7 @@ import numpy as np
 import pyqtgraph as pg
 import pyqtgraph.opengl as gl
 
-from graph_utilities import eulerRot, getBoxArcs, getBoxLines
+from common.graph_utilities import eulerRot, getBoxArcs, getBoxLines
 
 # Different methods to color the points 
 COLOR_MODE_SNR = 'SNR'
