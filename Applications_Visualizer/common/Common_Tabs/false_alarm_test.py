@@ -1,4 +1,4 @@
-from graph_utilities import eulerRot, getBoxArcs, getBoxArcs2D ,getBoxLines, getSquareLines
+from common.graph_utilities import eulerRot, getBoxArcs, getBoxArcs2D ,getBoxLines, getSquareLines
 
 from PySide2.QtCore import Qt, QThread
 from PySide2.QtGui import QPixmap, QFont
