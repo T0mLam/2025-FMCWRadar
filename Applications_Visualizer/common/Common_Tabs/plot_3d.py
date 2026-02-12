@@ -4,7 +4,7 @@ import pyqtgraph.opengl as gl
 from PySide2.QtGui import QPixmap
 from PySide2.QtGui import QImage
 
-from graph_utilities import eulerRot, getBoxArcs, getBoxArcs2D ,getBoxLines, getSquareLines
+from common.graph_utilities import eulerRot, getBoxArcs, getBoxArcs2D ,getBoxLines, getSquareLines
 
 # Different methods to color the points 
 COLOR_MODE_SNR = 'SNR'
