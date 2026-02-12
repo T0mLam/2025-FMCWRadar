@@ -5,8 +5,8 @@ import copy
 
 from PySide2.QtWidgets import QGroupBox, QGridLayout, QLabel, QWidget, QVBoxLayout, QTabWidget, QComboBox, QCheckBox, QSlider, QFormLayout, QGraphicsWidget
 
-from graph_utilities import eulerRot, getBoxArcs, getBoxArcs2D ,getBoxLines, getSquareLines
-from Common_Tabs.plot_2d import Plot2D
+from common.graph_utilities import eulerRot, getBoxArcs, getBoxArcs2D ,getBoxLines, getSquareLines
+from common.Common_Tabs.plot_2d import Plot2D
 
 class RangeSNRPlotObject():
     def __init__(self):

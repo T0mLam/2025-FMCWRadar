@@ -1,4 +1,4 @@
-from graph_utilities import eulerRot, getBoxArcs, getBoxArcs2D ,getBoxLines, getSquareLines
+from common.graph_utilities import eulerRot, getBoxArcs, getBoxArcs2D ,getBoxLines, getSquareLines
 
 from PySide2.QtCore import Qt, QThread
 from PySide2.QtGui import QPixmap, QFont
@@ -6,7 +6,7 @@ import pyqtgraph.opengl as gl
 import pyqtgraph as pg
 from pyqtgraph.Qt import QtCore, QtGui
 from PySide2.QtWidgets import QPushButton, QSizePolicy, QHeaderView, QTableWidget, QTableWidgetItem, QGroupBox, QGridLayout, QLabel, QWidget, QVBoxLayout, QTabWidget, QComboBox, QCheckBox, QSlider, QFormLayout, QLineEdit, QPushButton
-from Common_Tabs.plot_3d import Plot3D
+from common.Common_Tabs.plot_3d import Plot3D
 import numpy as np
 import time
 # Logger

@@ -5,7 +5,7 @@ import numpy as np
 import pyqtgraph as pg
 
 # Local Imports
-from gui_common import next_power_of_2
+from common.gui_common import next_power_of_2
 
 # Logger
 import logging
