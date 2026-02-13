@@ -17,10 +17,13 @@ MAX_NUM_UNKNOWN_TAGS_FOR_HUMAN_DETECTION = 1
 MAX_NUM_TRACKS = 20 # This could vary depending on the configuration file. Use 20 here as a safe likely maximum to ensure there's enough memory for the classifier
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(_HERE, "models", "gait_model_weights.pt")
+MODEL_PATH = os.path.join(_HERE, "models", "gait_model_weights_10_2044.pt")
+START_FEATURE_IDX = 20
+END_FEATURE_IDX = 44
+NUM_FEATURES = 25
 MODEL_SEQ_LEN = 32
 PREDICTION_THRESHOLD = 0.75
-CLASS_DATA = { 0: "Alina", 1: "Michal" }
+CLASS_DATA = { 0: "Alina", 1: "Henry" }
 
 class ClassificationSupplement():
     def __init__(self):
@@ -34,7 +37,7 @@ class ClassificationSupplement():
 
         # Initialize pytorch model 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model = CNN1D(64, MODEL_SEQ_LEN, len(CLASS_DATA))
+        self.model = CNN1D(NUM_FEATURES, len(CLASS_DATA))
         self.model.load_state_dict(torch.load(MODEL_PATH, weights_only=True))
         self.model.eval()
         
@@ -66,7 +69,7 @@ class ClassificationSupplement():
                 # Update doppler buffer 
                 if raw_doppler_data is not None:
                     current_frame_data = raw_doppler_data[trackNum]
-                    self.dopplerBuffer[trackID].append(current_frame_data)
+                    self.dopplerBuffer[trackID].append(current_frame_data[START_FEATURE_IDX: END_FEATURE_IDX + 1])
 
                 # Track Velocity (radial) = (x * v_x + y*v_y + z*v_z)/ r
                 trackVelocity = (trackName[1] * trackName[4] + trackName[2] * trackName[5] + trackName[3] * trackName[6]) \
@@ -127,9 +130,10 @@ class ClassificationSupplement():
         input_tensor = input_tensor.permute(0, 2, 1)
 
         with torch.no_grad():
-            probs = self.model(input_tensor)
-            # probs shape: (batch, num_classes)
-            predicted_class = torch.argmax(probs, dim=1).item()
+            # preds shape: (num_classes,)
+            preds = self.model(input_tensor)[0]
+            probs = torch.softmax(preds, dim=0)
+            predicted_class = torch.argmax(probs).item()
 
         # Return (class_id, prob) for the single-item batch
-        return (predicted_class, probs[0, predicted_class].item())
+        return (predicted_class, probs[predicted_class].item())
