@@ -34,12 +34,12 @@ def get_stable_start_index(timestamps, target_fps=9, tolerance=0.2, stable_count
 
     return 0
 
-def process_data(raw_dir, processed_dir, seq_len=32, stride=1, trim_unstable_start=False):
+def process_data(raw_dir, processed_dir, seq_len=32, stride=1, trim_unstable_start=False, clear_dir=True, start_bin=0, end_bin=-1):
     """
     Parses JSON, removes unstable frames at the start of each file, filters human using ClassificationDecision, 
     and saves continuous sliding windows of sequences without gaps in Timestamp.
     """
-    if os.path.exists(processed_dir):
+    if clear_dir and os.path.exists(processed_dir):
         shutil.rmtree(processed_dir)
     os.makedirs(processed_dir, exist_ok=True)
 
@@ -81,7 +81,8 @@ def process_data(raw_dir, processed_dir, seq_len=32, stride=1, trim_unstable_sta
                 is_valid_human = len(raw_dopplers) > 0
 
                 # Append the bin data or None to mark a gap
-                full_sequence.append(raw_dopplers[0] if is_valid_human else None)
+                bin_slice = slice(start_bin, (end_bin + 1) or None)
+                full_sequence.append(raw_dopplers[0][bin_slice] if is_valid_human else None)
 
             if not full_sequence:
                 continue
@@ -105,7 +106,7 @@ def process_data(raw_dir, processed_dir, seq_len=32, stride=1, trim_unstable_sta
                 # Stack: (Batch, 64, 32)
                 tensor_data = torch.tensor(np.array(chunks), dtype=torch.float32)
                 # Save tensors
-                save_path = os.path.join(class_out_dir, f"{file_name}.pt")
+                save_path = os.path.join(class_out_dir, f"{os.path.basename(raw_dir)}_{file_name}.pt")
                 torch.save((tensor_data, label), save_path)
 
                 print(f"Saved {file_name}: {tensor_data.shape}")
@@ -121,13 +122,18 @@ def parse_args():
     default_proc = os.path.join(project_root, "data", "processed") 
     default_seq_len = 32
     default_stride = 1
+    default_start_bin = 0
+    default_end_bin = -1
 
     parser = argparse.ArgumentParser(description="Process micro-doppler JSON into training sequences.")
     parser.add_argument("-r", "--raw-dir", type=str, default=default_raw, help=f"Path to raw data folder (default: {default_raw})")
     parser.add_argument("-p", "--processed-dir", type=str, default=default_proc, help=f"Path to output processed data folder (default: {default_proc})")
     parser.add_argument("-l", "--seq-len", type=int, default=default_seq_len, help=f"Sliding window length in frames (default: {default_seq_len})")
     parser.add_argument("-s", "--stride", type=int, default=default_stride, help=f"Sliding window stride in frames (default: {default_stride})")
-    parser.add_argument("-t", "--trim-unstable-start", action="store_true", help="Remove unstable starting frames using get_stable_start_index.")
+    parser.add_argument("-t", "--trim-unstable-start", action="store_true", default=False, help="Trim unstable frames at the start of each file (default: False)")
+    parser.add_argument("-ncd", "--no-clear-dir", dest="clear_dir", action="store_false", help="Do not delete processed-dir before writing outputs")
+    parser.add_argument("-sb", "--start-bin", type=int, default=default_start_bin, help=f"Inclusive starting feature in the micro doppler array (default: {default_start_bin})")
+    parser.add_argument("-eb", "--end-bin", type=int, default=default_end_bin, help=f"Inclusive ending feature in the micro doppler array (default: {default_end_bin})")
 
     return parser.parse_args()
 
@@ -139,5 +145,8 @@ if __name__ == "__main__":
         seq_len=args.seq_len,
         stride=args.stride,
         trim_unstable_start=args.trim_unstable_start,
+        clear_dir=args.clear_dir,
+        start_bin=args.start_bin,
+        end_bin=args.end_bin,
     )
     
