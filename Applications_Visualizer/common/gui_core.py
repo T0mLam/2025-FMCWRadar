@@ -37,7 +37,7 @@ from gui_threads import *
 
 from Demo_Classes.out_of_box_x432 import OOBx432
 
-from camera_tab import CameraTab
+#TEMPfrom camera_tab import CameraTab
 # Logger
 import logging
 log = logging.getLogger(__name__)
@@ -447,8 +447,8 @@ class Core:
         # Make call to selected demo's initialization function
         if self.demo in self.demoClassDict:
             self.demoClassDict[self.demo].setupGUI(gridLayout, demoTabs, self.device)
-            self.cam_tab = CameraTab() 
-            demoTabs.addTab(self.cam_tab, "Camera feed")
+            #self.cam_tab = CameraTab() 
+            #demoTabs.addTab(self.cam_tab, "Camera feed")
 
     def changeDevice(self, demoList, deviceList, gridLayout, demoTabs):
         self.device = deviceList.currentText()
@@ -691,6 +691,16 @@ class Core:
                 return
 
             #cmd = ["wine", str(exe), "--action", "toggle"] #uncoment for linux 
+            # subprocess.run( #needed to not dump core
+            #     cmd,
+            #     cwd=str(xds_dir),
+            #     shell=False,
+            #     timeout=10,
+            #     check=False,
+            #     capture_output=True,
+            #     text=True,
+            # )
+            
             cmd = [str(exe), "--action", "toggle"]
             subprocess.run(cmd, cwd=str(xds_dir), shell=True, timeout=3, check=False)
 
@@ -708,8 +718,6 @@ class Core:
             if hasattr(demo, "plot_3d_thread"):
                 demo.plot_3d_thread.stop()
             if hasattr(demo, "plot_3d"):
-                demo.removeAllBoundBoxes()
-            if hasattr(demo, "power_report"):
-                demo.resetPowerNumbers()
+                demo.clearDetectionsOnly()
         self.boardReset()
 
