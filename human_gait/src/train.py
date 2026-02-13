@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import time
 
 from tqdm import tqdm
-from torch.optim import SGD
+from torch.optim import AdamW
 from torch.utils.data import DataLoader
 from torchmetrics.classification import MulticlassF1Score
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
@@ -236,6 +236,9 @@ def parse_args():
     
     parser.add_argument("-t", "--train-split", type=float, default=0.8, 
                         help="Fraction of data to use for training (default: 0.8)")
+    
+    parser.add_argument("-nspf", "--no-split-by-file", dest="split_by_file", action="store_false",
+                        help="Do not split the train and test dataset by file")
 
     # System & Output Configuration
     parser.add_argument("-dev", "--device", type=str, default="cpu", 
@@ -264,9 +267,15 @@ def save_results(model, stats, save_dir, args):
     cmd_path = os.path.join(run_dir, "run_command.sh")    
     cmd_parts = ["python", "-m", "src.train"]
     for key, value in vars(args).items():
+        if key == "split_by_file":
+            if value is False:
+                cmd_parts.append("--no-split-by-file")
+            continue
+
         flag = "--" + key.replace("_", "-")
         cmd_parts.append(flag)
         cmd_parts.append(str(value))
+
     cmd = " ".join(cmd_parts)
     with open(cmd_path, "w", encoding="utf-8") as f:
         f.write("#!/usr/bin/env bash\n")
@@ -366,15 +375,26 @@ def main():
         torch.cuda.manual_seed_all(args.seed)
 
     # Define datasets and loaders
-    train_set = GaitDataset(args.data_dir, train_split=args.train_split)
-    test_set = GaitDataset(args.data_dir, is_train=False, train_split=args.train_split)
+    train_set = GaitDataset(
+        args.data_dir,
+        train_split=args.train_split,
+        split_by_file=args.split_by_file,
+        split_seed=args.seed,
+    )
+    test_set = GaitDataset(
+        args.data_dir,
+        is_train=False,
+        train_split=args.train_split,
+        split_by_file=args.split_by_file,
+        split_seed=args.seed,
+    )
 
     train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True)
     test_loader = DataLoader(test_set, batch_size=args.batch_size, shuffle=True)
 
     # Define model     
-    model = CNN1D(num_features=train_set.feature_count, time_steps=train_set.window_size, output_size=len(train_set.classes))
-    optimizer = SGD(params=model.parameters(), lr=args.learning_rate)
+    model = CNN1D(num_features=train_set.feature_count, output_size=len(train_set.classes))
+    optimizer = AdamW(params=model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     loss_fn = nn.CrossEntropyLoss()   
 
     # Start the training loop
