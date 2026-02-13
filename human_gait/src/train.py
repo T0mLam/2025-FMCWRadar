@@ -249,6 +249,9 @@ def parse_args():
     
     parser.add_argument("--seed", type=int, default=42, 
                         help="Random seed for reproducibility (default: 42)")
+    
+    parser.add_argument("-l", "--label", type=str, default="", 
+                        help="Label for the output directory name (default: '')")
 
     return parser.parse_args()
 
@@ -260,6 +263,9 @@ def save_results(model, stats, save_dir, args):
 
     # Create a unique run folder to avoid overwriting previous results
     run_name = time.strftime("train_%Y%m%d_%H%M%S")
+    if args.label:
+        run_name += "_" + args.label
+
     run_dir = os.path.join(save_dir, run_name)
     os.makedirs(run_dir, exist_ok=True)
 
@@ -282,7 +288,6 @@ def save_results(model, stats, save_dir, args):
         f.write(cmd + "\n")
 
     # Save weights only
-
     weights_path = os.path.join(run_dir, "gait_model_weights.pt")
     torch.save(model.state_dict(), weights_path)
 
