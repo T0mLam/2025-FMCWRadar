@@ -91,7 +91,8 @@ def train(model, device, num_epoch, optimizer, loss_fn, class_data, train_datalo
             train_data_time += data_start - prev_end
             # 1. Forward pass
             X = X.to(device)
-            y = y.squeeze().long().to(device)
+            # Keep target as 1D [batch] even when batch_size == 1.
+            y = y.long().to(device).view(-1)
             
             step_start = time.perf_counter()
             y_pred = model(X)
@@ -140,7 +141,8 @@ def train(model, device, num_epoch, optimizer, loss_fn, class_data, train_datalo
                 test_data_time += data_start - prev_end
                 # 1. Forward pass   
                 X = X.to(device)
-                y = y.squeeze().long().to(device)
+                # Keep target as 1D [batch] even when batch_size == 1.
+                y = y.long().to(device).view(-1)
                 
                 step_start = time.perf_counter()
                 test_pred = model(X)
