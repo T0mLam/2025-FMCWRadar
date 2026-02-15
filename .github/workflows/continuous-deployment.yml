@@ -26,8 +26,9 @@ jobs:
         # Add any additional dependencies needed for training
         
     - name: Train model
+      working-directory: ./human_gait
       run: |
-        # Replace with your actual training command
+        python -m src.preprocess --raw-dir data/raw/deployment --processed-dir data/processed/deployment
         python train.py --data-path ./data --epochs 10
         
     - name: Save trained model
