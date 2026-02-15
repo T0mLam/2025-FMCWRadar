@@ -7,15 +7,12 @@ import matplotlib.pyplot as plt
 
 
 
-
 def load_data(file_path):
     with open(file_path, "r") as f:
         return json.load(f)
 
-
 def plot_subject(data, subject_name, num_frames=9):
     plt.figure(figsize=(10, 6))
-
     frames_plotted = 0
 
     for entry in data["data"]:
@@ -46,11 +43,11 @@ def plot_subject(data, subject_name, num_frames=9):
 
 
 def main():
-    file_path = f"human_gait/data/raw/2026-02-11/Henry/henry5.json"
+    file_path = f"human_gait/data/raw/2026-02-11/Alina/alina5.json"
 
     data = load_data(file_path)
 
-    plot_subject(data, "henry")
+    plot_subject(data, "alina")
 
 
 if __name__ == "__main__":
