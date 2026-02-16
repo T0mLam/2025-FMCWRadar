@@ -34,4 +34,4 @@ Outcome: Sprint 1 agenda completed.
 -	**Entire Team:** Standup to discuss Sprint 2 on Friday
 -	**Entire Team:** Prepare and plan for Testing day.
 
-**The agenda listed above is the focus of the sprint but not entire list of tasks that have been or will be completed.**
+**The agenda listed above is the focus of the sprint but not the entire list of tasks that have been or will be completed.**
