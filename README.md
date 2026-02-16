@@ -73,7 +73,6 @@ The below showcase how our sprints have been structured for the FMCW Radar proje
 - [Sprint 1](docs/docs/general/sprints/sprint-1.md)
 - [Sprint 2](docs/docs/general/sprints/sprint-2.md)
 - [Sprint 3](docs/docs/general/sprints/sprint-3.md)
-- [Sprint 4](docs/docs/general/sprints/sprint-4.md)
 
 It is recommended to view the above using our documentation website.
 
@@ -155,18 +154,21 @@ It is recommended to view the above using our documentation website.
 <details>
 <summary><strong>Click to expand</strong></summary>
 
-### In `Applications_Visualizer` open `IndustrialVisualiser.exe`
+### cd to `Applications_Visualizer` in your terminal and run `pip install -r requirements.txt`
+- NOTE: makesure you run on python 3.9 or 3.10
+### run python gui_main.py
+- NOTE: if still any modules missing install them
 ![Industrial Visualiser setup](</images/Industrial_Visualiser_1.jpg>)
 ### 1. Enter the COM port (for WINDOWS) in the field CLI com port
 ### Find COM port number: device manager find UART port number
 ### Press the connect button, then press the Select config button.
   ![Device manager COM port](</images/Device_manager.jpg>)
-  - NOTE: For linux port use comand readlink -f /dev/serial/by-id/* and enter CLI port in format /dev/ttyACM0 (commonly top one on the list)
+  - NOTE: For linux port use comand readlink -f /dev/serial/by-id/* and enter CLI port in format /dev/ttyACM0 (commonly top one in the list)
   - NOTE: reset button does not work on linux => need to reset device manualy.
-### 2. In `Applications_Visualizer\Industrial_Visualizer\chirp_configs` choose one of the config files and press Open. 
+### 2. In `Applications_Visualizer\ chirp_configs` choose one of the config files and press Open. 
 ![Chirp config load](</images/Industrial_Visualiser_2.jpg>)
-### Press the Start and Send configuration button.
-### 3. To record data: set the time in seconds (3 seconds is the default) and press the Record Data button. Use file name to castom the file name. Alos chose data collection model.
+  - Press the Start and Send configuration button.
+### 3. To record data: set the time in seconds (3 seconds is the default) and press the Record Data button. Use file name if needed. Alos chose data collection model.
 ![Data record button](</images/Industrial_Visualiser_3.jpg>)
 - Recorded data will be located in `Applications_Visualizer\binData`
 </details>
