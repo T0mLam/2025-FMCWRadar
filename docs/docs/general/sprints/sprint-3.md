@@ -26,4 +26,4 @@ Testing day went really well, we had a lot of interest in our project and all te
 - **Entire team**: Look into CD.
 - More tasks will be divided throughout the week.
 
-**The agenda listed above is the focus of the sprint but not entire list of tasks that have been or will be completed.**
+**The agenda listed above is the focus of the sprint but not the entire list of tasks that have been or will be completed.**
