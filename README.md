@@ -163,8 +163,8 @@ It is recommended to view the above using our documentation website.
   ![Device manager COM port](</images/Device_manager.jpg>)
 ### 2. In `Applications_Visualizer\Industrial_Visualizer\chirp_configs` choose one of the config files and press Open. 
 ![Chirp config load](</images/Industrial_Visualiser_2.jpg>)
-- Press the Start and Send configuration button.
-### 3. To record data: set the time in seconds (3 seconds is the default) and press the Record Data button. Use file name to castom the file name.
+### Press the Start and Send configuration button.
+### 3. To record data: set the time in seconds (3 seconds is the default) and press the Record Data button. Use file name to castom the file name. Alos chose data collection model.
 ![Data record button](</images/Industrial_Visualiser_3.jpg>)
 - Recorded data will be located in `Applications_Visualizer\Industrial_Visualizer\binData`
 - NOTE: For linux port use comand readlink -f /dev/serial/by-id/* and enter CLI port in format /dev/ttyACM0 (commonly top one on the list)
