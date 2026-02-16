@@ -37,6 +37,18 @@ jobs:
         python -m src.preprocess --raw-dir data/raw/deployment --processed-dir data/processed/deployment
         python train.py --data-path ./data/processed/deployment --model-save-dir ./models --epochs 10 
         
+    - name: Verify model output
+      working-directory: ./human_gait
+      run: |
+        echo "Contents of models directory:"
+        ls -la models/
+        if [ ! "$(ls -A models/)" ]; then
+          echo "ERROR: Models directory is empty!"
+          exit 1
+        fi
+        echo "Model files found successfully."    
+
+        
     - name: Save trained model
       uses: actions/upload-artifact@v4
       with:
