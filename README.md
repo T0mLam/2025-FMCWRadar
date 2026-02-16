@@ -157,12 +157,10 @@ It is recommended to view the above using our documentation website.
 
 ### In `Applications_Visualizer\Industrial_Visualizer` open `IndustrialVisualiser.exe`
 ![Industrial Visualiser setup](</images/Industrial_Visualiser_1.jpg>)
-### 1. Enter the COM port (for WINDOWS) in the field
-### a) device manager find UART port number
-  ![Device manager COM port](</images/Device_manager.jpg>)
----
-### Functionality:
+### 1. Enter the COM port (for WINDOWS) in the field CLI com port
+### Find COM port number: device manager find UART port number
 - Press the connect button, then press the Select config button.
+  ![Device manager COM port](</images/Device_manager.jpg>)
 2. In `Applications_Visualizer\Industrial_Visualizer\chirp_configs` choose one of the config files and press Open. 
 ![Chirp config load](</images/Industrial_Visualiser_2.jpg>)
 - Press the Start and Send configuration button.
