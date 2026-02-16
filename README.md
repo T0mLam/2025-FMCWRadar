@@ -73,6 +73,7 @@ The below showcase how our sprints have been structured for the FMCW Radar proje
 - [Sprint 1](docs/docs/general/sprints/sprint-1.md)
 - [Sprint 2](docs/docs/general/sprints/sprint-2.md)
 - [Sprint 3](docs/docs/general/sprints/sprint-3.md)
+- [Sprint 4](docs/docs/general/sprints/sprint-4.md)
 
 It is recommended to view the above using our documentation website.
 
