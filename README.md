@@ -157,21 +157,20 @@ It is recommended to view the above using our documentation website.
 
 ### In `Applications_Visualizer\Industrial_Visualizer` open `IndustrialVisualiser.exe`
 ![Industrial Visualiser setup](</images/Industrial_Visualiser_1.jpg>)
-### 1. Choose xWRL6432 device
-### 2.  a) device manager find UART port number
+### 1. Enter the COM port (for WINDOWS) in the field
+### a) device manager find UART port number
   ![Device manager COM port](</images/Device_manager.jpg>)
-### b) Enter the COM port number in CLI port field
-### 3. Choose x432 Out of Box Demo in demo field
 ---
 ### Functionality:
 - Press the connect button, then press the Select config button.
-- In `Applications_Visualizer\Industrial_Visualizer\chirp_configs` choose one of the config files and press Open. 
+2. In `Applications_Visualizer\Industrial_Visualizer\chirp_configs` choose one of the config files and press Open. 
 ![Chirp config load](</images/Industrial_Visualiser_2.jpg>)
 - Press the Start and Send configuration button.
-- To record data: set the time in seconds (3 seconds is the default) and press the Record Data button.
+3. To record data: set the time in seconds (3 seconds is the default) and press the Record Data button. Use file name to castom the file name.
 ![Data record button](</images/Industrial_Visualiser_3.jpg>)
 - Recorded data will be located in `Applications_Visualizer\Industrial_Visualizer\binData`
-
+- NOTE: For linux port use comand readlink -f /dev/serial/by-id/* and enter CLI port in format /dev/ttyACM0 (commonly top one on the list)
+- NOTE: reset button does not work on linux => need to reset device manualy.
 </details>
 
 ## Model Compilation User Instructions
