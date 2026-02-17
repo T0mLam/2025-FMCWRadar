@@ -17,7 +17,7 @@ MAX_NUM_UNKNOWN_TAGS_FOR_HUMAN_DETECTION = 1
 MAX_NUM_TRACKS = 20 # This could vary depending on the configuration file. Use 20 here as a safe likely maximum to ensure there's enough memory for the classifier
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(_HERE, "models", "gait_model_weights_10_2044.pt")
+MODEL_PATH = os.path.join(_HERE, "models", "gait_model_weights_bf_5.pt")
 START_FEATURE_IDX = 20
 END_FEATURE_IDX = 44
 NUM_FEATURES = 25
