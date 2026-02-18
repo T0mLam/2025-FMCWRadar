@@ -40,6 +40,19 @@ All research and learning with the help of AI Tools is cross-referenced with off
 
 - “We added a `Record Data` button to the visualiser, but clicking it doesn’t create a file in `binData/`. Here’s the button callback code and the expected output path. What could be going wrong here?"
 
+#### Team Member Prompts:
+
+- **Dan:** "Here is the research I have written about how radar works, look through it for typos and grammar mistakes, but do not write anything of your own"
+
+- **Talal:** "I've attached a picture of the board schematics; however, i'm having trouble understanding the different symbols and technical terms, explain them to me in simple terms".
+
+- **Alina:** "I have attached publicly available documentation regarding micro-Doppler and how it works, simplify the terms for me and give me the key notes".
+
+- **Henry:** "I have pasted my terminal messages I'm having problems with venv even after following the requirements.txt, diagnose the issue and how I can fix setting up my environment".
+
+- **Tom:** "What are the different approaches we can take in data recording sessions and what are the advantages/disadvantages of each method (e.g. 10 mins of continuous data/30 second clips)".
+
+- **Michal:** "I've attached the research my team members have written up but I would like more information regarding how the machine learning model pipeline works".
 
 ## Review Process
 - All technical claims from AI are cross-referenced against primary sources (TI docs, SDK manuals etc.).
