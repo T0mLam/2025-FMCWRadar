@@ -29,4 +29,4 @@ jobs:
           pip install -r Applications_Visualizer/requirements.txt
           pip install pytest
 
-      - run: pytest Applications_Visualizer
+      - run: pytest
