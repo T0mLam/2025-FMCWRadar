@@ -185,6 +185,34 @@ class Plot3D():
             self.modeSwitchLabel.setStyleSheet("background-color: lightgrey; border: 1px solid black;")
         self.boundaryBoxList.clear()
 
+    def clearDetectionsOnly(self):
+        # Clear persistent point cloud buffer
+        self.previousClouds.clear()
+        # Clear current scatter plots
+        self.scatter.setData(pos=np.zeros((1, 3)))
+        self.scatterClusters.setData(pos=np.zeros((1, 3)))
+        # Remove dynamic text/ellipsoids if they were added as GL items
+        for item in self.coordStr:
+            try:
+                self.plot_3d.removeItem(item)
+            except Exception:
+                pass
+        self.coordStr.clear()
+
+        for item in self.classifierStr:
+            try:
+                self.plot_3d.removeItem(item)
+            except Exception:
+                pass
+        self.classifierStr.clear()
+
+        for item in self.ellipsoids:
+            try:
+                self.plot_3d.removeItem(item)
+            except Exception:
+                pass
+        self.ellipsoids.clear()
+        
     def changeBoundaryBoxColor(self, box, color):
         box['plot'].setData(pos=box['boxLines'], color=pg.glColor(color),width=2,antialias=True,mode='lines')
 
