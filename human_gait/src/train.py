@@ -229,7 +229,7 @@ def parse_args():
     parser.add_argument("-b", "--batch-size", type=int, default=32, 
                         help="Batch size for training and testing (default: 32)")
     
-    parser.add_argument("--weight-decay", type=float, default=1e-4, 
+    parser.add_argument("-wd", "--weight-decay", type=float, default=1e-4, 
                         help="Weight decay (L2 penalty) for the optimizer (default: 0.0001)")
 
     # Data Configuration

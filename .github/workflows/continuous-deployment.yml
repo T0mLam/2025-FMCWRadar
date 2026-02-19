@@ -1,0 +1,46 @@
+name: Train Model on Push/Pull
+
+on:
+  push:
+    branches: [ main, dev ]
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Build Docker image
+      run: |
+        docker build -f docker/Dockerfile.cd -t gait-model-trainer ./human_gait
+
+    - name: Train model via Docker
+      run: |
+        # Mount the current directory so Docker can write to data/ and output/
+        # Use -v to map local data to the /workspace path in your container
+        mkdir -p ${{ github.workspace }}/human_gait/output
+        docker run --rm \
+          -v ${{ github.workspace }}/human_gait/data:/workspace/data \
+          -v ${{ github.workspace }}/human_gait/output:/workspace/output \
+          gait-model-trainer
+        
+    - name: Verify model output
+      working-directory: ./human_gait
+      run: |
+        echo "Checking the output directory..."
+        ls -R output/
+        # Check if output directory exists and is not empty
+        if [ ! -d "output" ] || [ -z "$(ls -A output/)" ]; then
+          echo "ERROR: Models directory is missing or empty!"
+          exit 1
+        fi
+        echo "Model artifacts and training logs found successfully."
+
+        
+    - name: Upload training artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: gait-recognition-training-results
+        path: human_gait/output/train_*
