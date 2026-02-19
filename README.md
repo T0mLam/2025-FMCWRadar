@@ -1,9 +1,32 @@
 ﻿# 2025-FMCWRadar
 
+<p align="left">
+  <img src="https://skillicons.dev/icons?i=python,pytorch,opencv,docker" />
+</p>
+
+
+### View our documentation website below:
 [![Docs](https://img.shields.io/badge/docs-website-blue)](https://spe-uob.github.io/2025-FMCWRadar)
 
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Stakeholders](#stakeholders)
+- [User Stories](#user-stories)
+- [Project Workflow](#project-workflow)
+- [Project Structure](#project-structure)
+- [Tech Stack](#tech-stack)
+- [Architecture Diagram](#architecture-diagram)
+- [Industrial Visualiser User Instructions](#industrial-visualiser-user-instructions)
+- [Model Compilation User Instructions](#model-compilation-user-instructions)
+- [Research](#research)  
+- [Launching the docs website](#launching-the-docs-website)
+- [Internal Links](#internal-links)
+- [Team Members](#team-members)
+- [Client Contacts](#client-contacts)
+
 ## Project Overview
-This project examines Texas Instruments (TI) FMCW radar sensors as compact, single-chip devices for human-motion analysis. These sensors integrate radio, processing, and antenna resources to estimate target distance, motion, and bearing, with the advantage of functioning in varied environments, lighting conditions and mitigating privacy concerns. These sensors are commonly applied to people-sensing tasks in indoor environments.
+This project examines Texas Instruments (TI) FMCW radar sensors as compact, single-chip devices for human-motion analysis. These sensors integrate radio, processing, and antenna resources to estimate target distance, motion, and bearing, with the advantage of functioning in varied environments, lighting conditions, and mitigating privacy concerns. These sensors are commonly applied to people-sensing tasks in indoor environments.
 
 Our work during this project will begin with a research-first baseline. We will study the official TI materials and documentation to understand the sensor outputs and processing pipeline, define a clear data-collection and labelling protocol, assemble an internal dataset using the FMCW radar, and develop a machine learning model trained on the internal dataset to identify different people based on movement characteristics such as their unique walking gait. A visualisation tool will be created in order to view the captured radar data so results can be reviewed immediately.
 
@@ -16,27 +39,27 @@ Our work during this project will begin with a research-first baseline. We will 
 **Texas Instruments’ (TI) customers**:
 - Civil tech companies: Want to implement reliable occupancy sensing technology for public facilities and stations.
   
-- Healthcare technology providers: These companies seek privacy preserving patient movement monitoring systems, and Texas Instruments’ radars allow for that privacy.
+- Healthcare technology providers: These companies seek privacy-preserving patient movement monitoring systems, and Texas Instruments’ radars allow for that privacy.
   
-- Automotive & Mobility companies: These businesses are interested in hands free vehicle access and in-cabin/approach detection technology that is robust in a variety of conditions and lighting.
+- Automotive & Mobility companies: These businesses are interested in hands-free vehicle access and in-cabin/approach detection technology that is robust in a variety of conditions and lighting.
 
 **End Users**:
 - Security Guards: Benefit from timely presence alerts when they’re not actively watching monitors.
   
 - Patients in clinical rooms & elderly at home: Gain discreet safety monitoring without the use of cameras to prevent accidents from happening.
   
-- Car Owners: Expect doors to open hands free without false triggers.
+- Car Owners: Expect doors to open hands-free without false triggers.
 
 
-## User stories
+## User Stories
 - **Car owners:**  
-  As a *car owner*, I want to be able to open my car door hands free, so that I don’t have to put down my shopping, child, or anything else I'm carrying. This also prevents my hands from getting wet from a wet handle.
+  As a *car owner*, I want to be able to open my car door hands-free, so that I don’t have to put down my shopping, child, or anything else I'm carrying. This also prevents my hands from getting wet from a wet handle.
   
 - **Security personnel:**  
   As a *security guard*, I want there to be an early warning system when people are detected, so that if I am not actively monitoring the surveillance systems, there is an extra layer of security.
 
 - **Healthcare:**  
-  As a *nurse*, I want ensure that patients under care are stable, without breaching their privacy.
+  As a *nurse*, I want to ensure that patients under care are stable, without breaching their privacy.
 
 - **Civil infrastructure:**  
   As a *civil engineer*, I want to design a public bathroom that will automatically lock or unclock depending on occupancy.
@@ -44,17 +67,157 @@ Our work during this project will begin with a research-first baseline. We will 
 - **Texas Instruments (TI):**  
   As a *Texas Instruments (TI) Solutions Engineer*, I want a robust, reproducible demo and evaluation using our FMCW Radar outputs so that we can validate people-sensing use cases and identify gaps in our documentation and examples.
 
-## Architecture diagram 
+## Project Workflow
+The below showcase how our sprints have been structured for the FMCW Radar project since TB2:
+- [All Sprints](docs/docs/general/sprints)
+- [Sprint 1](docs/docs/general/sprints/sprint-1.md)
+- [Sprint 2](docs/docs/general/sprints/sprint-2.md)
+- [Sprint 3](docs/docs/general/sprints/sprint-3.md)
 
-![Architecture diagram](<Architecture diagram.jpg>)
+It is recommended to view the above using our documentation website.
 
-## Proposed diagram
+## Project Structure
 
-![Proposed diagram](<TI diagram.png>)
+```
+2025-FMCWRadar/
+├─ .github/                              # GitHub workflows / repo configuration
+├─ Applications_Visualizer/              # Industrial visualiser (UART + live visualisation)
+│  ├─ requirements.txt                   # Visualiser dependencies (Qt/OpenGL/serial/etc.)
+│  └─ Industrial_Visualizer/             # Packaged exe + configs + output folders
+│     ├─ chirp_configs/                  # Radar config files used by the visualiser
+│     └─ binData/                        # Recorded binary radar captures (output)
+├─ docker/                               # Container tooling for TI-TVM / ONNX workflows
+├─ docs/                                 # Docusaurus documentation website
+│  ├─ README.md                          # How to run/build docs locally
+│  ├─ package.json                       # Docs dependencies + scripts
+│  └─ docs/                              # Documentation content (sprints, guides, etc.)
+├─ human_gait/                           # Gait identification pipeline (data → preprocess → train)
+│  ├─ configs/                           # Configuration files
+│  ├─ data/
+│  │  ├─ raw/                            # Original JSON radar recordings
+│  │  └─ processed/                      # Preprocessed .pt tensors for training
+│  ├─ src/
+│  │  ├─ dataset.py                      # PyTorch Dataset class
+│  │  ├─ preprocess.py                   # Data cleaning and windowing script
+│  │  ├─ train.py                        # Training loop
+│  │  └─ models/                         # CNN architecture definitions
+│  ├─ README.md
+│  └─ requirements.txt
+├─ images/                               # Images used in README/docs (architecture, screenshots)
+├─ posture/                              # Posture model experiments + artifacts
+│  ├─ pytorch_fp_model-POSTURE.ipynb
+│  └─ pytorch_fp_model-POSTURE-RELATIVE_POS.ipynb
+├─ scripts/
+│  └─ linux/
+│     └─ compile_model.sh                # TVM (tvmc) compiles ONNX → C/AOT library for Cortex-M4 (CCS)
+├─ .gitignore                            # Git ignore rules
+├─ Makefile                              # Shortcuts (docker/tvm commands, etc.)
+├─ README.md                             # Main project overview
+└─ package-lock.json                     # Node lockfile (docs tooling)
+```
+
+## Tech Stack
+### Hardware
+- [**TI IWRL6432BOOST Radar**](https://www.ti.com/tool/IWRL6432BOOST?keyMatch=iwrl6432boost&tisearch=universal_search)
+- [**Logitech C270 Webcam**](https://www.logitech.com/en-gb/shop/p/c270-hd-webcam)
+
+### Software
+- [**Python (3.10)**](https://www.python.org)
+- [**Jupyter Notebook**](https://jupyter.org)
+- [**PyTorch**](https://pytorch.org)
+
+### Developer tools
+| Tool | Why we use it |
+|---|---|
+| [TI mmWave Software Development Kit](https://www.ti.com/tool/MMWAVE-L-SDK) | TI’s official kit providing firmware, drivers, and reference demos/tools for configuring the sensor and processing mmWave data. |
+| [Code Composer Studio (CCS)](https://www.ti.com/tool/CCSTUDIO) | TI’s IDE for building, flashing, and debugging code on TI devices. |
+| [Docusaurus](https://spe-uob.github.io/2025-FMCWRadar/) | Builds and hosts the documentation website. |
+| [PySide2](https://pypi.org/project/PySide2/) | Desktop GUI framework for building the visualiser UI. |
+| [PyOpenGL](https://pypi.org/project/PyOpenGL/) | Hardware-accelerated 2D/3D rendering. |
+| [pyqtgraph](https://www.pyqtgraph.org/) | Fast real-time plotting for streaming signals. |
+| [pyserial](https://pypi.org/project/pyserial/) | Reads radar frames over UART/serial. |
+| [NumPy](https://numpy.org/) | Efficient numerical processing on incoming frames/point clouds. |
+| [OpenCV](https://pypi.org/project/opencv-python/) | Image-style processing and display utilities. |
+| [json-fix](https://pypi.org/project/json-fix/) | More robust JSON handling for config files. |
+| [PyInstaller](https://pyinstaller.org/) | Packages the visualiser into a standalone executable for distribution. |
+| [Git](https://git-scm.com/about) + [GitHub](https://github.com/) | Version control and collaboration. |
+| [ONNX](https://onnx.ai/) | Used as the export format for trained PyTorch models before compiling them with TVM (`tvmc`) into C/AOT artifacts for deployment in a CCS project (Cortex-M4). |
+||
+
+
+## Architecture diagram
+
+![Architecture Diagram](</images/TI diagram.png>)
+
+## Industrial Visualiser User Instructions 
+
+<details>
+<summary><strong>Click to expand</strong></summary>
+
+### change your directory to `Applications_Visualizer` in your terminal and run `pip install -r requirements.txt`
+- NOTE: Make sure to run on python 3.9 or 3.10.
+### run python gui_main.py
+- NOTE: If there are still any modules missing install them.
+![Industrial Visualiser setup](</images/Industrial_Visualiser_1.jpg>)
+### 1. Enter the COM port (for WINDOWS) in the field CLI com port
+### Find the COM port number: device manager find UART port number
+### Press the connect button, then press the Select config button.
+  ![Device manager COM port](</images/Device_manager.jpg>)
+  - NOTE: For a linux port use the command readlink -f /dev/serial/by-id/* and enter the CLI port in the format /dev/ttyACM0 (commonly the top one in the list)
+  - NOTE: The reset button does not work on linux => you will need to reset device manualy.
+### 2. In `Applications_Visualizer\ chirp_configs` choose one of the config files and press Open. 
+![Chirp config load](</images/Industrial_Visualiser_2.jpg>)
+  - Press the Start and Send configuration button.
+### 3. To record data: set the time in seconds (3 seconds is the default) and press the Record Data button. Use a file name if needed. Also select the data collection model.
+![Data record button](</images/Industrial_Visualiser_3.jpg>)
+- Recorded data will be located in `Applications_Visualizer\binData`
+</details>
+
+## Model Compilation User Instructions
+<details>
+<summary><strong>Click to expand</strong></summary>
+
+
+Once you have exported your trained PyTorch model to an ONNX file, you will need to compile the model into C binaries in order to run on the board as a CCS project.
+
+### A) Use our TI-TVM Docker container
+- Launch the container and run custom commands
+
+    ```bash
+    make tvm 
+    ```
+
+- Shortcut for launching the container and running compilation
+
+    ```bash
+    make tvm-compile MODEL_PATH=./your_model_name.onnx OUT_DIR=./model_artifacts
+    ```
+ 
+Example terminal output:
+
+![Terminal Output](docs/docs/user_manual/model_compilation/terminal_output.png)
+
+**Output Files:**
+
+![Output Files](docs/docs/user_manual/model_compilation/file_output.png)
+
+### B) Setup your own environment
+The [2024-mmWaveRadarSensors](https://github.com/spe-uob/2024-mmWaveRadarSensors) team has written a detailed guide on model compilation, you can follow the instructions step by step to achieve the same result.
+
+[*-> Model Compilation Guide*](https://spe-uob.github.io/2024-mmWaveRadarSensors/General/User_Instructions.html#compiling-the-model)
+
+</details>
+  
+## Research
+Most of our research for this project is written down on our documentation site however, below are a few of the key notes:
+
+- [**Radar Research**](https://spe-uob.github.io/2025-FMCWRadar/docs/research/radar-research)
+- [**Introduction to Micro Doppler**](https://spe-uob.github.io/2025-FMCWRadar/docs/research/micro-doppler-research/introduction)
+- [**What the data looks like**](https://spe-uob.github.io/2025-FMCWRadar/docs/research/micro-doppler-research/data_overview)
 
 ## Launching the docs website
 
-1. install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
+1. Install [node.js & npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 2. Follow the step by step instructions in [`/docs/README.md`](/docs/README.md)
 
 ## Internal Links
@@ -79,6 +242,15 @@ Our work during this project will begin with a research-first baseline. We will 
 |-----------------|-----------------------------------|
 | Greg Peake      | g-peake@ti.com                    |
 | Pedrhom Nafisi  | p-nafisi@ti.com                   |
+
+
+
+
+
+
+
+
+
 
 
 

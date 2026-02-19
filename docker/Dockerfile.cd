@@ -1,0 +1,19 @@
+FROM python:3.14-slim
+
+WORKDIR /workspace
+
+# Install system dependencies (needed for some ML libraries)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+ENV MPLBACKEND=Agg
+ENV PYTHONPATH=/workspace
+
+CMD python -m src.preprocess -r data/raw/ta -l 32 -s 16 -sb 20 -eb 44 && \
+    python -m src.train -lr 0.0001 -e 200 -b 8 -wd 0.001 -d data/processed -s output/ -nspf 
