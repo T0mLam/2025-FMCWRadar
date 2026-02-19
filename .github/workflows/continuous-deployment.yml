@@ -2,15 +2,7 @@ name: Train Model on Push/Pull
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'human_gait/**'
-      - 'requirements.txt'
-  pull_request:
-    branches: [ main ]
-    paths:
-      - 'human_gait/**'
-      - 'requirements.txt'
+    branches: [ main, dev ]
 
 jobs:
   train:
@@ -20,38 +12,35 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.9'
-        cache: 'pip'
-        
-    - name: Install dependencies
+    - name: Build Docker image
       run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        
-    - name: Train model
-      working-directory: ./human_gait
+        docker build -f docker/Dockerfile.cd -t gait-model-trainer ./human_gait
+
+    - name: Train model via Docker
       run: |
-        python -m src.preprocess --raw-dir data/raw/deployment --processed-dir data/processed/deployment
-        python train.py --data-path ./data/processed/deployment --model-save-dir ./models --epochs 10 
+        # Mount the current directory so Docker can write to data/ and output/
+        # Use -v to map local data to the /workspace path in your container
+        mkdir -p ${{ github.workspace }}/human_gait/output
+        docker run --rm \
+          -v ${{ github.workspace }}/human_gait/data:/workspace/data \
+          -v ${{ github.workspace }}/human_gait/output:/workspace/output \
+          gait-model-trainer
         
     - name: Verify model output
       working-directory: ./human_gait
       run: |
-        echo "Contents of models directory:"
-        ls -la models/
-        if [ ! "$(ls -A models/)" ]; then
-          echo "ERROR: Models directory is empty!"
+        echo "Checking the output directory..."
+        ls -R output/
+        # Check if output directory exists and is not empty
+        if [ ! -d "output" ] || [ -z "$(ls -A output/)" ]; then
+          echo "ERROR: Models directory is missing or empty!"
           exit 1
         fi
-        echo "Model files found successfully."    
+        echo "Model artifacts and training logs found successfully."
 
         
-    - name: Save trained model
+    - name: Upload training artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: trained-model
-        path: human_gait/models
-        retention-days: 7
+        name: gait-recognition-training-results
+        path: human_gait/output/train_*
