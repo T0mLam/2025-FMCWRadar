@@ -1,0 +1,7 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+matplotlib>=3.10.8
+numpy>=2.4.2
+scikit-learn>=1.8.0
+torch>=2.8.0
+torchmetrics>=1.8.2
+tqdm>=4.67.1
