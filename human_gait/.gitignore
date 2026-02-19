@@ -216,5 +216,8 @@ __marimo__/
 .streamlit/secrets.toml
 
 # Human gait recognition dataset
-data/
+data/*
+!data/raw/
+data/raw/*
+!data/raw/ta/
 output/
