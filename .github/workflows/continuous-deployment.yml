@@ -2,7 +2,7 @@ name: Train Model on Push/Pull
 
 on:
   push:
-    branches: [ '**' ]
+    branches: [ main, dev ]
 
 jobs:
   train:
