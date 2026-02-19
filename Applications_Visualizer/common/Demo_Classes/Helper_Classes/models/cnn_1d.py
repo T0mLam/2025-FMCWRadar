@@ -1,7 +1,4 @@
 from torch import nn
-import math
-from torchinfo import summary
-
 
 class CNN1D(nn.Module):
     """
@@ -10,7 +7,7 @@ class CNN1D(nn.Module):
     Figure 4-2. 1D CNN Architecture for Motion Classification
     https://www.ti.com/lit/wp/swra774/swra774.pdf
     """
-    def __init__(self, num_features, time_steps, output_size):
+    def __init__(self, num_features, output_size):
         super().__init__()
         self.conv_block1 = nn.Sequential(
             nn.Conv1d(num_features, 16, kernel_size=3, padding=1),
@@ -27,9 +24,15 @@ class CNN1D(nn.Module):
             nn.ReLU(),
             nn.BatchNorm1d(64)
         )
+        
         self.pool = nn.AvgPool1d(kernel_size=2)
-        self.fc = nn.Linear(64 * math.floor(time_steps / 2), output_size)
-        self.softmax = nn.Softmax(dim=1)
+        self.gap = nn.AdaptiveAvgPool1d(1) # (B, C, T) -> (B, C, 1)
+
+        self.classifier = nn.Sequential(
+            nn.Flatten(), # (B, C, 1) -> (B, C)
+            nn.Dropout(0.5),
+            nn.Linear(64, output_size)
+        )
 
     def forward(self, x):
         # Input shape: (batch, channel, length)
@@ -37,14 +40,6 @@ class CNN1D(nn.Module):
         out = self.conv_block2(out)
         out = self.conv_block3(out)
         out = self.pool(out)
-
-        # (batch, channel, length) -> (batch, channel * length)
-        out = out.view(out.size(0), -1)
-        out = self.fc(out)
-
-        return self.softmax(out)
-    
-
-if __name__ == "__main__":
-    model = CNN1D(64, 32, 5)
-    summary(model, input_size=[32, 64, 32])
+        out = self.gap(out)
+        out = self.classifier(out)
+        return out 
