@@ -22,7 +22,7 @@ START_FEATURE_IDX = 20
 END_FEATURE_IDX = 44
 NUM_FEATURES = 25
 MODEL_SEQ_LEN = 32
-PREDICTION_THRESHOLD = 0.75
+GAIT_MODEL_CLASSIFCATION_THRESHOLD = 0.7
 CLASS_DATA = { 0: "Alina", 1: "Henry" }
 
 class ClassificationSupplement():
@@ -107,8 +107,12 @@ class ClassificationSupplement():
                     # Run model (optional)
                     if enable_gait_model and self.model and len(self.dopplerBuffer[trackID]) == MODEL_SEQ_LEN:
                         class_id, prob = self.run_human_gait_model_inference(trackID)
-                        # if (prob >= PREDICTION_THRESHOLD):
-                        outputDict['ClassificationDecision'][trackID] = f"{CLASS_DATA[class_id]} {prob:.2f}"
+
+                        # Output class label or "Unknown Person" if model confidence is lower than threshold
+                        if (prob >= GAIT_MODEL_CLASSIFCATION_THRESHOLD):
+                            outputDict['ClassificationDecision'][trackID] = f"{CLASS_DATA[class_id]} {prob:.2f}"
+                        else:
+                            outputDict['ClassificationDecision'][trackID] = "Unknown Human"
 
         # Regardless of whether you get tracks in the current frame, if there were tracks in the previous frame, reset the
         # tag buffer and wasHumanTarget flag for tracks that aren't detected in the current frame but were detected in the previous frame
