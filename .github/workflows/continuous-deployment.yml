@@ -39,8 +39,35 @@ jobs:
         echo "Model artifacts and training logs found successfully."
 
         
-    - name: Upload training artifacts
-      uses: actions/upload-artifact@v4
+    - name: Generate release tag
+      id: tag
+      run: |
+        # Create a unique tag using date and short commit SHA
+        TAG="v$(date +'%Y%m%d%H%M%S')-${GITHUB_SHA::7}"
+        echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+        echo "Generated tag: $TAG"
+
+    - name: Package model artifacts
+      run: |
+        cd human_gait/output
+        tar -czvf ${{ github.workspace }}/gait-model-artifacts.tar.gz train_*
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-        name: gait-recognition-training-results
-        path: human_gait/output/train_*
+        tag_name: ${{ steps.tag.outputs.tag }}
+        name: "Model Training - ${{ steps.tag.outputs.tag }}"
+        body: |
+          ## Automated Model Training Release
+          
+          **Branch:** `${{ github.ref_name }}`
+          **Commit:** `${{ github.sha }}`
+          **Triggered by:** @${{ github.actor }}
+          
+          This release contains the trained gait recognition model artifacts.
+        files: |
+          gait-model-artifacts.tar.gz
+        draft: false
+        prerelease: ${{ github.ref_name != 'main' }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
