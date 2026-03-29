@@ -29,10 +29,10 @@ class CameraTab(QWidget):
         # Check version to see if we need to use DSHOW (Alina this is what was causing the crash as well as needing the headless version)
         if self.capture is None:
             if sys.platform == "win32":
-                self.capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+                self.capture = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 
             else :
-                self.capture = cv2.VideoCapture(0)
+                self.capture = cv2.VideoCapture(1)
 
             self.timer.start(30)
 
