@@ -82,6 +82,41 @@ class CameraTab(QWidget):
                 for box in results[0].boxes:
                     x1, y1, x2, y2 = map(int,box.xyxy[0])
                     cv_boxes.append((x1,y1,x2,y2))
+                cv_boxes.sort(key=lambda b : b[0])
+
+                radar_classing = []
+                if self.latest_radar_data and 'trackData' in self.latest_radar_data:
+                    tracks = self.latest_radar_data.get('trackData',[])
+                    decisions = self.latest_radar_data.get('ClassificationDecision', [])
+
+                    sorted_tracks = sorted(tracks, key=lambda t: t[1])
+
+                    for track in sorted_tracks:
+                        track_id = int(track[0])
+
+                        if track_id < len(decisions) and decisions[track_id] is not None:
+                            label = str(decisions[track_id])
+                        else:
+                            label = f"ID: {track_id} (No Label)"
+                        radar_classing.append(label)
+
+                for i, box in enumerate(cv_boxes):
+                    x1, y1, x2, y2 = box 
+                    cv2.rectangle(frame, (x1,y1), (x2,y2), (0,255,0), 2)
+
+                    if i < len(radar_classing):
+                        display_text = radar_classing[i]
+                    else:
+                        display_text = "Unknown Label"
+
+                    text_size = cv2.getTextSize(display_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)[0]
+                    text_width = text_size[0]
+                    text_length = text_size[1]
+
+
+                    center_x = x1 + ((x2 - x1) // 2) - (text_width // 2)
+                    center_y = y1 + ((y2 - y1) // 2) - (text_width // 2)                    
+                    cv2.putText(frame, display_text, (center_x, center_y), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,0), 2)
 
                 bytes_per_line = ch * w
 
