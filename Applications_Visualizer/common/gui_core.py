@@ -626,6 +626,10 @@ class Core:
     def updateGraph(self, outputDict):
         self.demoClassDict[self.demo].updateGraph(outputDict)
 
+        # Check if camera tab exists before receiving data for boxes
+        if hasattr(self, "cam_tab"):
+            self.cam_tab.receive_radar_data(outputDict)
+
     def connectCom(self, cliCom, connectStatus):
         # init threads and timers
         self.uart_thread = parseUartThread(self.parser)
