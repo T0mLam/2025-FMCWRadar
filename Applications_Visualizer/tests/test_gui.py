@@ -19,9 +19,9 @@ from PySide2.QtWidgets import (
 from PySide2.QtTest import QTest
 from PySide2.QtCore import Qt
 
-#--------------------------------------------------------
+# ─────────────────────────────────────────────
 # FIXTURES
-#--------------------------------------------------------
+# ─────────────────────────────────────────────
 @pytest.fixture(scope="session")
 def app():
     application = QApplication.instance()
@@ -36,9 +36,9 @@ def window(app):
     yield win
     win.close()
 
-#--------------------------------------------------------
+# ─────────────────────────────────────────────
 # Window Tests
-#--------------------------------------------------------
+# ─────────────────────────────────────────────
 def test_import_gui_main():
     # Sanity check that gui_main imports without crashing.
     import gui_main
@@ -52,7 +52,7 @@ def test_window_title(window):
 def test_window_is_visible(window):
     """Verify the window is visible after initialization."""
     assert window.isVisible()
-    
+
 # ─────────────────────────────────────────────
 # Connection Pane Tests
 # ─────────────────────────────────────────────
@@ -61,3 +61,29 @@ def test_connection_pane_exists(window):
     assert window.comBox is not None
     assert isinstance(window.comBox, QGroupBox)
     assert window.comBox.title() == "Connect to COM Ports"
+
+def test_connect_button_exists(window):
+    """Verify that the connect button exists and has the correct text."""
+    assert window.connectButton is not None
+    assert isinstance(window.connectButton, QPushButton)
+    assert window.connectButton.text() == "Connect"
+
+def test_connect_status_default(window):
+    """Verify default connection status is 'Not Connected'."""
+    assert window.connectStatus.text() == "Not Connected"
+
+def test_devide_list_exists(window):
+    """Verify the device dropdown exists and has items."""
+    assert window.deviceList is not None
+    assert isinstance(window.deviceList, QComboBox)
+    assert window.deviceList.count() > 0
+
+def test_demo_list_exists(window):
+    """Verify the demo dropdown exists and has items."""
+    assert window.demoList is not None
+    assert isinstance(window.demoList, QComboBox)
+    assert window.demoList.count() > 0
+
+# ─────────────────────────────────────────────
+# Recording Pane Tests
+# ─────────────────────────────────────────────
