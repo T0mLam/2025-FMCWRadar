@@ -205,6 +205,21 @@ def test_preprocess_tensor_shape(raw_data_dir, processed_dir):
 
     pytest.fail("No .pt files found to check shape")
 
+def test_process_data_labels_are_correct(raw_data_dir, processed_dir):
+    """Verify labels are assigned correctly (alphabetical order)."""
+    process_data(raw_data_dir, processed_dir, seq_len=10, stride=1)
+
+    # alice=0, bob=1 (alphabetical)
+    for root, dirs, files in os.walk(processed_dir):
+        for f in files:
+            if f.endswith(".pt"):
+                _, label = torch.load(os.path.join(root, f))
+
+                if "alice" in root:
+                    assert label == 0
+                elif "bob" in root:
+                    assert label == 1
+
 
 # ─────────────────────────────────────────────
 # Utility function for counting samples
