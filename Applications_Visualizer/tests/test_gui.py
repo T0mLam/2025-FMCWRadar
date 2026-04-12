@@ -119,3 +119,35 @@ def test_data_file_base_accepts_input(window):
     window.dataFileBaseEdit.clear()
     QTest.keyClicks(window.dataFileBaseEdit, "my_recording")
     assert window.dataFileBaseEdit.text() == "my_recording"
+
+
+# ─────────────────────────────────────────────
+# Configuration Pane Tests
+# ─────────────────────────────────────────────
+
+def test_config_pane_exists(window):
+    """Verify the configuration group box exists."""
+    assert window.configBox is not None
+    assert isinstance(window.configBox, QGroupBox)
+    assert window.configBox.title() == "Configuration"
+
+
+def test_select_config_button_exists(window):
+    """Verify the select configuration button exists."""
+    assert window.selectConfig is not None
+    assert window.selectConfig.text() == "Select Configuration"
+
+
+def test_send_config_button_disabled_by_default(window):
+    """Send config should be disabled until connected."""
+    assert window.sendConfig.isEnabled() is False
+
+
+def test_start_button_disabled_by_default(window):
+    """Start button should be disabled until connected."""
+    assert window.start.isEnabled() is False
+
+
+def test_sensor_stop_hidden_by_default(window):
+    """Sensor stop button should be hidden by default."""
+    assert window.sensorStop.isHidden()
