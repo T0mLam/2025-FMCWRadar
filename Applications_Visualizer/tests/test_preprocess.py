@@ -230,6 +230,44 @@ def test_stride_counts(raw_data_dir, processed_dir):
 
     assert count_stride_1 > count_stride_5, "Stride of 1 should produce more samples than stride of 5"
 
+def test_process_data_with_gaps(tmp_path):
+    """Verify windows containing gaps are dropped."""
+    raw_dir = tmp_path / "raw_gaps"
+    class_dir = raw_dir / "person_a"
+    class_dir.mkdir(parents=True)
+    processed_dir = str(tmp_path / "processed_gaps")
+
+    # Create data with gaps at frames 10-15
+    data = create_mock_json_with_gaps(
+        num_frames=50,
+        num_bins=64,
+        gap_indices=[10, 11, 12, 13, 14, 15]
+    )
+
+    with open(class_dir / "recording.json", "w") as f:
+        json.dump(data, f)
+
+    process_data(str(raw_dir), processed_dir, seq_len=10, stride=1)
+
+    # Should still produce some valid windows (before and after the gap)
+    total = count_total_samples(processed_dir)
+    assert total > 0
+
+    # But fewer than if there were no gaps
+    raw_dir_clean = tmp_path / "raw_clean"
+    class_dir_clean = raw_dir_clean / "person_a"
+    class_dir_clean.mkdir(parents=True)
+    processed_dir_clean = str(tmp_path / "processed_clean")
+
+    clean_data = create_mock_json(num_frames=50, num_bins=64)
+    with open(class_dir_clean / "recording.json", "w") as f:
+        json.dump(clean_data, f)
+
+    process_data(str(raw_dir_clean), processed_dir_clean, seq_len=10, stride=1)
+    total_clean = count_total_samples(processed_dir_clean)
+
+    assert total_clean > total
+
 # ─────────────────────────────────────────────
 # Utility function for counting samples
 # ─────────────────────────────────────────────
