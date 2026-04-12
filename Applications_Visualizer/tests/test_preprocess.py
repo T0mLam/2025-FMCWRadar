@@ -166,13 +166,24 @@ def test_preprocess_creates_output_dir(raw_data_dir, processed_dir):
     process_data(raw_data_dir, processed_dir, seq_len=10, stride=1)
     assert os.path.exists(processed_dir)
 
-def test_process_data_creates_class_dirs(raw_data_dir, processed_dir):
+def test_preprocess_creates_class_dirs(raw_data_dir, processed_dir):
     """Verify subdirectories are created for each class."""
     process_data(raw_data_dir, processed_dir, seq_len=10, stride=1)
 
     assert os.path.exists(os.path.join(processed_dir, "alice"))
     assert os.path.exists(os.path.join(processed_dir, "bob"))
-    
+
+def test_preprocess_creates_pt_files(raw_data_dir, processed_dir):
+    """Verify .pt files are created."""
+    process_data(raw_data_dir, processed_dir, seq_len=10, stride=1)
+
+    pt_files = []
+    for root, dirs, files in os.walk(processed_dir):
+        for f in files:
+            if f.endswith(".pt"):
+                pt_files.append(os.path.join(root, f))
+
+    assert len(pt_files) > 0, "No .pt files were created"
 # ─────────────────────────────────────────────
 # Utility function for counting samples
 # ─────────────────────────────────────────────
