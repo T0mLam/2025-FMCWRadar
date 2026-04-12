@@ -184,6 +184,26 @@ def test_preprocess_creates_pt_files(raw_data_dir, processed_dir):
                 pt_files.append(os.path.join(root, f))
 
     assert len(pt_files) > 0, "No .pt files were created"
+
+def test_preprocess_tensor_shape(raw_data_dir, processed_dir):
+    """Verify the saved tensors have the correct shape."""
+    seq_len = 10
+    num_bins = 64
+    process_data(raw_data_dir, processed_dir, seq_len=seq_len, stride=1)
+
+    # Load the first .pt file found
+    for root, dirs, files in os.walk(processed_dir):
+        for f in files:
+            if f.endswith(".pt"):
+                tensor_data, label = torch.load(os.path.join(root, f))
+
+                # Shape should be (batch, num_bins, seq_len)
+                assert tensor_data.dim() == 3
+                assert tensor_data.shape[1] == num_bins
+                assert tensor_data.shape[2] == seq_len
+                return
+
+    pytest.fail("No .pt files found to check shape")
 # ─────────────────────────────────────────────
 # Utility function for counting samples
 # ─────────────────────────────────────────────
