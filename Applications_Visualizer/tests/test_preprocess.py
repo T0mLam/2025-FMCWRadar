@@ -295,6 +295,18 @@ def test_process_data_no_clear_dir(raw_data_dir, tmp_path):
 
     assert os.path.exists(dummy_file)
 
+def test_process_data_with_trim(raw_data_dir, processed_dir):
+    """Verify trim_unstable_start doesn't crash and still produces output."""
+    process_data(
+        raw_data_dir, processed_dir,
+        seq_len=10, stride=1,
+        trim_unstable_start=True
+    )
+
+    total = count_total_samples(processed_dir)
+    assert total > 0
+
+
 # ─────────────────────────────────────────────
 # Utility function for counting samples
 # ─────────────────────────────────────────────
