@@ -218,3 +218,43 @@ def test_slider_exists(window):
     assert slider.minimum() == 0
     assert slider.maximum() == 30
     assert slider.value() == 20
+
+# ─────────────────────────────────────────────
+# Widget Count Tests
+# ─────────────────────────────────────────────
+
+def test_all_buttons_found(window):
+    """Verify expected number of buttons exist."""
+    buttons = window.findChildren(QPushButton)
+    button_texts = [btn.text() for btn in buttons]
+    print(f"Found buttons: {button_texts}")
+
+    expected_buttons = [
+        "Connect",
+        "Record Data",
+        "Select Configuration",
+        "Start and Send Configuration",
+        "Start without Send Configuration",
+        "Send sensorStop Command",
+    ]
+
+    for expected in expected_buttons:
+        assert expected in button_texts, f"Button '{expected}' not found"
+
+def test_all_labels_found(window):
+    """Verify key labels exist."""
+    labels = window.findChildren(QLabel)
+    label_texts = [lbl.text() for lbl in labels]
+    print(f"Found labels: {label_texts}")
+
+    expected_labels = [
+        "Not Connected",
+        "Device:",
+        "CLI COM:",
+        "Demo:",
+        "Duration (s):",
+        "Data file name:",
+    ]
+
+    for expected in expected_labels:
+        assert expected in label_texts, f"Label '{expected}' not found"
