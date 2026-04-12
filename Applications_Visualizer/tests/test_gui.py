@@ -191,3 +191,26 @@ def test_switch_back_to_data_mode(window):
     window.radio_data_button.setChecked(True)
     assert window.radio_data_button.isChecked()
     assert window.core.parser.enable_gait_model is False
+
+# ─────────────────────────────────────────────
+# Menu Bar Tests
+# ─────────────────────────────────────────────
+
+def test_menu_bar_exists(window):
+    """Verify the menu bar exists."""
+    menu_bar = window.menuBar()
+    assert menu_bar is not None
+
+
+def test_help_menu_exists(window):
+    """Verify the Help menu exists."""
+    menu_bar = window.menuBar()
+    actions = menu_bar.actions()
+    menu_texts = [a.text() for a in actions]
+    assert "&Help" in menu_texts
+
+
+def test_help_action_exists(window):
+    """Verify the user guide action exists."""
+    assert window.helpAction is not None
+    assert window.helpAction.text() == "Visualizer User Guide"
