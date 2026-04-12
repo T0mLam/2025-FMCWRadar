@@ -306,6 +306,26 @@ def test_process_data_with_trim(raw_data_dir, processed_dir):
     total = count_total_samples(processed_dir)
     assert total > 0
 
+def test_process_data_bin_slicing(raw_data_dir, processed_dir):
+    """Verify start_bin and end_bin correctly slice the feature dimension."""
+    start_bin = 10
+    end_bin = 30
+    expected_bins = end_bin - start_bin + 1
+
+    process_data(
+        raw_data_dir, processed_dir,
+        seq_len=10, stride=1,
+        start_bin=start_bin, end_bin=end_bin
+    )
+
+    for root, dirs, files in os.walk(processed_dir):
+        for f in files:
+            if f.endswith(".pt"):
+                tensor_data, _ = torch.load(os.path.join(root, f))
+                assert tensor_data.shape[1] == expected_bins
+                return
+
+    pytest.fail("No .pt files found to check bin slicing")
 
 # ─────────────────────────────────────────────
 # Utility function for counting samples
