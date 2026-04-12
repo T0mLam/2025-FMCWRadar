@@ -151,3 +151,43 @@ def test_start_button_disabled_by_default(window):
 def test_sensor_stop_hidden_by_default(window):
     """Sensor stop button should be hidden by default."""
     assert window.sensorStop.isHidden()
+
+# ─────────────────────────────────────────────
+# Mode Pane Tests
+# ─────────────────────────────────────────────
+
+def test_mode_pane_exists(window):
+    """Verify the mode group box exists."""
+    assert window.modeBox is not None
+    assert isinstance(window.modeBox, QGroupBox)
+    assert window.modeBox.title() == "Data/Model"
+
+
+def test_radio_buttons_exist(window):
+    """Verify both radio buttons exist."""
+    assert window.radio_data_button is not None
+    assert window.radio_gait_button is not None
+    assert isinstance(window.radio_data_button, QRadioButton)
+    assert isinstance(window.radio_gait_button, QRadioButton)
+
+
+def test_data_mode_selected_by_default(window):
+    """Verify 'Record Data' is the default selected mode."""
+    assert window.radio_data_button.isChecked()
+    assert not window.radio_gait_button.isChecked()
+
+
+def test_switch_to_gait_mode(window):
+    """Verify switching to gait recognition mode works."""
+    window.radio_gait_button.setChecked(True)
+    assert window.radio_gait_button.isChecked()
+    assert not window.radio_data_button.isChecked()
+    assert window.core.parser.enable_gait_model is True
+
+
+def test_switch_back_to_data_mode(window):
+    """Verify switching back to data mode works."""
+    window.radio_gait_button.setChecked(True)
+    window.radio_data_button.setChecked(True)
+    assert window.radio_data_button.isChecked()
+    assert window.core.parser.enable_gait_model is False
