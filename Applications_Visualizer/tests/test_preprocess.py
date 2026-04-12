@@ -26,7 +26,6 @@ def stable_timestamps():
     """Timestamps that are stable from the start at ~9 FPS (111ms intervals)."""
     return [i * 111 for i in range(50)]
 
-
 @pytest.fixture
 def unstable_then_stable_timestamps():
     """Timestamps that start unstable then become stable."""
@@ -34,7 +33,6 @@ def unstable_then_stable_timestamps():
     stable_start = unstable[-1]
     stable = [stable_start + i * 111 for i in range(1, 50)]
     return unstable + stable
-
 
 @pytest.fixture
 def raw_data_dir(tmp_path):
@@ -57,8 +55,56 @@ def raw_data_dir(tmp_path):
 
     return str(raw_dir)
 
-
 @pytest.fixture
 def processed_dir(tmp_path):
     """Create a temporary output directory."""
     return str(tmp_path / "processed")
+
+# ─────────────────────────────────────────────
+# Helper Functions
+# ─────────────────────────────────────────────
+
+def create_mock_json(num_frames=50, num_bins=64, fps=9):
+    """Create a mock JSON structure matching the expected format."""
+    interval = 1000 / fps  # ~111ms
+    data = {"data": []}
+
+    for i in range(num_frames):
+        frame = {
+            "timestamp": int(i * interval),
+            "frameData": {
+                "microDopplerRawData": [
+                    [float(np.random.randn()) for _ in range(num_bins)]
+                ]
+            }
+        }
+        data["data"].append(frame)
+
+    return data
+
+def create_mock_json_with_gaps(num_frames=50, num_bins=64, gap_indices=None):
+    """Create mock JSON where some frames have no micro-doppler data."""
+    if gap_indices is None:
+        gap_indices = []
+
+    interval = 1000 / 9
+    data = {"data": []}
+
+    for i in range(num_frames):
+        if i in gap_indices:
+            frame_data = {"microDopplerRawData": []}
+        else:
+            frame_data = {
+                "microDopplerRawData": [
+                    [float(np.random.randn()) for _ in range(num_bins)]
+                ]
+            }
+
+        frame = {
+            "timestamp": int(i * interval),
+            "frameData": frame_data
+        }
+        data["data"].append(frame)
+
+    return data
+
