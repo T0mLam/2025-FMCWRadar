@@ -281,6 +281,20 @@ def test_process_data_clear_dir(raw_data_dir, tmp_path):
     process_data(raw_data_dir, processed_dir, seq_len=10, stride=1, clear_dir=True)
 
     assert not os.path.exists(dummy_file)
+
+def test_process_data_no_clear_dir(raw_data_dir, tmp_path):
+    """Verify clear_dir=False preserves old files."""
+    processed_dir = str(tmp_path / "processed_keep")
+    os.makedirs(processed_dir, exist_ok=True)
+
+    dummy_file = os.path.join(processed_dir, "old_file.txt")
+    with open(dummy_file, "w") as f:
+        f.write("old data")
+
+    process_data(raw_data_dir, processed_dir, seq_len=10, stride=1, clear_dir=False)
+
+    assert os.path.exists(dummy_file)
+
 # ─────────────────────────────────────────────
 # Utility function for counting samples
 # ─────────────────────────────────────────────
