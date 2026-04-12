@@ -157,3 +157,25 @@ def test_stable_count_higher_than_frames():
     index = get_stable_start_index(timestamps, stable_count=10)
     assert index == 0
 
+# ─────────────────────────────────────────────
+# process_data Tests
+# ─────────────────────────────────────────────
+
+def test_process_data_creates_output_dir(raw_data_dir, processed_dir):
+    """Verify the processed directory is created."""
+    process_data(raw_data_dir, processed_dir, seq_len=10, stride=1)
+    assert os.path.exists(processed_dir)
+
+# ─────────────────────────────────────────────
+# Utility function for counting samples
+# ─────────────────────────────────────────────
+
+def count_total_samples(processed_dir):
+    """Count total samples across all .pt files."""
+    total = 0
+    for root, dirs, files in os.walk(processed_dir):
+        for f in files:
+            if f.endswith(".pt"):
+                tensor_data, _ = torch.load(os.path.join(root, f))
+                total += tensor_data.shape[0]
+    return total
