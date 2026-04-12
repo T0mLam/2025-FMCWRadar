@@ -87,3 +87,35 @@ def test_demo_list_exists(window):
 # ─────────────────────────────────────────────
 # Recording Pane Tests
 # ─────────────────────────────────────────────
+
+def test_record_button_exists(window):
+    """Verify the record data button exists."""
+    assert window.dataRecordButton is not None
+    assert isinstance(window.dataRecordButton, QPushButton)
+    assert window.dataRecordButton.text() == "Record Data"
+
+
+def test_duration_field_default(window):
+    """Verify the duration field has default value of 3."""
+    assert window.durationEdit is not None
+    assert window.durationEdit.text() == "3"
+
+
+def test_duration_field_accepts_input(window):
+    """Verify user can type into the duration field."""
+    window.durationEdit.clear()
+    QTest.keyClicks(window.durationEdit, "10")
+    assert window.durationEdit.text() == "10"
+
+
+def test_data_file_base_default(window):
+    """Verify the data file base name has a default value."""
+    assert window.dataFileBaseEdit is not None
+    assert window.dataFileBaseEdit.text() == "data"
+
+
+def test_data_file_base_accepts_input(window):
+    """Verify user can type a custom file name."""
+    window.dataFileBaseEdit.clear()
+    QTest.keyClicks(window.dataFileBaseEdit, "my_recording")
+    assert window.dataFileBaseEdit.text() == "my_recording"
