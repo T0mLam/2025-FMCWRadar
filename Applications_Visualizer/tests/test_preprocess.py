@@ -220,7 +220,16 @@ def test_process_data_labels_are_correct(raw_data_dir, processed_dir):
                 elif "bob" in root:
                     assert label == 1
 
+def test_process_data_with_stride(raw_data_dir, processed_dir):
+    """Verify that a larger stride produces fewer samples."""
+    process_data(raw_data_dir, processed_dir, seq_len=10, stride=1, clear_dir=True)
+    count_stride_1 = count_total_samples(processed_dir)
 
+    process_data(raw_data_dir, processed_dir, seq_len=10, stride=5, clear_dir=True)
+    count_stride_5 = count_total_samples(processed_dir)
+
+    assert count_stride_1 > count_stride_5, "Stride of 1 should produce more samples than stride of 5"
+    
 # ─────────────────────────────────────────────
 # Utility function for counting samples
 # ─────────────────────────────────────────────
