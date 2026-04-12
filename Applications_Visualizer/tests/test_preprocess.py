@@ -161,11 +161,18 @@ def test_stable_count_higher_than_frames():
 # process_data Tests
 # ─────────────────────────────────────────────
 
-def test_process_data_creates_output_dir(raw_data_dir, processed_dir):
+def test_preprocess_creates_output_dir(raw_data_dir, processed_dir):
     """Verify the processed directory is created."""
     process_data(raw_data_dir, processed_dir, seq_len=10, stride=1)
     assert os.path.exists(processed_dir)
 
+def test_process_data_creates_class_dirs(raw_data_dir, processed_dir):
+    """Verify subdirectories are created for each class."""
+    process_data(raw_data_dir, processed_dir, seq_len=10, stride=1)
+
+    assert os.path.exists(os.path.join(processed_dir, "alice"))
+    assert os.path.exists(os.path.join(processed_dir, "bob"))
+    
 # ─────────────────────────────────────────────
 # Utility function for counting samples
 # ─────────────────────────────────────────────
