@@ -185,7 +185,7 @@ def test_preprocess_creates_pt_files(raw_data_dir, processed_dir):
 
     assert len(pt_files) > 0, "No .pt files were created"
 
-def test_preprocess_tensor_shape(raw_data_dir, processed_dir):
+def test_tensor_shape(raw_data_dir, processed_dir):
     """Verify the saved tensors have the correct shape."""
     seq_len = 10
     num_bins = 64
@@ -205,7 +205,7 @@ def test_preprocess_tensor_shape(raw_data_dir, processed_dir):
 
     pytest.fail("No .pt files found to check shape")
 
-def test_process_data_labels_are_correct(raw_data_dir, processed_dir):
+def test_labels_are_correct(raw_data_dir, processed_dir):
     """Verify labels are assigned correctly (alphabetical order)."""
     process_data(raw_data_dir, processed_dir, seq_len=10, stride=1)
 
@@ -220,7 +220,7 @@ def test_process_data_labels_are_correct(raw_data_dir, processed_dir):
                 elif "bob" in root:
                     assert label == 1
 
-def test_process_data_with_stride(raw_data_dir, processed_dir):
+def test_stride_counts(raw_data_dir, processed_dir):
     """Verify that a larger stride produces fewer samples."""
     process_data(raw_data_dir, processed_dir, seq_len=10, stride=1, clear_dir=True)
     count_stride_1 = count_total_samples(processed_dir)
@@ -229,7 +229,7 @@ def test_process_data_with_stride(raw_data_dir, processed_dir):
     count_stride_5 = count_total_samples(processed_dir)
 
     assert count_stride_1 > count_stride_5, "Stride of 1 should produce more samples than stride of 5"
-    
+
 # ─────────────────────────────────────────────
 # Utility function for counting samples
 # ─────────────────────────────────────────────
