@@ -108,3 +108,52 @@ def create_mock_json_with_gaps(num_frames=50, num_bins=64, gap_indices=None):
 
     return data
 
+# ─────────────────────────────────────────────
+# get_stable_start_index Tests
+# ─────────────────────────────────────────────
+
+def test_stable_from_start(stable_timestamps):
+    """If timestamps are stable from the start, index should be 0."""
+    index = get_stable_start_index(stable_timestamps)
+    assert index == 0
+
+def test_unstable_then_stable(unstable_then_stable_timestamps):
+    """Should return an index after the unstable region."""
+    index = get_stable_start_index(unstable_then_stable_timestamps)
+    assert index > 0
+
+def test_empty_timestamps():
+    """Should return 0 for empty timestamps."""
+    index = get_stable_start_index([])
+    assert index == 0
+
+def test_too_few_timestamps():
+    """Should return 0 if fewer timestamps than stable_count."""
+    index = get_stable_start_index([0, 111, 222])
+    assert index == 0
+
+def test_completely_unstable_timestamps():
+    """Should return 0 if no stable region is found."""
+    timestamps = [0, 500, 600, 2000, 2010, 5000, 5500, 9000]
+    index = get_stable_start_index(timestamps)
+    assert index == 0
+
+def test_custom_fps():
+    """Should work with a different target FPS."""
+    # 20 FPS = 50ms intervals
+    timestamps = [i * 50 for i in range(20)]
+    index = get_stable_start_index(timestamps, target_fps=20)
+    assert index == 0
+
+def test_custom_stable_count():
+    """Should respect custom stable_count parameter."""
+    timestamps = [i * 111 for i in range(10)]
+    index = get_stable_start_index(timestamps, stable_count=3)
+    assert index == 0
+
+def test_stable_count_higher_than_frames():
+    """Should return 0 if stable_count exceeds frame count."""
+    timestamps = [i * 111 for i in range(5)]
+    index = get_stable_start_index(timestamps, stable_count=10)
+    assert index == 0
+
