@@ -44,3 +44,20 @@ def test_import_gui_main():
     import gui_main
     assert gui_main is not None
 
+def test_window_title(window):
+    """Verify the window has the correct default title."""
+    assert window.windowTitle() == "Applications Visualizer"
+
+
+def test_window_is_visible(window):
+    """Verify the window is visible after initialization."""
+    assert window.isVisible()
+    
+# ─────────────────────────────────────────────
+# Connection Pane Tests
+# ─────────────────────────────────────────────
+def test_connection_pane_exists(window):
+    """Verify that the connection group box exists."""
+    assert window.comBox is not None
+    assert isinstance(window.comBox, QGroupBox)
+    assert window.comBox.title() == "Connect to COM Ports"
