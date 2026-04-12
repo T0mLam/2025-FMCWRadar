@@ -268,6 +268,19 @@ def test_process_data_with_gaps(tmp_path):
 
     assert total_clean > total
 
+def test_process_data_clear_dir(raw_data_dir, tmp_path):
+    """Verify clear_dir=True removes old files."""
+    processed_dir = str(tmp_path / "processed_clear")
+    os.makedirs(processed_dir, exist_ok=True)
+
+    # Create a dummy file
+    dummy_file = os.path.join(processed_dir, "old_file.txt")
+    with open(dummy_file, "w") as f:
+        f.write("old data")
+
+    process_data(raw_data_dir, processed_dir, seq_len=10, stride=1, clear_dir=True)
+
+    assert not os.path.exists(dummy_file)
 # ─────────────────────────────────────────────
 # Utility function for counting samples
 # ─────────────────────────────────────────────
