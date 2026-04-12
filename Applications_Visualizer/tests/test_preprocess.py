@@ -326,6 +326,23 @@ def test_process_data_bin_slicing(raw_data_dir, processed_dir):
                 return
 
     pytest.fail("No .pt files found to check bin slicing")
+    
+def test_process_data_seq_len_larger_than_data(tmp_path):
+    """Verify no crash when seq_len is larger than available frames."""
+    raw_dir = tmp_path / "raw_short"
+    class_dir = raw_dir / "person_a"
+    class_dir.mkdir(parents=True)
+    processed_dir = str(tmp_path / "processed_short")
+
+    data = create_mock_json(num_frames=5, num_bins=64)
+    with open(class_dir / "recording.json", "w") as f:
+        json.dump(data, f)
+
+    # seq_len=32 but only 5 frames — should produce no samples
+    process_data(str(raw_dir), processed_dir, seq_len=32, stride=1)
+
+    total = count_total_samples(processed_dir)
+    assert total == 0
 
 # ─────────────────────────────────────────────
 # Utility function for counting samples
