@@ -29,4 +29,7 @@ build/
 binData/
 cache/
 
+# Model weights
+*.pt
+
 .vscode

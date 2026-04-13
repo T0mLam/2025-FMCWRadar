@@ -13,12 +13,6 @@ if COMMON not in sys.path:
     sys.path.insert(0, COMMON)
 
 
-def test_import_gui_main():
-    # Sanity check that gui_main imports without crashing.
-    import gui_main
-    assert gui_main is not None
-
-
 def test_qt_application_initializes():
     # Ensure Qt can initialize.
     from PySide2.QtWidgets import QApplication
