@@ -17,12 +17,15 @@ MAX_NUM_UNKNOWN_TAGS_FOR_HUMAN_DETECTION = 1
 MAX_NUM_TRACKS = 20 # This could vary depending on the configuration file. Use 20 here as a safe likely maximum to ensure there's enough memory for the classifier
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(_HERE, "models", "gait_model_weights_bf_5.pt")
+MODEL_PATH = os.path.join(_HERE, "models", "gait_model_weights_bf_remove_turns.pt")
 START_FEATURE_IDX = 20
 END_FEATURE_IDX = 44
 NUM_FEATURES = 25
 MODEL_SEQ_LEN = 32
 GAIT_MODEL_CLASSIFCATION_THRESHOLD = 0.7
+MIN_GAIT_MODEL_CLASSIFICATION_VELOCITY = 0.5
+GAIT_TAG_HISTORY_LEN = 6
+MAX_NUM_UNKNOWN_TAGS_FOR_GAIT_DETECTION = 1
 CLASS_DATA = { 0: "Alina", 1: "Henry" }
 
 class ClassificationSupplement():
@@ -44,6 +47,7 @@ class ClassificationSupplement():
         # Initialize a list of queues to store the MODEL_SEQ_LEN number of 
         # previous frames for each trackID
         self.dopplerBuffer = [deque(maxlen=MODEL_SEQ_LEN) for _ in range(MAX_NUM_TRACKS)]
+        self.gaitClassificationTags = [deque([-1] * GAIT_TAG_HISTORY_LEN, maxlen=GAIT_TAG_HISTORY_LEN) for _ in range(MAX_NUM_TRACKS)]
         
     def run_frame(self, outputDict, enable_gait_model=False):
         # Hold the track IDs detected in the current frame
@@ -104,15 +108,31 @@ class ClassificationSupplement():
                     self.wasTargetHuman[trackID] = 1 # Target WAS detected to be human in the current frame, save for next frame
                     outputDict['ClassificationDecision'][trackID] = "Human"
 
-                    # Run model (optional)
+                    # Run human gait model (optional)
                     if enable_gait_model and self.model and len(self.dopplerBuffer[trackID]) == MODEL_SEQ_LEN:
-                        class_id, prob = self.run_human_gait_model_inference(trackID)
+                        if abs(trackVelocity) >= MIN_GAIT_MODEL_CLASSIFICATION_VELOCITY:
+                            class_id, prob = self.run_human_gait_model_inference(trackID)
 
-                        # Output class label or "Unknown Person" if model confidence is lower than threshold
-                        if (prob >= GAIT_MODEL_CLASSIFCATION_THRESHOLD):
-                            outputDict['ClassificationDecision'][trackID] = f"{CLASS_DATA[class_id]} {prob:.2f}"
-                        else:
+                            # Update the gait tags history only while the target is moving.
+                            if prob >= GAIT_MODEL_CLASSIFCATION_THRESHOLD:
+                                self.gaitClassificationTags[trackID].appendleft(class_id)
+                            else:
+                                self.gaitClassificationTags[trackID].appendleft(-1)
+
+                        gait_array = np.array(self.gaitClassificationTags[trackID])
+                        numUnknownGaitTags = np.sum(gait_array == -1)
+
+                        # Output the previous gait decision while stationary, or the updated decision while moving.
+                        if numUnknownGaitTags > MAX_NUM_UNKNOWN_TAGS_FOR_GAIT_DETECTION:
                             outputDict['ClassificationDecision'][trackID] = "Unknown Human"
+                        else:
+                            valid_tags = gait_array[gait_array != -1]
+                            # np.unique gets the unique classes and counts their occurrences
+                            values, count = np.unique(valid_tags, return_counts=True)
+                            majority_class_id = values[np.argmax(count)]
+
+                            outputDict['ClassificationDecision'][trackID] = CLASS_DATA[majority_class_id]
+                                
 
         # Regardless of whether you get tracks in the current frame, if there were tracks in the previous frame, reset the
         # tag buffer and wasHumanTarget flag for tracks that aren't detected in the current frame but were detected in the previous frame
@@ -120,6 +140,7 @@ class ClassificationSupplement():
         for track in tracksToShuffle:
             for frame in range(TAG_HISTORY_LEN):
                 self.classifierTags[track].appendleft(0) # fill the buffer with zeros to remove any history for the track
+                self.gaitClassificationTags[track].appendleft(-1)
             self.wasTargetHuman[track] = 0 # Since target was not detected in current frame, reset the wasTargetHuman flag
 
         # Put the current tracks detected into the previous track list for the next frame
