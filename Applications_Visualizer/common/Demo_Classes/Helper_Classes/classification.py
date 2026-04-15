@@ -26,7 +26,7 @@ GAIT_MODEL_CLASSIFCATION_THRESHOLD = 0.7
 MIN_GAIT_MODEL_CLASSIFICATION_VELOCITY = 0.5
 GAIT_TAG_HISTORY_LEN = 6
 MAX_NUM_UNKNOWN_TAGS_FOR_GAIT_DETECTION = 1
-CLASS_DATA = { 0: "Alina", 1: "Henry" }
+CLASS_DATA = { 0: "Alina", 1: "Henry" } # Add another label: { 0: "Alina", 1: "Henry", 2: "Michal" }
 
 class ClassificationSupplement():
     def __init__(self):
