@@ -18,15 +18,15 @@ MAX_NUM_TRACKS = 20 # This could vary depending on the configuration file. Use 2
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(_HERE, "models", "gait_model_weights_bf_remove_turns.pt")
-START_FEATURE_IDX = 20
-END_FEATURE_IDX = 44
-NUM_FEATURES = 25
-MODEL_SEQ_LEN = 32
-GAIT_MODEL_CLASSIFCATION_THRESHOLD = 0.7
-MIN_GAIT_MODEL_CLASSIFICATION_VELOCITY = 0.5
-GAIT_TAG_HISTORY_LEN = 6
-MAX_NUM_UNKNOWN_TAGS_FOR_GAIT_DETECTION = 1
-CLASS_DATA = { 0: "Alina", 1: "Henry" } # Add another label: { 0: "Alina", 1: "Henry", 2: "Michal" }
+START_FEATURE_IDX = 20                          # The start index of the micro-doppler features for the model input 
+END_FEATURE_IDX = 44                            # The end index of the micro-doppler features for the model input 
+NUM_FEATURES = 25                               # The total number of micro-doppler features for the model input 
+MODEL_SEQ_LEN = 32                              # The window size (number of frames) for each model input  
+GAIT_MODEL_CLASSIFCATION_THRESHOLD = 0.7        # The model confidence threshold, conf < threshold -> unknown human
+MIN_GAIT_MODEL_CLASSIFICATION_VELOCITY = 0.5    # Only frames with velocity > min_gait_velocity will be added to the gait history, which locks the label when the object is stationary
+GAIT_TAG_HISTORY_LEN = 6                        # The size of the gait history deque, use majority vote to determine display label
+MAX_NUM_UNKNOWN_TAGS_FOR_GAIT_DETECTION = 1     # If num_unknown_human_label > max_num_unknown in the gait label history -> display unknown human
+CLASS_DATA = { 0: "Alina", 1: "Henry" }         # Add another label: { 0: "Alina", 1: "Henry", 2: "Michal" }
 
 class ClassificationSupplement():
     def __init__(self):
