@@ -2,6 +2,7 @@ import json
 import os
 import glob
 
+#Change this path to the data folder one
 input_folder = '/home/catbert21/uni/TI/2025-FMCWRadar/Applications_Visualizer/binData/Data'
 output_folder = 'output_walking_only'  # will be created next to the script
 
