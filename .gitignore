@@ -29,7 +29,9 @@ build/
 binData/
 cache/
 
-# Model weights
+# Model weights for YOLO 
 *.pt
+# (except the weights for the gait model)
+!Applications_Visualizer/common/Demo_Classes/Helper_Classes/models/*.pt
 
 .vscode
