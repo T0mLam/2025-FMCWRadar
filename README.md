@@ -177,7 +177,7 @@ It is recommended to view the above using our [documentation website](https://sp
 
 ## Architecture diagram
 
-![Architecture Diagram](</images/TI diagram.png>)
+![Architecture Diagram](</images/Architecture Diagram SEP -f.png>)
 
 ## Industrial Visualiser User Instructions 
 
