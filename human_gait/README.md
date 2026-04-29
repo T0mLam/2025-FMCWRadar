@@ -1,119 +1,117 @@
-# Human Gait Recognition with Radar Micro-Doppler
+# Human Gait
 
-This project implements a deep learning pipeline for human gait classification using 60GHz mmWave radar data. It utilizes a 1D Convolutional Neural Network (CNN) to classify individuals based on their unique micro-Doppler signatures.
+Radar micro-Doppler pipeline for preprocessing JSON recordings and training a 1D CNN gait classifier.
 
-## Project Structure
+## Layout
 
-```
+```text
 human_gait/
-├── configs/               # Configuration files
 ├── data/
-│   ├── raw/               # Original JSON radar recordings
-│   └── processed/         # Preprocessed .pt tensors for training
+│   ├── raw/
+│   └── processed/
+├── output/
 ├── src/
-│   ├── dataset.py         # PyTorch Dataset class
-│   ├── preprocess.py      # Data cleaning and windowing script
-│   ├── train.py           # Training loop
-│   └── models/            # CNN architecture definitions
-├── README.md
+│   ├── dataset.py
+│   ├── preprocess.py
+│   ├── train.py
+│   └── models/
 └── requirements.txt
-
 ```
 
-## Data Preprocessing
+## Setup
 
-The raw radar data should be stored in hierarchical JSON format. To prepare this data for efficient training, we run a preprocessing pipeline that converts raw JSONs into optimized PyTorch tensors.
-
-```
-human_gait/
-├── data/
-│   ├── raw/               # <-- PLACE UNPROCESSED DATA HERE
-│   │   └── 2026-01-23/    # (Drag and drop your date folder here)
-│   │       ├── alina/
-│   │       │   ├── replay_1.json
-│   │       │   ├── replay_2.json
-│   │       │   ├── replay_3.json
-│   │       │   └── ... 
-│   │       └── michal/
-│   │           ├── replay_1.json
-│   │           ├── replay_2.json
-│   │           ├── replay_3.json
-│   │           └── ... 
-│   └── processed/         # Script outputs .pt tensors here
-└── ...
-
-```
-
-### Key Processing Steps
-
-The `src/preprocess.py` script performs the following critical operations:
-
-1. **Stability Gating (Warm-up Trim):**
-* The data recorder often produces unstable frame rates during the first few seconds of recording.
-* The script calculates frame timestamp differences and automatically detects the "stable start index" where the frame rate settles to ~9 FPS.
-* Frames prior to this stability point are discarded.
-
-2. **Human Filtering:**
-* The radar tracks multiple objects. We strictly filter for the first Human class.
-* It checks the `ClassificationDecision` field in the raw data.
-
-3. **Continuous Sliding Window:**
-* The continuous data stream is sliced into overlapping windows of **32 frames** (approx. movement).
-* **Stride = 1:** The window slides one frame at a time to maximize the number of training samples.
-* *Any window containing a "gap" (from filtering step #2) is strictly discarded. This ensures the model never sees discontinuous physics (e.g., a person "teleporting" due to missing frames).
-
-4. **Tensor Output:**
-* Each valid window is transposed to shape `(Channels, Time)` -> `(64, 32)` to match PyTorch's `Conv1d` input requirement.
-* Data is saved as compressed `.pt` files (Tensors), speeding up training loading times by over 100x compared to parsing JSONs on the fly.
-
-
-
-### Usage
-
-To run the preprocessing script:
+Run from the `human_gait` directory:
 
 ```bash
-# From the project root directory (path/to/human_gait)
-python -m src.preprocess
-
+pip install -r requirements.txt
 ```
 
-**Custom Configuration:**
-You can specify the input folder, output folder, and sequence length using flags:
+## Raw Data Format
+
+`src.preprocess` expects:
+
+```text
+data/raw/<dataset>/<person>/*.json
+```
+
+Example:
+
+```text
+data/raw/ta_without_turns_3_people/
+├── alina/
+├── henry/
+└── michal/
+```
+
+Each person folder becomes one class. Class IDs are assigned from sorted folder names.
+
+## Preprocess
 
 ```bash
-python -m src.preprocess --raw-dir data/raw/2026-02-01 --processed-dir data/processed/val --seq-len 64
-
+python -m src.preprocess --raw-dir data/raw/ta_without_turns_3_people --processed-dir data/processed
 ```
 
-**Arguments:**
+What it does:
+
+- Optionally trims unstable frames at the start using timestamp spacing.
+- Reads `frameData.microDopplerRawData` and uses the first track only.
+- Drops frames with no micro-Doppler data.
+- Builds sliding windows and saves tensors in `(num_windows, features, seq_len)` format.
+
+Flags:
 
 | Flag | Long Flag | Description | Default |
 | --- | --- | --- | --- |
-| `-r` | `--raw-dir` | Path to the specific raw data folder (e.g., a specific date). | `data/raw/2026-01-23` |
-| `-p` | `--processed-dir` | Path where the processed `.pt` files will be saved. | `data/processed` |
-| `-s` | `--seq-len` | Length of the sliding window in frames. | `32` |
+| `-r` | `--raw-dir` | Raw dataset root. | `data/raw/2026-01-23` |
+| `-p` | `--processed-dir` | Output folder for `.pt` files. | `data/processed` |
+| `-l` | `--seq-len` | Window length in frames. | `32` |
+| `-s` | `--stride` | Sliding window stride. | `1` |
+| `-t` | `--trim-unstable-start` | Trim unstable frames at the start. | `False` |
+| `-ncd` | `--no-clear-dir` | Keep existing processed files. | `False` |
+| `-sb` | `--start-bin` | First micro-Doppler bin to keep. | `0` |
+| `-eb` | `--end-bin` | Last micro-Doppler bin to keep, inclusive. | `-1` |
 
-**Example:**
-To process a new dataset from February 1st and use a longer window size of 64 frames:
-
-```bash
-python -m src.preprocess -r "data/raw/2026-02-01" -s 64
-
-```
-
-
-### Output
-
-Processed data is saved to `data/processed/` organized by class folders. Each `.pt` file contains a tuple `(data_tensor, label)`.
+Output:
 
 ```text
 data/processed/
 ├── alina/
-│   ├── replay_1.pt   # Tensor shape: (N_windows, 64, 32)
-│   ├── replay_2.pt
-│   └── ...
-└── michal/
-    ├── replay_1.pt
-    └── ...
+│   └── <dataset>_<file>.pt
+└── henry/
 ```
+
+Each `.pt` file stores `(tensor_data, label)`.
+
+## Train
+
+```bash
+python -m src.train --data-dir data/processed --label remove_turns_3_people
+```
+
+Training uses `GaitDataset` and `src.models.cnn_1d.CNN1D`. By default it splits by file: the first `80%` of `.pt` files per class go to train, the rest to validation. Use `--no-split-by-file` to split individual windows instead.
+
+Flags:
+
+| Flag | Long Flag | Description | Default |
+| --- | --- | --- | --- |
+| `-lr` | `--learning-rate` | Optimizer learning rate. | `0.001` |
+| `-e` | `--epochs` | Number of epochs. | `1000` |
+| `-b` | `--batch-size` | Batch size. | `32` |
+| `-wd` | `--weight-decay` | AdamW weight decay. | `0.0001` |
+| `-d` | `--data-dir` | Processed data folder. | `data/processed` |
+| `-t` | `--train-split` | Train fraction. | `0.8` |
+| `-nspf` | `--no-split-by-file` | Split windows instead of files. | `False` |
+| `-dev` | `--device` | Device, for example `cpu` or `cuda`. | `cpu` |
+| `-s` | `--model-save-dir` | Output root for run artifacts. | `output/` |
+|  | `--seed` | Random seed. | `42` |
+| `-l` | `--label` | Suffix added to the run folder name. | `""` |
+
+Training outputs are written to a timestamped folder under `output/` and include:
+
+- `gait_model_weights.pt`
+- `gait_model_full.pt`
+- `metrics.csv`
+- `accuracy.png`
+- `loss.png`
+- `confusion_matrix.png`
+- `run_command.sh`
