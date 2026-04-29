@@ -85,40 +85,66 @@ It is recommended to view the above using our [documentation website](https://sp
 
 ```
 2025-FMCWRadar/
-├─ .github/                              # GitHub workflows / repo configuration
-├─ Applications_Visualizer/              # Industrial visualiser (UART + live visualisation)
-│  ├─ requirements.txt                   # Visualiser dependencies (Qt/OpenGL/serial/etc.)
-│  └─ Industrial_Visualizer/             # Packaged exe + configs + output folders
-│     ├─ chirp_configs/                  # Radar config files used by the visualiser
-│     └─ binData/                        # Recorded binary radar captures (output)
-├─ docker/                               # Container tooling for TI-TVM / ONNX workflows
+├─ .github/                              # GitHub configuration, issue templates, PR template, and CI/CD workflows
+│  ├─ ISSUE_TEMPLATE/                    # Bug, feature, and repo-management issue forms
+│  └─ workflows/                         # CI, CD, Docusaurus deployment, and PR test workflows
+├─ Applications_Visualizer/              # Modified TI Industrial Visualizer application
+│  ├─ chrip_configs/                     # Radar configuration files used by the visualizer
+│  ├─ common/                            # Shared visualizer logic, parsers, GUI code, and camera tab
+│  │  ├─ camera_tab.py                   # Camera tab / overlay-related visualizer work
+│  │  ├─ gui_core.py                     # Core GUI functionality
+│  │  ├─ gui_parser.py                   # GUI parsing / configuration logic
+│  │  ├─ gui_threads.py                  # Visualizer threading logic
+│  │  ├─ parseFrame.py                   # Radar frame parsing
+│  │  └─ parseTLVs.py                    # TLV parsing utilities
+│  ├─ images/                            # Visualizer images and setup screenshots
+│  ├─ tests/                             # Basic visualizer tests
+│  ├─ gui_main.py                        # Main entry point for the visualizer
+│  ├─ instructions.txt                   # Visualizer setup / usage instructions
+│  └─ requirements.txt                   # Python dependencies for the visualizer
+├─ docker/                               # Docker tooling for deployment and TVM workflows
+│  ├─ Dockerfile.cd                      # Continuous deployment container setup
+│  ├─ Dockerfile.tvm                     # TVM / model compilation container setup
+│  └─ python                             # Docker-related Python tooling/script
 ├─ docs/                                 # Docusaurus documentation website
-│  ├─ README.md                          # How to run/build docs locally
-│  ├─ package.json                       # Docs dependencies + scripts
-│  └─ docs/                              # Documentation content (sprints, guides, etc.)
-├─ human_gait/                           # Gait identification pipeline (data → preprocess → train)
-│  ├─ configs/                           # Configuration files
-│  ├─ data/
-│  │  ├─ raw/                            # Original JSON radar recordings
-│  │  └─ processed/                      # Preprocessed .pt tensors for training
-│  ├─ src/
-│  │  ├─ dataset.py                      # PyTorch Dataset class
-│  │  ├─ preprocess.py                   # Data cleaning and windowing script
-│  │  ├─ train.py                        # Training loop
-│  │  └─ models/                         # CNN architecture definitions
-│  ├─ README.md
-│  └─ requirements.txt
-├─ images/                               # Images used in README/docs (architecture, screenshots)
-├─ posture/                              # Posture model experiments + artifacts
-│  ├─ pytorch_fp_model-POSTURE.ipynb
-│  └─ pytorch_fp_model-POSTURE-RELATIVE_POS.ipynb
-├─ scripts/
+│  ├─ docs/                              # Documentation content
+│  │  ├─ general/                        # General project information, user stories, stakeholders, sprints
+│  │  ├─ research/                       # Research notes and technical investigation
+│  │  ├─ dataset/                        # Dataset documentation
+│  │  ├─ tutorial/                       # Tutorials and setup guidance
+│  │  └─ user_manual/                    # User-facing manual pages
+│  ├─ meetings/                          # Meeting notes and tags for the Docusaurus meetings section
+│  ├─ blog/                              # Default / example Docusaurus blog content
+│  ├─ src/                               # Docusaurus custom components, CSS, and pages
+│  ├─ static/                            # Static assets served by Docusaurus
+│  ├─ AI-Usage-Declaration.md            # Declaration of how AI tools are used in the project
+│  ├─ Ethics.md                          # Ethics route and pre-approval information
+│  ├─ branch-naming-convention.md        # Repository branch naming guidance
+│  ├─ docusaurus.config.js               # Docusaurus site configuration
+│  ├─ sidebars.js                        # Sidebar configuration for docs pages
+│  ├─ package.json                       # Docs dependencies and npm scripts
+│  ├─ package-lock.json                  # Locked docs dependency versions
+│  └─ README.md                          # How to install, run, build, and deploy the docs site
+├─ graph_visualiser/                     # Standalone graph visualisation script
+│  └─ graph_visualiser.py
+├─ human_gait/                           # Human gait identification pipeline
+│  ├─ data/                              # Dataset storage area (raw/processed data ignored where applicable)
+│  ├─ src/                               # Training, evaluation, preprocessing, dataset, models, and utilities
+│  │  ├─ dataset.py                      # Dataset loading logic
+│  │  ├─ preprocess.py                   # Data preprocessing / windowing pipeline
+│  │  ├─ train.py                        # Model training entry point
+│  │  ├─ evaluate.py                     # Model evaluation script
+│  │  ├─ models/                         # Model architecture definitions
+│  │  └─ utils/                          # Helper utilities
+│  ├─ README.md                          # Human gait module documentation
+│  └─ requirements.txt                   # Python dependencies for gait pipeline
+├─ images/                               # Images used in the main README and documentation
+├─ scripts/                              # Utility scripts
 │  └─ linux/
-│     └─ compile_model.sh                # TVM (tvmc) compiles ONNX → C/AOT library for Cortex-M4 (CCS)
+│     └─ compile_model.sh                # Compile model workflow for Linux / TVM usage
 ├─ .gitignore                            # Git ignore rules
-├─ Makefile                              # Shortcuts (docker/tvm commands, etc.)
-├─ README.md                             # Main project overview
-└─ package-lock.json                     # Node lockfile (docs tooling)
+├─ Makefile                              # Project command shortcuts
+└─ README.md                             # Main project overview and setup documentation
 ```
 
 ## Tech Stack
@@ -128,7 +154,6 @@ It is recommended to view the above using our [documentation website](https://sp
 
 ### Software
 - [**Python (3.10)**](https://www.python.org)
-- [**Jupyter Notebook**](https://jupyter.org)
 - [**PyTorch**](https://pytorch.org)
 
 ### Developer tools
@@ -152,7 +177,7 @@ It is recommended to view the above using our [documentation website](https://sp
 
 ## Architecture diagram
 
-![Architecture Diagram](</images/TI diagram.png>)
+![Architecture Diagram](</images/Architecture Diagram SEP -f.png>)
 
 ## Industrial Visualiser User Instructions 
 
