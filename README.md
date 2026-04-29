@@ -128,7 +128,6 @@ It is recommended to view the above using our [documentation website](https://sp
 
 ### Software
 - [**Python (3.10)**](https://www.python.org)
-- [**Jupyter Notebook**](https://jupyter.org)
 - [**PyTorch**](https://pytorch.org)
 
 ### Developer tools
