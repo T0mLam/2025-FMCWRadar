@@ -120,17 +120,14 @@ class ClassificationSupplement():
                                 self.gaitClassificationTags[trackID].appendleft(-1)
 
                         gait_array = np.array(self.gaitClassificationTags[trackID])
-                        numUnknownGaitTags = np.sum(gait_array == -1)
 
-                        # Output the previous gait decision while stationary, or the updated decision while moving.
-                        if numUnknownGaitTags > MAX_NUM_UNKNOWN_TAGS_FOR_GAIT_DETECTION:
+                        # Display the label with the most frequent occurance in gait history in the visualiser 
+                        values, count = np.unique(gait_array, return_counts=True)
+                        majority_class_id = values[np.argmax(count)]
+
+                        if majority_class_id == -1:
                             outputDict['ClassificationDecision'][trackID] = "Unknown Human"
                         else:
-                            valid_tags = gait_array[gait_array != -1]
-                            # np.unique gets the unique classes and counts their occurrences
-                            values, count = np.unique(valid_tags, return_counts=True)
-                            majority_class_id = values[np.argmax(count)]
-
                             outputDict['ClassificationDecision'][trackID] = CLASS_DATA[majority_class_id]
                                 
 
