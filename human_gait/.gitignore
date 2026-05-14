@@ -220,6 +220,6 @@ data/*
 !data/raw/
 data/raw/*
 !data/raw/ta/
-!data/raw/ta_remove_turns/
-!data/raw/ta_remove_turns_3_people/
+!data/raw/ta_without_turns/
+!data/raw/ta_without_turns_3_people/
 output/
